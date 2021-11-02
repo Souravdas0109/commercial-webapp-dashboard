@@ -92,6 +92,23 @@ function SidepanelUser() {
             />
           </ListItem>
         </List>
+        <Divider />
+        <List>
+          <ListItem
+            className={
+              location.pathname === userconfig[2].url
+                ? `${classes.link} ${classes.active}`
+                : classes.link
+            }
+            button
+            onClick={() => history.push(userconfig[2].url)}
+          >
+            <ListItemText
+              primary={userconfig[2].title}
+              classes={{ primary: classes.text }}
+            />
+          </ListItem>
+        </List>
       </Paper>
       <Divider />
     </>

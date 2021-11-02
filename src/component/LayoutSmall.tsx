@@ -124,6 +124,12 @@ function LayoutSmall(props: LayoutProps) {
       more: commercialdash,
     },
     {
+      text: "User Management",
+      icon: <img src={key} alt="" className={classes.logo} />,
+      path: "/userconfig/userinfo",
+      more: userconfig,
+    },
+    {
       text: "Promotion & Funding",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/promofunding",
@@ -158,12 +164,6 @@ function LayoutSmall(props: LayoutProps) {
       icon: <img src={qlik} alt="" className={classes.logo} />,
       path: "/analytics",
       more: [],
-    },
-    {
-      text: "User Configuration",
-      icon: <img src={key} alt="" className={classes.logo} />,
-      path: "/userconfig/userinfo",
-      more: userconfig,
     },
   ];
 
@@ -242,7 +242,7 @@ function LayoutSmall(props: LayoutProps) {
                 </List>
               );
             }
-            if (menu.text === "User Configuration") {
+            if (menu.text === "User Management") {
               return (
                 <List key={menu.text}>
                   <ListItem

@@ -19,6 +19,8 @@ import { grey } from "@material-ui/core/colors";
 import { green } from "@material-ui/core/colors";
 import { avtarInfo } from "./AvtarInfo";
 import { userInfo } from "./UserInfo";
+import { connect } from "react-redux";
+import { getUserRequest } from "../redux/Actions/Login/Action";
 
 const useStyles = makeStyles(theme => ({
   avtar: {
@@ -83,9 +85,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Dashboard() {
+function Dashboard(props: any) {
+  const { userDetail, getUserRequest } = props;
   const theme = useTheme();
   const classes = useStyles();
+  console.log(userDetail);
+  const abc = userDetail.data.FirstName;
+  const bcd = userDetail.data.colleagueLocationData.businessUnit;
   const colleagueUserName = userInfo.getLoggedInUserName();
   const businessunitName = ColleagueInfo.getLoggedInColleagueBusineesunitName();
   const departmentName = ColleagueInfo.getLoggedInColleaguedepartmentName();
@@ -231,4 +237,16 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+const mapStateToProps = (state: any) => {
+  return {
+    userDetail: state.loginReducer.userDetail,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    getUserRequest: (data: any) => dispatch(getUserRequest(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

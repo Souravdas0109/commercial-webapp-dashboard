@@ -43,7 +43,7 @@ const loginReducer = (state = initLoginState, action: any) => {
     case GET_USER_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        isLoading: false,
         userDetail: payload,
       };
     case LOGOUT_USER_REQUEST:

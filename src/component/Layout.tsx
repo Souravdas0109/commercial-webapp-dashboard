@@ -103,6 +103,11 @@ function Layout(props: LayoutProps) {
       path: "/Commercial/dashboard",
     },
     {
+      text: "User Management",
+      icon: <img src={key} alt="" className={classes.logo} />,
+      path: "/userconfig/usercreate",
+    },
+    {
       text: "Promotion & Funding",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/promofunding",
@@ -131,11 +136,6 @@ function Layout(props: LayoutProps) {
       text: "Analytics",
       icon: <img src={qlik} alt="" className={classes.logo} />,
       path: "/analytics",
-    },
-    {
-      text: "User Configuration",
-      icon: <img src={key} alt="" className={classes.logo} />,
-      path: "/userconfig/userinfo",
     },
   ];
 

@@ -216,12 +216,16 @@ export const commercialtask = [
 
 export const userconfig = [
   {
-    title: "User Information",
-    url: "/userconfig/userinfo",
-  },
-  {
     title: "Create User",
     url: "/userconfig/usercreate",
+  },
+  {
+    title: "Manage User",
+    url: "/userconfig/usermanage",
+  },
+  {
+    title: "User Manage Group",
+    url: "/userconfig/usergroup",
   },
 ];
 
@@ -472,5 +476,738 @@ export const promotions = [
     logs: "Open",
     attachments: <AttachFileIcon />,
     action: "Open",
+  },
+];
+export const requestTypes = [
+  {
+    name: "new",
+    text: "New",
+  },
+  {
+    name: "modify",
+    text: "Modify",
+  },
+  {
+    name: "remove",
+    text: "Remove",
+  },
+];
+export const statuses = [
+  {
+    statusID: "Active",
+    text: "Active",
+  },
+  {
+    statusID: "Inactive",
+    text: "Inactive",
+  },
+  {
+    statusID: "Draft",
+    text: "Draft",
+  },
+  {
+    statusID: "Confirmed",
+    text: "Confirmed",
+  },
+];
+
+export const roleTypes = [
+  {
+    value: "role1",
+    label: "Role 1",
+    check: false,
+  },
+  {
+    value: "role2",
+    label: "Role 2",
+    check: false,
+  },
+  {
+    value: "role3",
+    label: "Role 3",
+    check: false,
+  },
+  {
+    value: "role4",
+    label: "Role 4",
+    check: false,
+  },
+  {
+    value: "role5",
+    label: "Role 5",
+    check: false,
+  },
+];
+export const groupTypes = [
+  {
+    value: "group1",
+    label: "Group 1",
+  },
+  {
+    value: "group2",
+    label: "Group 2",
+  },
+  {
+    value: "group3",
+    label: "Group 3",
+  },
+  {
+    value: "group4",
+    label: "Group 4",
+  },
+  {
+    value: "group5",
+    label: "Group 5",
+  },
+  {
+    value: "group6",
+    label: "Group 6",
+  },
+  {
+    value: "group7",
+    label: "Group 7",
+  },
+  {
+    value: "group8",
+    label: "Group 8",
+  },
+
+  {
+    value: "group9",
+    label: "Group 9",
+  },
+  {
+    value: "group10",
+    label: "Group 10",
+  },
+  {
+    value: "group11",
+    label: "Group 11",
+  },
+  {
+    value: "group12",
+    label: "Group 12",
+  },
+];
+export interface ProducthierarchyTypes {
+  readonly value: string;
+  readonly label: string;
+}
+export const producthierarchyTypes: ProducthierarchyTypes[] = [
+  {
+    value: "producthierarchy1",
+    label: "Product Hierarchy 1",
+  },
+  {
+    value: "producthierarchy2",
+    label: "Product Hierarchy 2",
+  },
+  {
+    value: "producthierarchy3",
+    label: "Product Hierarchy 3",
+  },
+  {
+    value: "producthierarchy4",
+    label: "Product Hierarchy 4",
+  },
+  {
+    value: "producthierarchy5",
+    label: "Product Hierarchy 5",
+  },
+  {
+    value: "producthierarchy6",
+    label: "Product Hierarchy 6",
+  },
+  {
+    value: "producthierarchy7",
+    label: "Product Hierarchy 7",
+  },
+  {
+    value: "producthierarchy8",
+    label: "Product Hierarchy 8",
+  },
+
+  {
+    value: "producthierarchy9",
+    label: "Product Hierarchy 9",
+  },
+  {
+    value: "producthierarchy10",
+    label: "Product Hierarchy 10",
+  },
+  {
+    value: "producthierarchy11",
+    label: "Product Hierarchy 11",
+  },
+  {
+    value: "producthierarchy12",
+    label: "Product Hierarchy 12",
+  },
+];
+export interface LocationhierarchyTypes {
+  readonly value: string;
+  readonly label: string;
+}
+export const locationTypes: LocationhierarchyTypes[] = [
+  {
+    value: "location1",
+    label: "Location 1",
+  },
+  {
+    value: "location2",
+    label: "Location 2",
+  },
+  {
+    value: "location3",
+    label: "Location 3",
+  },
+  {
+    value: "location4",
+    label: "Location 4",
+  },
+  {
+    value: "location5",
+    label: "Location 5",
+  },
+  {
+    value: "location6",
+    label: "Location 6",
+  },
+  {
+    value: "location7",
+    label: "Location 7",
+  },
+  {
+    value: "location8",
+    label: "Location 8",
+  },
+
+  {
+    value: "location9",
+    label: "Location 9",
+  },
+  {
+    value: "location10",
+    label: "Location 10",
+  },
+  {
+    value: "location11",
+    label: "Location 11",
+  },
+  {
+    value: "location12",
+    label: "Location 12",
+  },
+];
+export const employeeDetails = [
+  {
+    label: "123",
+    empID: 123,
+    firstName: "ajay",
+    middleName: "k",
+    lastName: "s",
+    email: "ajay@123.com",
+    designation: "manager",
+    status: "active",
+  },
+  {
+    label: "234",
+    empID: 234,
+    firstName: "sourav",
+    middleName: "",
+    lastName: "das",
+    email: "sourav.das@234.com",
+    designation: "staff",
+    status: "active",
+  },
+  {
+    label: "345",
+    empID: 345,
+    firstName: "soumyadeep",
+    middleName: "",
+    lastName: "halder",
+    email: "soumyadeep@345.com",
+    designation: "developer",
+    status: "inactive",
+  },
+  {
+    label: "456",
+    empID: 456,
+    firstName: "omit",
+    middleName: "kumar",
+    lastName: "singh",
+    email: "omitkumar@456.com",
+    designation: "clerk",
+    status: "on-call",
+  },
+];
+export const viewLogColumns = [
+  { field: "timestamp", headerName: "Timestamp", width: 150 },
+  { field: "userID", headerName: "User ID", width: 80 },
+  { field: "role", headerName: "Role", width: 70 },
+  { field: "action", headerName: "Action", width: 70 },
+  {
+    field: "attachment",
+    headerName: "Attachment",
+    type: "file",
+    width: 80,
+  },
+  { field: "comments", headerName: "Comments", width: 90 },
+];
+export const userTableHeaders = [
+  {
+    field: "empID",
+    headerName: "Employee ID",
+    width: 60,
+  },
+  {
+    field: "firstName",
+    headerName: "First Name",
+    width: 80,
+  },
+  {
+    field: "middleName",
+    headerName: "Middle Name",
+    width: 80,
+  },
+  {
+    field: "lastName",
+    headerName: "Last Name",
+    width: 80,
+  },
+  {
+    field: "email",
+    headerName: "Email ID",
+    width: 170,
+  },
+  {
+    field: "designation",
+    headerName: "Designation",
+    width: 60,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 70,
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 50,
+  },
+  {
+    field: "group",
+    headerName: "Group",
+    width: 50,
+  },
+  {
+    field: "comments",
+    headerName: "Comments",
+    width: 100,
+  },
+];
+export const userDetails = [
+  {
+    empID: 297,
+    firstName: "Greer",
+    middleName: "Anna",
+    lastName: "Frost",
+    email: "valeriemayo@proflex.com",
+    designation: "Designer",
+    status: "Away",
+    comments: "Bad",
+  },
+  {
+    empID: 668,
+    firstName: "Huffman",
+    middleName: "Brianna",
+    lastName: "Kirk",
+    email: "maddoxguthrie@atomica.com",
+    designation: "Architect",
+    status: "Away",
+    comments: "Bad",
+  },
+  {
+    empID: 362,
+    firstName: "Kerri",
+    middleName: "Ratliff",
+    lastName: "Pearson",
+    email: "maimedina@earthplex.com",
+    designation: "Engineer",
+    status: "On-Leave",
+    comments: "Comments",
+  },
+  {
+    empID: 776,
+    firstName: "Chasity",
+    middleName: "Matilda",
+    lastName: "Doyle",
+    email: "juliepuckett@optique.com",
+    designation: "Engineer",
+    status: "Away",
+    comments: "No Comments",
+  },
+  {
+    empID: 952,
+    firstName: "Gayle",
+    middleName: "Gallegos",
+    lastName: "Rutledge",
+    email: "summersmiranda@orbin.com",
+    designation: "Engineer",
+    status: "Active",
+    comments: "Bad",
+  },
+  {
+    empID: 233,
+    firstName: "Dotson",
+    middleName: "Stephenson",
+    lastName: "Gilmore",
+    email: "juliannecrosby@sonique.com",
+    designation: "Architect",
+    status: "Busy",
+    comments: "Good",
+  },
+  {
+    empID: 405,
+    firstName: "Ann",
+    middleName: "Suzette",
+    lastName: "Sparks",
+    email: "nixonforbes@homelux.com",
+    designation: "Developer",
+    status: "Busy",
+    comments: "Good",
+  },
+  {
+    empID: 842,
+    firstName: "Natalie",
+    middleName: "Tammy",
+    lastName: "Galloway",
+    email: "littlecoffey@quantalia.com",
+    designation: "Manager",
+    status: "On-Leave",
+    comments: "Good",
+  },
+  {
+    empID: 534,
+    firstName: "Marina",
+    middleName: "Johnson",
+    lastName: "Bowen",
+    email: "norriscombs@cognicode.com",
+    designation: "Engineer",
+    status: "Away",
+    comments: "Good",
+  },
+  {
+    empID: 474,
+    firstName: "Sullivan",
+    middleName: "Dale",
+    lastName: "Valenzuela",
+    email: "maribelburks@enersol.com",
+    designation: "Designer",
+    status: "Active",
+    comments: "Good",
+  },
+  {
+    empID: 640,
+    firstName: "Sears",
+    middleName: "Bender",
+    lastName: "Scott",
+    email: "sharpburris@zilphur.com",
+    designation: "Architect",
+    status: "On-Call",
+    comments: "No Comments",
+  },
+  {
+    empID: 698,
+    firstName: "Katrina",
+    middleName: "Peters",
+    lastName: "Wheeler",
+    email: "altawatson@kidgrease.com",
+    designation: "Developer",
+    status: "On-Call",
+    comments: "No Comments",
+  },
+  {
+    empID: 150,
+    firstName: "Josefina",
+    middleName: "Strong",
+    lastName: "Page",
+    email: "elsierandolph@skinserve.com",
+    designation: "Developer",
+    status: "Busy",
+    comments: "Comments",
+  },
+  {
+    empID: 830,
+    firstName: "Lesley",
+    middleName: "Mildred",
+    lastName: "Brown",
+    email: "cynthialeblanc@austech.com",
+    designation: "Designer",
+    status: "On-Call",
+    comments: "Bad",
+  },
+  {
+    empID: 754,
+    firstName: "Etta",
+    middleName: "Morales",
+    lastName: "Marsh",
+    email: "charlenerosales@zilladyne.com",
+    designation: "Designer",
+    status: "Busy",
+    comments: "Good",
+  },
+];
+export const viewLogRows = [
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 133456,
+    role: "Role 0",
+    action: "Action 0",
+    //attachment: <Link to="D:/upload/test_docs/Pan_card.pdf"> <AttachFileIcon /> </Link>,
+    attachment: <AttachFileIcon />,
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 123456,
+    role: "Role 1",
+    action: "Action 1",
+    attachment: <AttachFileIcon />,
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 123457,
+    role: "Role 2",
+    action: "Action 2",
+    attachment: <AttachFileIcon />,
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 123458,
+    role: "Role 3",
+    action: "Action 3",
+    attachment: <AttachFileIcon />,
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 123459,
+    role: "Role 4",
+    action: "Action 4",
+    attachment: <AttachFileIcon />,
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111111,
+    role: "Role 5",
+    action: "Action 5",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111112,
+    role: "Role 6",
+    action: "Action 6",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111113,
+    role: "Role 7",
+    action: "Action 7",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111114,
+    role: "Role 8",
+    action: "Action 8",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111115,
+    role: "Role 9",
+    action: "Action 9",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111116,
+    role: "Role 10",
+    action: "Action 10",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111117,
+    role: "Role 11",
+    action: "Action 11",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111118,
+    role: "Role 12",
+    action: "Action 12",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111119,
+    role: "Role 13",
+    action: "Action 13",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111120,
+    role: "Role 14",
+    action: "Action 14",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111121,
+    role: "Role 15",
+    action: "Action 15",
+    attachment: "",
+    comments: "Some Comments",
+  },
+  {
+    timestamp: "15-09-21 11:45",
+    userID: 111122,
+    role: "Role 16",
+    action: "Action 16",
+    attachment: "",
+    comments: "Some Comments",
+  },
+];
+export const userGroupTableHeaders = [
+  {
+    field: "groupID",
+    headerName: "Group ID",
+    width: 100,
+  },
+  {
+    field: "groupName",
+    headerName: "Group Name",
+    width: 150,
+  },
+  {
+    field: "description",
+    headerName: "Descriptions",
+    width: 200,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 80,
+  },
+  {
+    field: "productHierarchy",
+    headerName: "Product Hierarchies",
+    width: 170,
+  },
+  {
+    field: "locationHierarchy",
+    headerName: "Location Hierarchies",
+    width: 200,
+  },
+];
+export const userGroupDetails = [
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
+  },
+  {
+    groupID: 12356,
+    groupName: "Group name 1",
+    description: "Some description to be described here",
+    status: "active",
+    productHierarchy: "view",
+    locationHierarchy: "view",
   },
 ];

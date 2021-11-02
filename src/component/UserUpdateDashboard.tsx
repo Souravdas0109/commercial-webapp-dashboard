@@ -1,8 +1,10 @@
 import { Divider, Grid, Typography, makeStyles } from "@material-ui/core";
 import React from "react";
-import UserConfig from "./UserConfig";
+import UserInformationCreate from "./UserInformationCreate";
 import SidepanelUser from "./SidepanelUser";
 import UserCreate1 from "./UserCreate1";
+import CreateGroup from "./CreateGroup";
+import UserUpdate from "./UserUpdate";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
   },
 }));
-function UserInformationDashboard() {
+function UserUpdateDashboard() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -28,7 +30,7 @@ function UserInformationDashboard() {
             <SidepanelUser />
           </Grid>
           <Grid item lg={10} md={10} sm={8} xs={7}>
-            <UserConfig />
+            <UserUpdate />
           </Grid>
         </Grid>
       </div>
@@ -36,4 +38,4 @@ function UserInformationDashboard() {
   );
 }
 
-export default UserInformationDashboard;
+export default UserUpdateDashboard;

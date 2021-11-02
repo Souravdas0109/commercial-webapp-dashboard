@@ -25,8 +25,9 @@ import { toggle } from "../redux/formodal/action";
 import { connect } from "react-redux";
 import { toggleApp } from "../redux/approve/action";
 import FilterPopSmall from "./FilterPopSmall";
+import { DataTable } from "primereact/datatable";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   table: {
     width: "100%",
     color: theme.palette.primary.main,

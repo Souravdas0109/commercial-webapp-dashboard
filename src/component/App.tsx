@@ -29,6 +29,13 @@ import UserConfig from "./UserConfig";
 import UserInformationDashboard from "./UserInformationDashboard";
 import UserCreateDashboard from "./UserCreateDashboard";
 import UserInformationCreate from "./UserInformationCreate";
+import UserCreate1 from "./UserCreate1";
+import UserUpdateDashboard from "./UserUpdateDashboard";
+import UserUpdate from "./UserUpdate";
+import UserCreateSmall from "./UserCreateSmall";
+import ManageUserDashboard from "./ManageUserDashboard";
+import ManageUserGroupDashboard from "./ManageUserGroupDashboard";
+import CreateGroup from "./CreateGroup";
 
 const theme = createTheme({
   palette: {
@@ -139,23 +146,23 @@ function App() {
                   />
                   <AuthRoute
                     path="/Commercial/analytics"
-                    component={KpiAnalytics}
+                    component={UserInformationDashboard}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/Commercial/analytics"
-                    component={KpiAnalytics}
+                    component={UserInformationDashboard}
                   />
                   <AuthRoute
-                    path="/userconfig/userinfo"
-                    component={UserInformationDashboard}
+                    path="/userconfig/usergroup"
+                    component={ManageUserGroupDashboard}
                     isAuthorized={true}
                   />
                   <Route
                     exact
-                    path="/userconfig/userinfo"
-                    component={UserInformationDashboard}
+                    path="/userconfig/usergroup"
+                    component={ManageUserGroupDashboard}
                   />
                   <AuthRoute
                     path="/userconfig/usercreate"
@@ -166,6 +173,36 @@ function App() {
                     exact
                     path="/userconfig/usercreate"
                     component={UserCreateDashboard}
+                  />
+                  <AuthRoute
+                    path="/userconfig/userupdate"
+                    component={UserUpdateDashboard}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/userupdate"
+                    component={UserUpdateDashboard}
+                  />
+                  <AuthRoute
+                    path="/userconfig/usermanage"
+                    component={ManageUserDashboard}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/usermanage"
+                    component={ManageUserDashboard}
+                  />
+                  <AuthRoute
+                    path="/userconfig/groupcreate"
+                    component={CreateGroup}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/groupcreate"
+                    component={CreateGroup}
                   />
                   <Route>
                     <div className={classes.notfound}>
@@ -248,13 +285,13 @@ function App() {
                   />
                   <AuthRoute
                     path="/Commercial/analytics"
-                    component={KpiAnalyticsSmall}
+                    component={UserConfig}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/Commercial/analytics"
-                    component={KpiAnalyticsSmall}
+                    component={UserConfig}
                   />
                   <AuthRoute
                     path="/userconfig/userinfo"
@@ -268,13 +305,33 @@ function App() {
                   />
                   <AuthRoute
                     path="/userconfig/usercreate"
-                    component={UserInformationCreate}
+                    component={UserCreateSmall}
                     isAuthorized={true}
                   />
                   <Route
                     exact
-                    path="/userconfig/create"
-                    component={UserInformationCreate}
+                    path="/userconfig/usercreate"
+                    component={UserCreateSmall}
+                  />
+                  <AuthRoute
+                    path="/userconfig/userupdate"
+                    component={UserUpdate}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/userupdate"
+                    component={UserUpdate}
+                  />
+                  <AuthRoute
+                    path="/userconfig/usermanage"
+                    component={ManageUserDashboard}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/usermanage"
+                    component={ManageUserDashboard}
                   />
                   <Route>
                     <div className={classes.notfound}>

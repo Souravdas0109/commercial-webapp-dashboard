@@ -1,3 +1,4 @@
+import { ColleagueInfo } from "../../../component/ColleagueInfo";
 import { colleagueV2Login, userV2Login } from "../../../component/fetch";
 import {
   GET_USER_REQUEST,
@@ -22,6 +23,7 @@ export const loginUser = (idToken: any) => (dispatch: any) => {
           const dataone = response;
           localStorage.setItem("_Colresponse", JSON.stringify(dataone));
           console.log(dataone);
+          dispatch(getUserRequest(dataone));
         });
       } else {
         throw new Error("Invalid Login");
@@ -48,9 +50,10 @@ const loginUserRequest = () => {
     type: LOGIN_USER_REQUEST,
   };
 };
-export const getUserRequest = () => {
+export const getUserRequest = (dataone: any) => {
   return {
     type: GET_USER_REQUEST,
+    payload: dataone,
   };
 };
 
