@@ -57,7 +57,7 @@ function ManageUserGroup() {
   };
   const groupIDTemplate = (rowData: any) => {
     return (
-      <Link to="/userconfig/userupdate" className={classes.links}>
+      <Link to="#" className={classes.links}>
         {rowData.groupID}
       </Link>
     );
@@ -128,6 +128,12 @@ function ManageUserGroup() {
                   rows={7}
                   globalFilter={globalFilter}
                   emptyMessage="No Users found."
+                  showGridlines
+                  scrollable
+                  scrollHeight="500px"
+                  style={{
+                    width: "1000px",
+                  }}
                 >
                   {userGroupTableHeaders.map(column => {
                     return column.field === "productHierarchy" ||

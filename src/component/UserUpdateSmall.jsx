@@ -5,47 +5,52 @@ import {
   Button,
   TextField,
   Popover,
+  Table,
   Dialog,
   DialogTitle,
+  Modal,
 } from "@material-ui/core";
-import SidepanelUser from "./SidepanelUser";
 
 // import axios from 'axios';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { makeStyles, styled } from "@material-ui/styles";
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 // import SideBar from '../Layout/SideBar'
 import { default as ReactSelect } from "react-select";
 import { components } from "react-select";
-import {
-  viewLogRows,
-  viewLogColumns,
-  groupTypes,
-  taskList,
-} from "../Data/Data";
-import { requestTypes, roleTypes, userDetails } from "../Data/Data";
+import { viewLogRows, viewLogColumns, groupTypes } from "../Data/Data";
+import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect } from "react";
-// import 'primeicons/primeicons.css';
+import "primeicons/primeicons.css";
 // import 'primereact/resources/themes/fluent-light/theme.css';
+import "primereact/resources/primereact.css";
 import { teal } from "@material-ui/core/colors";
 import { connect } from "react-redux";
-import { reset_empID } from "../redux/Actions/ManageUser";
+
+const fieldWidth = 270;
 
 const useStyles = makeStyles(theme => {
   return {
+    mainContainer: {
+      flexDirection: "column",
+      display: "flex",
+      textAlign: "left",
+      width: window.innerWidth,
+    },
     eachRow: {
       display: "flex",
-      flexDirection: "row",
+      // flexDirection: "column",
       paddingTop: "20px",
       alignItems: "baseline",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
     },
     inputFields: {
-      width: 392,
+      width: "100%",
       height: 32,
     },
     selectField: {
@@ -53,19 +58,18 @@ const useStyles = makeStyles(theme => {
       height: 38,
     },
     inputLabel: {
-      width: 250,
+      width: 200,
     },
     inputFieldBox: {
-      width: 400,
+      width: fieldWidth,
     },
     textArea: {
-      width: 400,
+      width: "100%",
       border: "1px solid black",
     },
     submitButton: {
       width: 150,
       height: 40,
-      fontSize: "bi",
       display: "inline",
       "&:hover": {
         fontSize: "large",
@@ -87,19 +91,13 @@ const useStyles = makeStyles(theme => {
         borderColor: "green",
       },
     },
-    rolesPopup: {
-      alignItems: "center",
-      width: 400,
-      height: 400,
-      borderColor: theme.palette.primary.main,
-      border: "1px solid",
-    },
+
     backButton: {
       border: 0,
       color: "blue",
       // backgroundColor: "white",
       cursor: "pointer",
-      fontSize: "18px",
+      fontSize: "15px",
     },
     viewLogTitle: {
       backgroundColor: theme.palette.primary.main,
@@ -107,7 +105,7 @@ const useStyles = makeStyles(theme => {
       alignItems: "baseline",
     },
     closeViewLog: {
-      color: "white",
+      color: "#FFFFFF",
       backgroundColor: theme.palette.primary.main,
       fontSize: "18px",
       "&:hover": {
@@ -127,7 +125,7 @@ const useStyles = makeStyles(theme => {
       },
     },
     uploadButton: {
-      width: 80,
+      width: 60,
       height: "32px",
       cursor: "pointer",
       backgroundColor: teal[900],
@@ -139,11 +137,11 @@ const Input = styled("input")({
   display: "none",
 });
 
-function UserUpdate(props) {
-  const { empDetails, reset_empID } = props;
+function UserCreateSmall(props) {
+  const { empDetails } = props;
 
-  const history = useHistory();
   const classes = useStyles();
+  const history = useHistory();
 
   const [roleNames, setRoleNames] = React.useState([]);
   // const [anchorEl, setAnchorEl] = React.useState(null);
@@ -160,33 +158,12 @@ function UserUpdate(props) {
   const [comments, setComments] = React.useState("");
   const [referenceDoc, setReferenceDoc] = React.useState("");
 
-  // const [rolesPreview, setRolesPreview] = React.useState("")
-
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
 
-  const [groups, setGroups] = React.useState([]);
   const [groupInput, setGroupInput] = React.useState([]);
   const [groupOpen, setGroupOpen] = React.useState(false);
-
-  const [tasks, setTasks] = React.useState(taskList);
-  const [taskSelected, setTaskSelected] = React.useState(null);
-  const [taskOpen, setTaskOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!empDetails) {
-      history.push("/userconfig/usermanage");
-    } else {
-      console.log(empDetails[0]);
-      setSelectEmployeeID(empDetails[0]);
-      setTasks(taskList);
-    }
-  }, []);
-
-  const goBack = () => {
-    reset_empID();
-    history.goBack();
-  };
+  const [groups, setGroups] = React.useState([]);
 
   const customStyles = {
     option: (provided, state) => ({
@@ -195,6 +172,19 @@ function UserUpdate(props) {
       backgroundColor: state.isSelected ? "green" : "white",
       color: state.isSelected ? "white" : "green",
     }),
+  };
+
+  React.useEffect(() => {
+    if (!empDetails) {
+      history.push("/userconfig/usermanage");
+    } else {
+      console.log(empDetails[0]);
+      setSelectEmployeeID(empDetails[0]);
+    }
+  }, []);
+
+  const goBack = () => {
+    history.goBack();
   };
 
   const handleReset = () => {
@@ -253,7 +243,6 @@ function UserUpdate(props) {
       setEmail(selectEmployeeID.email);
       setDesignation(selectEmployeeID.designation);
       setStatus(selectEmployeeID.status);
-      setComments(selectEmployeeID.comments);
     } else {
       setEmployeeID("");
       setFirstName("");
@@ -271,9 +260,6 @@ function UserUpdate(props) {
   };
   const handleCloseGroups = e => {
     e.preventDefault();
-    setGroupOpen(false);
-  };
-  const updateGroups = () => {
     setGroups(groupInput);
     setGroupOpen(false);
   };
@@ -286,8 +272,8 @@ function UserUpdate(props) {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 400,
-          width: 500,
+          height: 500,
+          width: 280,
           p: 2,
           display: "flex",
           flexDirection: "column",
@@ -335,107 +321,9 @@ function UserUpdate(props) {
           <Button
             type="button"
             className={classes.whiteButton}
-            onClick={updateGroups}
+            onClick={handleCloseGroups}
           >
             Save
-          </Button>
-        </Box>
-      </Box>
-    </Dialog>
-  );
-
-  const handleOpenTasks = e => {
-    console.log("open task");
-    e.preventDefault();
-    setTaskOpen(true);
-  };
-  const handleCloseTasks = e => {
-    e.preventDefault();
-    console.log("close");
-    setTaskOpen(false);
-  };
-
-  const unAssignTasks = () => {
-    let _tasks = tasks.filter(value => !taskSelected.includes(value));
-    setTasks(_tasks);
-    setTaskSelected(null);
-    setTaskOpen(false);
-  };
-  const nameTemplate = rowData => {
-    return (
-      <input
-        type="checkbox"
-        value={rowData}
-        onChange={e => console.log(e.target.value)}
-      />
-    );
-  };
-  useEffect(() => {
-    console.log(taskSelected);
-  }, [taskSelected]);
-  const manageTasks = (
-    <Dialog onClose={handleCloseTasks} open={taskOpen}>
-      <Box
-        sx={{
-          height: 500,
-          width: 500,
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box>
-            <DialogTitle>Manage Tasks</DialogTitle>
-          </Box>
-
-          <Box
-            sx={{
-              paddingLeft: "20px",
-              paddingRight: "20px",
-            }}
-          >
-            <DataTable
-              value={tasks}
-              selection={taskSelected}
-              onSelectionChange={e => setTaskSelected(e.value)}
-              className="p-datatable-sm"
-              showGridlines
-            >
-              <Column
-                selectionMode="multiple"
-                headerStyle={{
-                  width: "40px",
-                }}
-              ></Column>
-              <Column field="label" header="Task">
-                Tasks
-              </Column>
-              <Column field="count" header="Count">
-                Count
-              </Column>
-            </DataTable>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-          }}
-        >
-          <Button
-            type="button"
-            className={classes.whiteButton}
-            onClick={unAssignTasks}
-            disabled={!taskSelected || !taskSelected.length}
-          >
-            Unassign
           </Button>
         </Box>
       </Box>
@@ -469,40 +357,31 @@ function UserUpdate(props) {
         horizontal: "center",
       }}
       elevation={0}
+      style={{
+        height: 500,
+      }}
     >
-      <Box
-        sx={{
-          width: 700,
-          height: 500,
-          border: "3px solid green",
-          borderRadius: 4,
-          display: "flex",
-          flexDirection: "column",
-          p: 1,
+      <Grid
+        container
+        style={{
+          border: "2px solid green",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            height: 30,
-            flexDirection: "row",
+        <Grid
+          item
+          container
+          xs={12}
+          sm={12}
+          style={{
+            textAlign: "center",
+            color: "white",
+            backgroundColor: teal[900],
           }}
-          className={classes.viewLogTitle}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexGrow: 1,
-              justifyContent: "center",
-            }}
-          >
+          <Grid item xs={10} sm={10}>
             <Typography variant="subtitle1">Logs</Typography>
-          </Box>
-          <Box
-            sx={{
-              paddingRight: 2,
-            }}
-          >
+          </Grid>
+          <Grid item xs={2} sm={2}>
             <button
               style={{
                 border: 0,
@@ -515,36 +394,24 @@ function UserUpdate(props) {
             >
               <b>X</b>
             </button>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            p: 2,
-          }}
-        >
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <Typography variant="body2">
             Request ID:
             <b>0112233</b>
+            <br />
           </Typography>
-        </Box>
-        <Box
-          sx={{
-            justifyContent: "center",
-            display: "flex",
-            textAlign: "center",
-          }}
-        >
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <DataTable
             value={viewLogRows}
+            scrollable
+            scrollHeight="200px"
+            style={{ minWidth: "310px" }}
+            rows={3}
             paginator
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            rows={5}
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#f7f7f7",
-            }}
-            className="p-datatable-sm"
           >
             {viewLogColumns.map(column => {
               return (
@@ -552,25 +419,38 @@ function UserUpdate(props) {
                   key={column.field}
                   field={column.field}
                   header={column.headerName}
-                />
+                  columnKey={column.field}
+                  headerStyle={{
+                    width: column.width,
+                    padding: 1,
+                    fontSize: "12px",
+                  }}
+                  bodyStyle={{
+                    width: column.width,
+                    padding: 1,
+                    fontSize: "12px",
+                  }}
+                ></Column>
               );
             })}
           </DataTable>
-        </Box>
-      </Box>
+
+          <Table></Table>
+        </Grid>
+      </Grid>
     </Popover>
   );
 
   const createForm = (
     <Box
-      sx={{
-        flexDirection: "column",
-        display: "flex",
-        p: 3,
-        paddingLeft: 50,
-        paddingRight: 30,
-        textAlign: "left",
-      }}
+      sx={
+        {
+          // p: 2,
+          // paddingLeft: 20,
+          // paddingRight: 30,
+        }
+      }
+      className={classes.mainContainer}
     >
       <Box
         sx={{
@@ -578,11 +458,13 @@ function UserUpdate(props) {
           flexDirection: "row",
           paddingBottom: "20px",
           paddingTop: "10px",
-          width: 650,
+          flexWrap: "wrap",
         }}
       >
         <Box
           sx={{
+            minWidth: 320,
+            display: "flex",
             flexGrow: 1,
           }}
         >
@@ -601,7 +483,7 @@ function UserUpdate(props) {
             }}
           >
             <button className={classes.backButton} onClick={handleOpenViewLog}>
-              View Log ({viewLogRows.length})
+              View Log
             </button>
           </Box>
           <Box
@@ -628,6 +510,8 @@ function UserUpdate(props) {
             display: "flex",
             flexDirection: "row",
             alignItems: "baseline",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
           }}
         >
           <Box className={classes.inputLabel}>
@@ -650,11 +534,9 @@ function UserUpdate(props) {
                 </option>
                 {requestTypes.map(type => {
                   return (
-                    type.name !== "new" && (
-                      <option value={type.name} key={type.name}>
-                        {type.text}
-                      </option>
-                    )
+                    <option value={type.name} key={type.name}>
+                      {type.text}
+                    </option>
                   );
                 })}
               </select>
@@ -785,9 +667,10 @@ function UserUpdate(props) {
             className={classes.inputFieldBox}
             sx={{
               flexDirection: "row",
-              width: 400,
+              // width: windowWidth,
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
             <Box
@@ -802,7 +685,7 @@ function UserUpdate(props) {
                   placeholder="designation"
                   disabled
                   style={{
-                    width: 250,
+                    width: 180,
                     height: "32px",
                   }}
                   value={designation}
@@ -888,10 +771,6 @@ function UserUpdate(props) {
                   Add
                 </button>
               )}
-              &nbsp;&nbsp; | &nbsp;&nbsp;
-              <button className={classes.backButton} onClick={handleOpenTasks}>
-                Tasks ( {tasks.length} )
-              </button>
             </Typography>
           </Box>
         </Box>
@@ -904,9 +783,10 @@ function UserUpdate(props) {
             className={classes.inputFieldBox}
             sx={{
               flexDirection: "row",
-              width: 400,
+              // width: 400,
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "baseline",
             }}
           >
             <Box
@@ -924,7 +804,7 @@ function UserUpdate(props) {
                       document.getElementById("selectedFile").click()
                     }
                     style={{
-                      width: 200,
+                      width: 150,
                       height: "32px",
                       cursor: "pointer",
                     }}
@@ -938,7 +818,7 @@ function UserUpdate(props) {
                       document.getElementById("selectedFile").click()
                     }
                     style={{
-                      width: 200,
+                      width: 150,
                       height: "32px",
                       cursor: "pointer",
                     }}
@@ -985,6 +865,8 @@ function UserUpdate(props) {
             display: "flex",
             flexDirection: "row",
             paddingTop: "20px",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
           }}
         >
           <Box className={classes.inputLabel}>
@@ -1001,7 +883,6 @@ function UserUpdate(props) {
                 onChange={e => {
                   setComments(e.target.value);
                 }}
-                value={comments}
               />
             </Typography>
           </Box>
@@ -1012,21 +893,23 @@ function UserUpdate(props) {
             display: "flex",
             flexDirection: "row",
             paddingTop: "30px",
-            // justifyContent: "space-between",
+            alignItems: "baseline",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
           }}
         >
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: 220,
-              marginRight: "30px",
+              justifyContent: "left",
+              paddingBottom: 10,
             }}
           >
             <Box
               sx={{
                 display: "flex",
+                paddingRight: 10,
               }}
             >
               <Button
@@ -1057,27 +940,14 @@ function UserUpdate(props) {
             sx={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: 400,
+              justifyContent: "left",
+              paddingBottom: 10,
             }}
           >
             <Box
               sx={{
                 display: "flex",
-              }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submitButton}
-              >
-                Submit
-              </Button>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
+                paddingRight: 10,
               }}
             >
               <Button
@@ -1103,27 +973,46 @@ function UserUpdate(props) {
             </Box>
           </Box>
         </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            paddingTop: "10px",
+            alignItems: "baseline",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.submitButton}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
       </form>
     </Box>
   );
 
   return (
     <>
-      {/* <div className={classes.root}>
-            <div className={classes.value}>
-                <Grid container className={classes.container}>
-                    <Grid item lg={2} md={2} sm={4} xs={5}>
-                        <SidepanelUser />
-                    </Grid>
-                    <Grid item lg={10} md={10} sm={8} xs={7}> */}
-      {createForm}
-      {viewLog}
-      {viewGroups}
-      {manageTasks}
-      {/* </Grid>
-                </Grid>
-            </div>
-        </div > */}
+      <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
+        <Grid container spacing={1}>
+          <Grid container item xs={10}>
+            {createForm}
+            {viewLog}
+            {viewGroups}
+          </Grid>
+        </Grid>
+      </Box>
     </>
   );
 }
@@ -1134,10 +1023,4 @@ const mapStatetoProps = state => {
   };
 };
 
-const matchDispatchToProps = dispatch => {
-  return {
-    reset_empID: () => dispatch(reset_empID()),
-  };
-};
-
-export default connect(mapStatetoProps, matchDispatchToProps)(UserUpdate);
+export default connect(mapStatetoProps)(UserCreateSmall);

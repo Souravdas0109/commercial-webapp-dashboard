@@ -36,6 +36,10 @@ import UserCreateSmall from "./UserCreateSmall";
 import ManageUserDashboard from "./ManageUserDashboard";
 import ManageUserGroupDashboard from "./ManageUserGroupDashboard";
 import CreateGroup from "./CreateGroup";
+import ManageUserGroupSmall from "./ManageUserGroupSmall";
+import CreateGroupSmall from "./CreateGroupSmall";
+import ManageUserSmall from "./ManageUserSmall";
+import UserUpdateSmall from "./UserUpdateSmall";
 
 const theme = createTheme({
   palette: {
@@ -315,23 +319,43 @@ function App() {
                   />
                   <AuthRoute
                     path="/userconfig/userupdate"
-                    component={UserUpdate}
+                    component={UserUpdateSmall}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/userconfig/userupdate"
-                    component={UserUpdate}
+                    component={UserUpdateSmall}
+                  />
+                  <AuthRoute
+                    path="/userconfig/usergroup"
+                    component={ManageUserGroupSmall}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/usergroup"
+                    component={ManageUserGroupSmall}
+                  />
+                  <AuthRoute
+                    path="/userconfig/groupcreate"
+                    component={CreateGroupSmall}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/userconfig/groupcreate"
+                    component={CreateGroupSmall}
                   />
                   <AuthRoute
                     path="/userconfig/usermanage"
-                    component={ManageUserDashboard}
+                    component={ManageUserSmall}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/userconfig/usermanage"
-                    component={ManageUserDashboard}
+                    component={ManageUserSmall}
                   />
                   <Route>
                     <div className={classes.notfound}>

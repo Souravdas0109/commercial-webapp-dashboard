@@ -6,12 +6,16 @@ import {
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
+
 import { useState } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { userDetails, userTableHeaders } from "../Data/Data";
+import { useHistory } from "react-router-dom";
+import { set_empID } from "../redux/Actions/ManageUser";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,22 +42,42 @@ const useStyles = makeStyles(theme => ({
   paper: { minWidth: "500px" },
 }));
 
-function ManageUser() {
+function ManageUser(props: any) {
+  const { set_empID } = props;
   const theme = useTheme();
+  const history = useHistory();
   const active = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
   const [globalFilter, setGlobalFilter] = useState("");
+  const [rows, setRows] = useState(userDetails);
+  const handleNameClick = (e: any) => {
+    console.log(e.target.value);
+    const selectedRow = rows.filter(row => row.empID == e.target.value);
+    set_empID(selectedRow);
+    history.push("/userconfig/userupdate");
+  };
   const roleTemplate = () => {
-    return <button className={classes.exploreButton}>View</button>;
+    return (
+      <Column
+        selectionMode="multiple"
+        headerStyle={{
+          width: "40px",
+        }}
+      ></Column>
+    );
   };
   const groupTemplate = () => {
     return <button className={classes.exploreButton}>View</button>;
   };
   const nameTemplate = (rowData: any) => {
     return (
-      <Link to="/userconfig/userupdate" className={classes.links}>
+      <button
+        className={classes.links}
+        value={rowData.empID}
+        onClick={handleNameClick}
+      >
         {rowData.firstName}
-      </Link>
+      </button>
     );
   };
   const emailTemplate = (rowData: any) => {
@@ -111,16 +135,21 @@ function ManageUser() {
                 }}
               >
                 <DataTable
-                  value={userDetails}
+                  value={rows}
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                  rows={7}
+                  rows={10}
                   globalFilter={globalFilter}
                   emptyMessage="No Users found."
+                  scrollable
+                  scrollHeight="500px"
+                  style={{
+                    width: "1000px",
+                  }}
+                  showGridlines
                 >
                   {userTableHeaders.map(column => {
-                    return column.field === "role" ||
-                      column.field === "group" ? (
+                    return column.field === "role" ? (
                       <Column
                         key={column.field}
                         field={column.field}
@@ -129,14 +158,8 @@ function ManageUser() {
                           fontSize: "14px",
                           width: column.width,
                         }}
-                        headerStyle={{
-                          fontSize: "14px",
-                          width: column.width,
-                        }}
-                        body={
-                          (column.field === "role" && roleTemplate) ||
-                          (column.field === "group" && groupTemplate)
-                        }
+                        selectionMode="multiple"
+                        headerStyle={{ width: "3em" }}
                       />
                     ) : (
                       <Column
@@ -168,5 +191,10 @@ function ManageUser() {
     </>
   );
 }
+const matchDispatchToProps = (dispatch: any) => {
+  return {
+    set_empID: (empid: any) => dispatch(set_empID(empid)),
+  };
+};
 
-export default ManageUser;
+export default connect(null, matchDispatchToProps)(ManageUser);

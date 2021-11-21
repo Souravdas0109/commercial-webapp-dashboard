@@ -90,8 +90,13 @@ function Dashboard(props: any) {
   const theme = useTheme();
   const classes = useStyles();
   console.log(userDetail);
-  const abc = userDetail.data.FirstName;
-  const bcd = userDetail.data.colleagueLocationData.businessUnit;
+  // const acces_Token = JSON.stringify(localStorage.getItem("_GresponseV2"));
+  // const access = JSON.parse(acces_Token);
+  // console.log(access);
+  // const accessToken = access.access_token;
+  // console.log(accessToken);
+  //const abc = userDetail.data.FirstName;
+  // const bcd = userDetail.data.colleagueLocationData.businessUnit;
   const colleagueUserName = userInfo.getLoggedInUserName();
   const businessunitName = ColleagueInfo.getLoggedInColleagueBusineesunitName();
   const departmentName = ColleagueInfo.getLoggedInColleaguedepartmentName();

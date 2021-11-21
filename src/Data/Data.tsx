@@ -758,52 +758,52 @@ export const userTableHeaders = [
   {
     field: "empID",
     headerName: "Employee ID",
-    width: 60,
+    width: 150,
   },
   {
     field: "firstName",
     headerName: "First Name",
-    width: 80,
+    width: 150,
   },
   {
     field: "middleName",
     headerName: "Middle Name",
-    width: 80,
+    width: 150,
   },
   {
     field: "lastName",
     headerName: "Last Name",
-    width: 80,
+    width: 150,
   },
   {
     field: "email",
     headerName: "Email ID",
-    width: 170,
+    width: 250,
   },
   {
     field: "designation",
     headerName: "Designation",
-    width: 60,
+    width: 150,
   },
   {
     field: "status",
     headerName: "Status",
-    width: 70,
+    width: 100,
   },
   {
     field: "role",
     headerName: "Role",
-    width: 50,
+    width: 100,
   },
   {
     field: "group",
     headerName: "Group",
-    width: 50,
+    width: 100,
   },
   {
     field: "comments",
     headerName: "Comments",
-    width: 100,
+    width: 200,
   },
 ];
 export const userDetails = [
@@ -1127,6 +1127,28 @@ export const userGroupTableHeaders = [
     field: "locationHierarchy",
     headerName: "Location Hierarchies",
     width: 200,
+  },
+];
+export const taskList = [
+  {
+    value: "task1",
+    label: "Task 1",
+    count: 1,
+  },
+  {
+    value: "task2",
+    label: "Task 2",
+    count: 2,
+  },
+  {
+    value: "task3",
+    label: "Task 3",
+    count: 3,
+  },
+  {
+    value: "task4",
+    label: "Task 4",
+    count: 4,
   },
 ];
 export const userGroupDetails = [
