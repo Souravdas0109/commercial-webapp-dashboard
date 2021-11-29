@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
@@ -16,6 +16,8 @@ import { userDetails, userTableHeaders } from "../Data/Data";
 import { useHistory } from "react-router-dom";
 import { set_empID } from "../redux/Actions/ManageUser";
 import { connect } from "react-redux";
+import { teal } from "@material-ui/core/colors";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,40 +52,99 @@ function ManageUser(props: any) {
   const classes = useStyles();
   const [globalFilter, setGlobalFilter] = useState("");
   const [rows, setRows] = useState(userDetails);
+  const [manageUserLoading, setManageUserLoading] = React.useState(false);
+  //change start
+  const [manageUserData, setManageUserData] = React.useState<any>();
+  //change end
   const handleNameClick = (e: any) => {
     console.log(e.target.value);
     const selectedRow = rows.filter(row => row.empID == e.target.value);
     set_empID(selectedRow);
     history.push("/userconfig/userupdate");
   };
-  const roleTemplate = () => {
-    return (
-      <Column
-        selectionMode="multiple"
-        headerStyle={{
-          width: "40px",
-        }}
-      ></Column>
-    );
+  //change start
+  useEffect(() => {
+    let accessToken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accessToken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+    console.log(accessToken.access_token);
+    axios({
+      method: "GET",
+      url: `https://dev-api.morrisons.com/commercial-user/v1/userdetails?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken.access_token}`,
+      },
+    })
+      .then(res => {
+        console.log(res.data.userdetails);
+        const userValues = res.data.userdetails.map((user: any) => {
+          if (user.user) {
+            return {
+              userId: user.user.userId,
+              firstName: user.user.firstName,
+              middleName: user.user.middleName,
+              lastName: user.user.lastName,
+              emailId: user.user.emailId,
+              additionalInfo: user.user.additionalInfo,
+              designation: user.user.designation,
+              status: user.user.status,
+              roles: user.roles,
+              usergroups: user.usergroups,
+            };
+          }
+        });
+        console.log(userValues);
+        setManageUserData(userValues);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    return () => {
+      setManageUserData([]);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (manageUserData) {
+      setManageUserLoading(false);
+    } else {
+      setManageUserLoading(true);
+    }
+  }, [manageUserData]);
+
+  const roleTemplate = (rowData: any) => {
+    let roles = "";
+    rowData.roles.map((role: any) => {
+      if (roles) {
+        roles = roles + ", " + role.roleId;
+      } else {
+        roles = roles + role.roleId;
+      }
+      return null;
+    });
+    // console.log(roles)
+    return <button className={classes.exploreButton}>{roles}</button>;
   };
-  const groupTemplate = () => {
-    return <button className={classes.exploreButton}>View</button>;
-  };
-  const nameTemplate = (rowData: any) => {
-    return (
-      <button
-        className={classes.links}
-        value={rowData.empID}
-        onClick={handleNameClick}
-      >
-        {rowData.firstName}
-      </button>
-    );
+  const groupTemplate = (rowData: any) => {
+    let groups = "";
+    rowData.usergroups.map((group: any) => {
+      if (groups) {
+        groups = groups + ", " + group.groupId;
+      } else {
+        groups = groups + group.groupId;
+      }
+      return null;
+    });
+    return <button className={classes.exploreButton}>{groups}</button>;
   };
   const emailTemplate = (rowData: any) => {
     return (
-      <a href={`mailto:${rowData.email}`} className={classes.links}>
-        {rowData.email}
+      <a href={`mailto:${rowData.emailId}`} className={classes.links}>
+        {rowData.emailId}
       </a>
     );
   };
@@ -135,7 +196,7 @@ function ManageUser(props: any) {
                 }}
               >
                 <DataTable
-                  value={rows}
+                  value={manageUserData}
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}
@@ -147,21 +208,10 @@ function ManageUser(props: any) {
                     width: "1000px",
                   }}
                   showGridlines
+                  loading={manageUserLoading}
                 >
                   {userTableHeaders.map(column => {
-                    return column.field === "role" ? (
-                      <Column
-                        key={column.field}
-                        field={column.field}
-                        header={column.headerName}
-                        bodyStyle={{
-                          fontSize: "14px",
-                          width: column.width,
-                        }}
-                        selectionMode="multiple"
-                        headerStyle={{ width: "3em" }}
-                      />
-                    ) : (
+                    return (
                       <Column
                         key={column.field}
                         field={column.field}
@@ -173,10 +223,13 @@ function ManageUser(props: any) {
                         headerStyle={{
                           fontSize: "14px",
                           width: column.width,
+                          backgroundColor: teal[900],
+                          color: "white",
                         }}
                         body={
-                          (column.field === "firstName" && nameTemplate) ||
-                          (column.field === "email" && emailTemplate)
+                          (column.field === "roles" && roleTemplate) ||
+                          (column.field === "usergroups" && groupTemplate) ||
+                          (column.field === "emailId" && emailTemplate)
                         }
                         sortable
                       />

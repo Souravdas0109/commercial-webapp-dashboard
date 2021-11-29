@@ -8,6 +8,7 @@ import { Search } from "@material-ui/icons";
 import "primereact/resources/primereact.css";
 import { connect } from "react-redux";
 import { set_empID } from "../redux/Actions/ManageUser";
+import { teal } from "@material-ui/core/colors";
 const searchIcon = <Search />;
 
 const useStyles = makeStyles(theme => ({
@@ -148,6 +149,8 @@ function ManageUserSmall(props: any) {
                       headerStyle={{
                         fontSize: "10px",
                         width: column.width,
+                        backgroundColor: teal[900],
+                        color: "white",
                       }}
                       body={
                         (column.field === "role" && roleTemplate) ||
@@ -166,6 +169,8 @@ function ManageUserSmall(props: any) {
                       headerStyle={{
                         fontSize: "10px",
                         width: column.width,
+                        backgroundColor: teal[900],
+                        color: "white",
                       }}
                       body={
                         (column.field === "firstName" && nameTemplate) ||

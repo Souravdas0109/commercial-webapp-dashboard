@@ -50,7 +50,7 @@ const loginReducer = (state = initLoginState, action: any) => {
       return {
         ...state,
         user: undefined,
-        error: true,
+        error: false,
       };
     default:
       return state;

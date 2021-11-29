@@ -5,6 +5,7 @@ import SidepanelUser from "./SidepanelUser";
 import UserCreate1 from "./UserCreate1";
 import CreateGroup from "./CreateGroup";
 import UserUpdate from "./UserUpdate";
+import UpdateUser from "./UpdateUser";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,7 +31,7 @@ function UserUpdateDashboard() {
             <SidepanelUser />
           </Grid>
           <Grid item lg={10} md={10} sm={8} xs={7}>
-            <UserUpdate />
+            <UpdateUser />
           </Grid>
         </Grid>
       </div>

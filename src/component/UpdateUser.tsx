@@ -5,57 +5,118 @@ import {
   Button,
   TextField,
   Popover,
+  Dialog,
+  DialogTitle,
+  useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
+import SidepanelUser from "./SidepanelUser";
 
 // import axios from 'axios';
-import { useMediaQuery } from "@material-ui/core";
-import { useTheme } from "@material-ui/core";
-import { Dialog } from "@material-ui/core";
-import { useEffect } from "react";
-import axios from "axios";
-
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import "./Model.css";
+
 import { makeStyles, styled } from "@material-ui/styles";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // import SideBar from '../Layout/SideBar'
+import Select, { StylesConfig } from "react-select";
 import { default as ReactSelect } from "react-select";
 import { components } from "react-select";
-import { viewLogRows, viewLogColumns } from "../Data/Data";
+import {
+  viewLogRows,
+  viewLogColumns,
+  taskList,
+  GroupTypes,
+  groupTypes,
+} from "../Data/Data";
 import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
-import CloseIcon from "@material-ui/icons/Close";
+import { RoleTypes } from "../Data/Data";
+
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/fluent-light/theme.css";
+// import 'primeicons/primeicons.css';
+// import 'primereact/resources/themes/fluent-light/theme.css';
 import { teal } from "@material-ui/core/colors";
+import { connect } from "react-redux";
+import { reset_empID } from "../redux/Actions/ManageUser";
+
 const fieldWidth = window.innerWidth - 80;
-const useStyles = makeStyles(theme => {
+const useStyles = makeStyles((theme: any) => {
   return {
     eachRow: {
       display: "flex",
-      flexDirection: "row",
+      [theme.breakpoints.up("sm")]: {
+        flexDirection: "row",
+      },
+      [theme.breakpoints.down("sm")]: {
+        flexDirection: "column",
+      },
       paddingTop: "20px",
-      alignItems: "baseline",
+      // alignItems: "baseline"
     },
     inputFields: {
-      width: 392,
+      [theme.breakpoints.up("sm")]: {
+        width: 392,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
+
       height: 32,
     },
     selectField: {
-      width: "100%",
+      [theme.breakpoints.up("sm")]: {
+        width: 392,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
       height: 38,
     },
     inputLabel: {
-      width: 250,
+      [theme.breakpoints.up("sm")]: {
+        width: 250,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
     },
     inputFieldBox: {
-      width: 400,
+      [theme.breakpoints.up("sm")]: {
+        width: 392,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
     },
     textArea: {
-      width: 400,
+      [theme.breakpoints.up("sm")]: {
+        width: 392,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
       border: "1px solid black",
+    },
+    designationField: {
+      [theme.breakpoints.up("sm")]: {
+        width: 250,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth,
+      },
+      height: "32px",
+    },
+    uploadTextfield: {
+      [theme.breakpoints.up("sm")]: {
+        width: 200,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: fieldWidth - 80,
+      },
+
+      height: "32px",
+      cursor: "pointer",
     },
     submitButton: {
       width: 150,
@@ -77,9 +138,6 @@ const useStyles = makeStyles(theme => {
       textDecoration: "none",
       color: "#0000ff",
     },
-    createBold: {
-      fontWeight: "bold",
-    },
     multiSelect: {
       "&:hover": {
         borderColor: "green",
@@ -92,17 +150,12 @@ const useStyles = makeStyles(theme => {
       borderColor: theme.palette.primary.main,
       border: "1px solid",
     },
-    thead: {
-      backgroundColor: "green",
-      color: "white",
-    },
-
     backButton: {
       border: 0,
       color: "blue",
       // backgroundColor: "white",
       cursor: "pointer",
-      fontSize: "15px",
+      fontSize: "18px",
     },
     viewLogTitle: {
       backgroundColor: theme.palette.primary.main,
@@ -134,6 +187,7 @@ const useStyles = makeStyles(theme => {
       color: theme.palette.primary.main,
       "&:hover": {
         color: "white",
+        backgroundColor: teal[900],
       },
     },
     uploadButton: {
@@ -149,13 +203,14 @@ const Input = styled("input")({
   display: "none",
 });
 
-function UserCreate1() {
+function UpdateUser(props: any) {
+  const { empDetails, reset_empID } = props;
+
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const width = useMediaQuery(theme.breakpoints.up("md"));
-
   const dialogwidth = width ? 600 : fieldWidth;
-
   const [roleNames, setRoleNames] = React.useState([]);
   // const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -163,76 +218,66 @@ function UserCreate1() {
   const [lastName, setLastName] = React.useState("");
   const [middleName, setMiddleName] = React.useState("");
   const [requestType, setRequestType] = React.useState("");
-  const [selectEmployeeID, setSelectEmployeeID] = React.useState("");
+  const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>();
   const [employeeID, setEmployeeID] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [designation, setDesignation] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [comments, setComments] = React.useState("");
-  const [referenceDoc, setReferenceDoc] = React.useState("");
-
-  const [roles, setRoles] = React.useState([]);
-  // const [rolesPreview, setRolesPreview] = React.useState("")
-
+  const [referenceDoc, setReferenceDoc] = React.useState<any>();
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
 
-  // const open = Boolean(anchorEl);
+  const [groups, setGroups] = React.useState([]);
+  const [groupInput, setGroupInput] = React.useState([]);
+  const [groupOpen, setGroupOpen] = React.useState(false);
 
-  const customStyles = {
-    option: (provided, state) => ({
+  const [tasks, setTasks] = React.useState(taskList);
+  const [taskSelected, setTaskSelected] = React.useState<any>(null);
+  const [taskOpen, setTaskOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!empDetails) {
+      history.push("/userconfig/usermanage");
+    } else {
+      console.log(empDetails[0]);
+      setSelectEmployeeID(empDetails[0]);
+      setTasks(taskList);
+    }
+  }, []);
+
+  const goBack = () => {
+    reset_empID();
+    history.goBack();
+  };
+
+  const customStyles: StylesConfig<GroupTypes, true> = {
+    option: (provided: any, state: any) => ({
       ...provided,
-      borderColor: "green",
-      backgroundColor: state.isSelected ? "green" : "white",
-      color: state.isSelected ? "white" : "green",
+      borderColor: "#004d40",
+      backgroundColor: state.isSelected ? "#004d40" : "white",
+      color: state.isSelected ? "white" : "#004d40",
     }),
   };
 
-  useEffect(() => {
-    let accessToken;
-    if (localStorage && localStorage.getItem("_GresponseV2")) {
-      accessToken = JSON.parse(
-        localStorage && localStorage.getItem("_GresponseV2")
-      );
-    }
-    console.log(accessToken.access_token);
-    axios({
-      method: "GET",
-      url: `https://dev-api.morrisons.com/commercial-user/v1/roles?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken.access_token}`,
-      },
-    })
-      .then(res => {
-        console.log(res.data);
-        const rolesValues = res.data.roles.map(role => {
-          if (role.roleId) {
-            return {
-              label: role.roleId,
-              value: role.roleId,
-              roleName: role.roleName,
-              roleDesc: role.roleDesc,
-            };
-          }
-        });
-        setRoles(rolesValues);
-        console.log(rolesValues);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, []);
+  const roleSelectStyle: StylesConfig<RoleTypes, true> = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      borderColor: teal[900],
+      backgroundColor: state.isSelected ? teal[900] : "white",
+      color: state.isSelected ? "white" : teal[900],
+    }),
+  };
 
   const handleReset = () => {
     setRoleNames([]);
   };
 
-  const handleFileUpload = event => {
+  const handleFileUpload = (event: any) => {
     setReferenceDoc(event.target.files[0]);
   };
 
-  const Option = props => {
+  const Option = (props: any) => {
     return (
       <div>
         <components.Option {...props}>
@@ -247,163 +292,27 @@ function UserCreate1() {
     );
   };
 
-  const handleRoleChange1 = selected => {
+  const handleRoleChange1 = (selected: any) => {
     console.log(selected);
     setRoleNames(selected);
   };
 
-  // const handleRoleChange2 = (event) => {
-  //     const isChecked = event.target.checked
-
-  //     if (isChecked) {
-  //         setRoles([...roles,
-  //         {
-  //             value: event.target.value,
-  //             label: event.target.name
-  //         }
-  //         ])
-  //     }
-  //     else {
-  //         const index = roles.indexOf(
-  //             {
-  //                 value: event.target.value,
-  //                 label: event.target.name
-  //             }
-  //         )
-  //         roles.splice(index, 1)
-  //         setRoles(roles)
-  //         console.log(roles)
-  //     }
-  // }
-
-  // const viewRoles = React.useCallback(() => {
-  //     let preview = ""
-  //     roles.map(role => {
-  //         preview = preview + role.label + ", "
-  //         return ""
-  //     })
-  //     return preview
-  // }, [roles])
-
-  // const handleRoleSelection = React.useCallback((e) => {
-  //     e.preventDefault()
-  //     handleRoleClose()
-  //     setRolesPreview(viewRoles())
-  // })
-
   const roleSelect1 = (
     <>
-      <ReactSelect
-        options={roles}
+      <Select
+        options={roleTypes}
         isMulti
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
+        onChange={handleRoleChange1}
         components={{
           Option,
         }}
-        onChange={handleRoleChange1}
-        allowSelectAll={true}
         value={roleNames}
+        closeMenuOnSelect={false}
+        hideSelectedOptions={false}
         className={classes.multiSelect}
-        styles={customStyles}
+        styles={roleSelectStyle}
       />
     </>
-  );
-
-  // const handleRolePopup = (event) => {
-  //     setAnchorEl(event.currentTarget);
-  // }
-  // const handleRoleClose = () => {
-  //     setAnchorEl(null);
-  // };
-
-  // const {
-  //     getRootProps,
-  //     // getInputLabelProps,
-  //     getInputProps,
-  //     getListboxProps,
-  //     getOptionProps,
-  //     groupedOptions,
-  // } = useAutocomplete({
-  //     id: 'use-autocomplete-demo',
-  //     options: employeeDetails,
-  //     getOptionLabel: (option) => option.label,
-  // });
-
-  // const Listbox = styled('ul')(({ theme }) => ({
-  //     width: 200,
-  //     margin: 0,
-  //     padding: 0,
-  //     zIndex: 1,
-  //     position: 'absolute',
-  //     listStyle: 'none',
-  //     backgroundColor: theme.palette.background.paper,
-  //     overflow: 'auto',
-  //     maxHeight: 200,
-  //     border: '1px solid rgba(0,0,0,.25)',
-  //     '& li[data-focus="true"]': {
-  //         backgroundColor: '#4a8df6',
-  //         color: 'white',
-  //         cursor: 'pointer',
-  //     },
-  //     '& li:active': {
-  //         backgroundColor: '#2977f5',
-  //         color: 'white',
-  //     },
-  // }));
-  // const typeAheadSearch1 = (
-  //     <div>
-  //         <div {...getRootProps()}>
-  //             {/* <Label {...getInputLabelProps()}>useAutocomplete</Label> */}
-  //             <input
-  //                 type="text"
-  //                 value={selectEmployeeID}
-  //                 onChange={(event, newValue) => {
-  //                     setSelectEmployeeID(newValue);
-  //                     console.log(newValue)
-  //                 }}
-  //                 {...getInputProps()}
-  //             />
-  //         </div>
-  //         {groupedOptions.length > 0 ? (
-  //             <Listbox {...getListboxProps()}>
-  //                 {groupedOptions.map((option, index) => (
-  //                     <li {...getOptionProps({ option, index })}>{option.label}</li>
-  //                 ))}
-  //             </Listbox>
-  //         ) : null}
-  //     </div>
-  // )
-
-  const typeAheadSearch = (
-    <Autocomplete
-      options={employeeDetails}
-      getOptionLabel={option => option.label || ""}
-      disablePortal
-      value={selectEmployeeID}
-      onChange={(event, newValue) => {
-        setSelectEmployeeID(newValue);
-      }}
-      sx={{
-        display: "inline-block",
-        "& input": {
-          width: 200,
-          bgcolor: "background.paper",
-          color: theme =>
-            theme.palette.getContrastText(theme.palette.background.paper),
-        },
-      }}
-      renderInput={params => (
-        <TextField
-          {...params}
-          placeholder="Employee ID"
-          style={{
-            border: "1px solid black",
-            fontSize: "0.875rem",
-          }}
-        />
-      )}
-    />
   );
 
   React.useEffect(() => {
@@ -415,6 +324,7 @@ function UserCreate1() {
       setEmail(selectEmployeeID.email);
       setDesignation(selectEmployeeID.designation);
       setStatus(selectEmployeeID.status);
+      setComments(selectEmployeeID.comments);
     } else {
       setEmployeeID("");
       setFirstName("");
@@ -426,124 +336,206 @@ function UserCreate1() {
     }
   }, [selectEmployeeID]);
 
-  // React.useEffect(() => {
-  //     if (referenceDoc) {
-  //         console.log("reference is set")
-  //         const formData = new FormData();
+  const handleOpenGroups = (e: any) => {
+    e.preventDefault();
+    setGroupOpen(true);
+  };
+  const handleCloseGroups = (e: any) => {
+    e.preventDefault();
+    setGroupOpen(false);
+  };
+  const updateGroups = () => {
+    setGroups(groupInput);
+    setGroupOpen(false);
+  };
 
-  //         // Update the formData object
-  //         referenceDoc && formData.append(
-  //             "file",
-  //             referenceDoc,
-  //             referenceDoc.name
-  //         );
+  const handleGroupsInput = (selected: any) => {
+    setGroupInput(selected);
+  };
 
-  //         axios.post('http://192.168.0.101:5000/upload', formData)
-  //             .then(res => {
-  //                 console.log(res)
-  //             })
-  //         console.log("success")
-  //     }
-  // }, [referenceDoc])
+  const viewGroups = (
+    <Dialog onClose={handleCloseGroups} open={groupOpen}>
+      <Box
+        sx={{
+          height: 400,
+          width: dialogwidth,
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box>
+            <DialogTitle>Add Groups</DialogTitle>
+          </Box>
 
-  // const roleSelect2 = (
-  //     <>
-  //         <button onClick={handleRolePopup}
-  //             type="button"
-  //             style={{
-  //                 border: 0,
-  //                 padding: 0
-  //             }}>
-  //             <input type="text"
-  //                 value={rolesPreview}
-  //                 placeholder="select role"
-  //                 style={{
-  //                     width: 392,
-  //                     height: 32
-  //                 }}
-  //             />
-  //         </button>
-  //         <Popover
-  //             id="basic-menu"
-  //             anchorEl={anchorEl}
-  //             open={open}
-  //             onClose={handleRoleClose}
-  //             anchorReference="anchorPosition"
-  //             anchorPosition={{ top: 200, left: 753 }}
-  //             anchorOrigin={{
-  //                 vertical: "top",
-  //                 horizontal: "center"
-  //             }}
-  //             transformOrigin={{
-  //                 vertical: "top",
-  //                 horizontal: "center"
-  //             }}
+          <Box
+            sx={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
+            {/* <ReactSelect
+                            options={groupItems}
+                            isMulti
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            components={{
+                                Option
+                            }}
+                            onChange={handleGroupsInput}
+                            allowSelectAll={true}
+                            value={groupInput}
+                            styles={customStyles}
+                            placeholder="select groups"
+                        /> */}
+            <Select
+              options={groupTypes}
+              isMulti
+              onChange={handleGroupsInput}
+              components={{
+                Option,
+              }}
+              value={groupInput}
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              className={classes.multiSelect}
+              styles={customStyles}
+            />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+          }}
+        >
+          <Button
+            type="button"
+            className={classes.whiteButton}
+            onClick={updateGroups}
+          >
+            Save
+          </Button>
+        </Box>
+      </Box>
+    </Dialog>
+  );
 
-  //         >
-  //             <Card className={classes.rolesPopup}>
-  //                 <List>
-  //                     <ListItem>
-  //                         <Typography variant="subtitle2">
-  //                             View Role
-  //                         </Typography>
-  //                     </ListItem>
-  //                     <ListItem>
-  //                         <Typography variant="body2">
-  //                             select role
-  //                         </Typography>
-  //                     </ListItem>
-  //                     <ListItem>
-  //                         <form onSubmit={handleRoleSelection}>
-  //                             <table >
-  //                                 {roleTypes.map((role) => {
+  const handleOpenTasks = (e: any) => {
+    console.log("open task");
+    e.preventDefault();
+    setTaskOpen(true);
+  };
+  const handleCloseTasks = (e: any) => {
+    e.preventDefault();
+    console.log("close");
+    setTaskOpen(false);
+  };
 
-  //                                     return (
-  //                                         <tr key={role.value}>
-  //                                             <td>
-  //                                                 <input type="checkbox" onChange={handleRoleChange2}
-  //                                                     name={role.label}
-  //                                                     value={role.value}
-  //                                                 />
-  //                                             </td>
-  //                                             <td>
-  //                                                 {role.label}
-  //                                             </td>
-  //                                         </tr>
-  //                                     )
-  //                                     // }
-  //                                 })}
-  //                             </table>
-  //                             <button type="submit">Save</button>
-  //                         </form>
-  //                     </ListItem>
-  //                 </List>
-  //             </Card>
-  //         </Popover>
-  //     </>
-  // )
+  const unAssignTasks = () => {
+    let _tasks = tasks.filter(value => !taskSelected.includes(value));
+    setTasks(_tasks);
+    setTaskSelected(null);
+    setTaskOpen(false);
+  };
 
-  // const handleCreateRequest = (e) => {
-  //     e.preventDefault()
-  // if (referenceDoc) {
-  //     console.log("reference is set")
-  //     const formData = new FormData();
+  const manageTasks = (
+    <Dialog onClose={handleCloseTasks} open={taskOpen}>
+      <Box
+        sx={{
+          height: 500,
+          width: dialogwidth,
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box>
+            <DialogTitle>Manage Tasks</DialogTitle>
+          </Box>
 
-  //     // Update the formData object
-  //     referenceDoc && formData.append(
-  //         "file",
-  //         referenceDoc,
-  //         referenceDoc.name
-  //     );
+          <Box
+            sx={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
+            <DataTable
+              value={tasks}
+              selection={taskSelected}
+              onSelectionChange={e => setTaskSelected(e.value)}
+              className="p-datatable-sm"
+              showGridlines
+              scrollable
+              scrollHeight="400px"
+            >
+              <Column
+                selectionMode="multiple"
+                headerStyle={{
+                  width: "40px",
+                  backgroundColor: teal[900],
+                  color: "white",
+                }}
+              ></Column>
+              <Column
+                field="label"
+                header="Task"
+                headerStyle={{
+                  // width: "40px",
+                  backgroundColor: teal[900],
+                  color: "white",
+                }}
+              >
+                Tasks
+              </Column>
+              <Column
+                field="count"
+                header="Count"
+                headerStyle={{
+                  // width: "40px",
+                  backgroundColor: teal[900],
+                  color: "white",
+                }}
+              >
+                Count
+              </Column>
+            </DataTable>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+          }}
+        >
+          <Button
+            type="button"
+            className={classes.whiteButton}
+            onClick={unAssignTasks}
+            disabled={!taskSelected || !taskSelected.length}
+          >
+            Unassign
+          </Button>
+        </Box>
+      </Box>
+    </Dialog>
+  );
 
-  //     axios.post('http://192.168.0.101:5000/upload',formData)
-  //     .then(res=>{
-  //         console.log(res)
-  //     })
-  //     console.log("success")
-  // }
-  // }
-
-  const handleOpenViewLog = e => {
+  const handleOpenViewLog = (e: any) => {
     setViewLogEl(e.currentTarget);
   };
   const handleCloseViewLog = () => {
@@ -555,7 +547,6 @@ function UserCreate1() {
       <Box
         sx={{
           width: dialogwidth,
-
           border: "3px solid green",
           borderRadius: 4,
           display: "flex",
@@ -645,6 +636,8 @@ function UserCreate1() {
                   headerStyle={{
                     fontSize: "12px",
                     width: column.width,
+                    backgroundColor: teal[900],
+                    color: "white",
                   }}
                 ></Column>
               );
@@ -661,17 +654,30 @@ function UserCreate1() {
         flexDirection: "column",
         display: "flex",
         p: 2,
-        paddingLeft: 40,
-        paddingRight: 30,
+        [theme.breakpoints.up("sm")]: {
+          paddingLeft: 30,
+          paddingRight: 30,
+        },
+        [theme.breakpoints.down("sm")]: {
+          paddingLeft: 10,
+          paddingRight: 20,
+        },
         textAlign: "left",
+        width: width ? 700 : fieldWidth,
       }}
     >
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          [theme.breakpoints.up("sm")]: {
+            flexDirection: "row",
+          },
+          [theme.breakpoints.down("sm")]: {
+            flexDirection: "column",
+          },
           paddingBottom: "20px",
           paddingTop: "10px",
+          // width: fieldWidth
         }}
       >
         <Box
@@ -679,9 +685,7 @@ function UserCreate1() {
             flexGrow: 1,
           }}
         >
-          <Typography variant="h5" className={classes.createBold}>
-            Create Request
-          </Typography>
+          <Typography variant="h5">Update User</Typography>
         </Box>
 
         <Box
@@ -696,7 +700,7 @@ function UserCreate1() {
             }}
           >
             <button className={classes.backButton} onClick={handleOpenViewLog}>
-              View Log
+              View Log ({viewLogRows.length})
             </button>
           </Box>
           <Box
@@ -711,19 +715,20 @@ function UserCreate1() {
               paddingLeft: 5,
             }}
           >
-            <Link to="/userconfig/userupdate" className={classes.backButton}>
+            <button className={classes.backButton} onClick={goBack}>
               Back
-            </Link>
+            </button>
           </Box>
         </Box>
       </Box>
       <form>
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "baseline",
-          }}
+          // sx={{
+          //     display: "flex",
+          //     flexDirection: "row",
+          //     alignItems: "baseline"
+          // }}
+          className={classes.eachRow}
         >
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">Request Type</Typography>
@@ -739,15 +744,18 @@ function UserCreate1() {
                 onChange={e => {
                   setRequestType(e.target.value);
                 }}
+                required
               >
-                <option disabled value="" required>
+                <option disabled value="">
                   --- Select Request Type ---
                 </option>
                 {requestTypes.map(type => {
                   return (
-                    <option value={type.name} key={type.name}>
-                      {type.text}
-                    </option>
+                    type.name !== "new" && (
+                      <option value={type.name} key={type.name}>
+                        {type.text}
+                      </option>
+                    )
                   );
                 })}
               </select>
@@ -770,21 +778,12 @@ function UserCreate1() {
 
           <Box className={classes.inputFieldBox}>
             <Typography variant="subtitle2">
-              {/* <input
-                                type="text"
-                                name="empid"
-                                id="empid"
-                                placeholder="eg. 123456"
-                                className={classes.inputFields}
-                                onChange={(e) => {
-                                    setEmployeeID(e.target.value)
-                                }}
-                                required/> */}
-
-              {
-                typeAheadSearch
-                // typeAheadSearch1
-              }
+              <input
+                type="text"
+                className={classes.inputFields}
+                value={employeeID}
+                disabled
+              />
             </Typography>
           </Box>
         </Box>
@@ -884,10 +883,17 @@ function UserCreate1() {
           </Box>
 
           <Box
-            className={classes.inputFieldBox}
+            // className={classes.inputFieldBox}
             sx={{
-              flexDirection: "row",
-              width: 400,
+              [theme.breakpoints.up("sm")]: {
+                flexDirection: "row",
+                width: 400,
+              },
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+                width: fieldWidth,
+              },
+
               display: "flex",
               justifyContent: "space-between",
             }}
@@ -899,31 +905,11 @@ function UserCreate1() {
               }}
             >
               <Typography variant="subtitle2">
-                {/* <select name="designation"
-                                id="designation"
-                                className={classes.selectField}
-                                defaultValue=""
-                                title="designation"
-                                onChange={(e) => {
-                                    setDesignation(e.target.value)
-                                }}
-                                disabled
-                            >
-                                <option disabled value="">
-                                    --- Select Designation ---
-                                </option>
-                                <option value="manager">Manager</option>
-                                <option value="clerk">Clerk</option>
-                                <option value="staff">Staff</option>
-                            </select> */}
                 <input
                   type="text"
                   placeholder="designation"
                   disabled
-                  style={{
-                    width: 250,
-                    height: "32px",
-                  }}
+                  className={classes.designationField}
                   value={designation}
                 />
               </Typography>
@@ -936,7 +922,7 @@ function UserCreate1() {
                 display: "flex",
               }}
             >
-              |
+              {width && <>|</>}
             </Box>
             <Box
               sx={{
@@ -974,39 +960,7 @@ function UserCreate1() {
             <Typography variant="subtitle2">Role</Typography>
           </Box>
 
-          <Box className={classes.inputFieldBox}>
-            {/* <FormControl>
-                            <Select
-                                id="roleSelect"
-                                multiple
-                                value={roleNames}
-                                onChange={handleRoleChange}
-                                className={classes.multiSelect}
-                                defaultValue=""
-                            >
-                                <MenuItem value="" disabled>
-                                    --- Select Role ---
-                                </MenuItem>
-
-                                {roleTypes.map(role => {
-                                    return (
-                                        <MenuItem
-                                            key={role.value}
-                                            value={role.value}
-                                        >
-                                            {role.label}
-                                        </MenuItem>
-                                    )
-                                })}
-
-                            </Select>
-                        </FormControl> */}
-
-            {
-              roleSelect1
-              // roleSelect2
-            }
-          </Box>
+          <Box className={classes.inputFieldBox}>{roleSelect1}</Box>
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
@@ -1015,9 +969,34 @@ function UserCreate1() {
 
           <Box className={classes.inputFieldBox}>
             <Typography variant="subtitle1">
-              <Link to="#" className={classes.underlineRemove}>
-                Add
-              </Link>
+              {groups ? (
+                groups.length > 0 ? (
+                  <button
+                    className={classes.backButton}
+                    onClick={handleOpenGroups}
+                  >
+                    Groups ( {groups.length} )
+                  </button>
+                ) : (
+                  <button
+                    className={classes.backButton}
+                    onClick={handleOpenGroups}
+                  >
+                    Add
+                  </button>
+                )
+              ) : (
+                <button
+                  className={classes.backButton}
+                  onClick={handleOpenGroups}
+                >
+                  Add
+                </button>
+              )}
+              &nbsp;&nbsp; | &nbsp;&nbsp;
+              <button className={classes.backButton} onClick={handleOpenTasks}>
+                Tasks ( {tasks.length} )
+              </button>
             </Typography>
           </Box>
         </Box>
@@ -1029,8 +1008,13 @@ function UserCreate1() {
           <Box
             className={classes.inputFieldBox}
             sx={{
-              flexDirection: "row",
-              width: 400,
+              [theme.breakpoints.up("sm")]: {
+                flexDirection: "row",
+              },
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+              },
+
               display: "flex",
               justifyContent: "space-between",
             }}
@@ -1042,35 +1026,18 @@ function UserCreate1() {
               }}
             >
               <Typography variant="subtitle2">
-                {referenceDoc ? (
+                {
                   <input
                     type="text"
-                    value={referenceDoc.name}
+                    value={referenceDoc ? referenceDoc.name : ""}
                     onClick={() =>
-                      document.getElementById("selectedFile").click()
+                      document.getElementById("selectedFile")!.click()
                     }
-                    style={{
-                      width: 200,
-                      height: "32px",
-                      cursor: "pointer",
-                    }}
+                    className={classes.uploadTextfield}
                     placeholder="No file selected"
+                    readOnly
                   />
-                ) : (
-                  <input
-                    type="text"
-                    // value={referenceDoc.name}
-                    onClick={() =>
-                      document.getElementById("selectedFile").click()
-                    }
-                    style={{
-                      width: 200,
-                      height: "32px",
-                      cursor: "pointer",
-                    }}
-                    placeholder="No file selected"
-                  />
-                )}
+                }
                 <Input
                   type="file"
                   id="selectedFile"
@@ -1079,7 +1046,7 @@ function UserCreate1() {
                 <button
                   type="button"
                   onClick={() =>
-                    document.getElementById("selectedFile").click()
+                    document.getElementById("selectedFile")!.click()
                   }
                   className={classes.uploadButton}
                 >
@@ -1095,7 +1062,7 @@ function UserCreate1() {
                 display: "flex",
               }}
             >
-              |
+              {width && <>|</>}
             </Box>
             <Box
               sx={{
@@ -1106,13 +1073,7 @@ function UserCreate1() {
             </Box>
           </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            paddingTop: "20px",
-          }}
-        >
+        <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">Comments</Typography>
           </Box>
@@ -1120,13 +1081,14 @@ function UserCreate1() {
           <Box className={classes.inputFieldBox}>
             <Typography variant="body2">
               <textarea
-                cols="10"
-                rows="5"
+                cols={10}
+                rows={5}
                 className={classes.textArea}
                 placeholder="Some Comments....."
                 onChange={e => {
                   setComments(e.target.value);
                 }}
+                value={comments}
               />
             </Typography>
           </Box>
@@ -1135,7 +1097,13 @@ function UserCreate1() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
+            [theme.breakpoints.up("sm")]: {
+              flexDirection: "row",
+            },
+            [theme.breakpoints.down("sm")]: {
+              flexDirection: "column",
+              alignItems: "center",
+            },
             paddingTop: "30px",
             justifyContent: "space-between",
           }}
@@ -1146,6 +1114,9 @@ function UserCreate1() {
               flexDirection: "row",
               justifyContent: "space-between",
               width: 220,
+              [theme.breakpoints.down("sm")]: {
+                paddingBottom: "20px",
+              },
             }}
           >
             <Box
@@ -1182,23 +1153,32 @@ function UserCreate1() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: 400,
+              [theme.breakpoints.up("sm")]: {
+                width: 400,
+              },
+              [theme.breakpoints.down("sm")]: {
+                width: 250,
+                paddingBottom: "20px",
+              },
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-              }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submitButton}
+            {width && (
+              <Box
+                sx={{
+                  display: "flex",
+                }}
               >
-                Submit
-              </Button>
-            </Box>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submitButton}
+                >
+                  Submit
+                </Button>
+              </Box>
+            )}
+
             <Box
               sx={{
                 display: "flex",
@@ -1226,6 +1206,23 @@ function UserCreate1() {
               </Button>
             </Box>
           </Box>
+          {!width && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submitButton}
+              >
+                Submit
+              </Button>
+            </Box>
+          )}
         </Box>
       </form>
     </Box>
@@ -1233,16 +1230,35 @@ function UserCreate1() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
-        <Grid container spacing={1}>
-          <Grid container item xs={10}>
-            {createForm}
-            {viewLog}
-          </Grid>
-        </Grid>
-      </Box>
+      {/* <div className={classes.root}>
+            <div className={classes.value}>
+                <Grid container className={classes.container}>
+                    <Grid item lg={2} md={2} sm={4} xs={5}>
+                        <SidepanelUser />
+                    </Grid>
+                    <Grid item lg={10} md={10} sm={8} xs={7}> */}
+      {createForm}
+      {viewLog}
+      {viewGroups}
+      {manageTasks}
+      {/* </Grid>
+                </Grid>
+            </div>
+        </div > */}
     </>
   );
 }
 
-export default UserCreate1;
+const mapStatetoProps = (state: any) => {
+  return {
+    empDetails: state.manageUserReducer.empDetails,
+  };
+};
+
+const matchDispatchToProps = (dispatch: any) => {
+  return {
+    reset_empID: () => dispatch(reset_empID()),
+  };
+};
+
+export default connect(mapStatetoProps, matchDispatchToProps)(UpdateUser);

@@ -1,5 +1,7 @@
 import { ColleagueInfo } from "../../../component/ColleagueInfo";
 import { colleagueV2Login, userV2Login } from "../../../component/fetch";
+import { ServiceResponse } from "../../../component/Message";
+import { ServiceResponses } from "../../../component/ServiceResponses";
 import {
   GET_USER_REQUEST,
   LOGIN_USER_FAILURE,
@@ -39,7 +41,7 @@ export const loginUser = (idToken: any) => (dispatch: any) => {
       } else {
         dispatch({
           type: LOGIN_USER_FAILURE,
-          //payload: serviceResponse.getMessage('login', 'userNotExist'),
+          //payload: ServiceResponse.getMessage("login", "userNotExist"),
         });
       }
     });

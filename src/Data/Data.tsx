@@ -494,24 +494,29 @@ export const requestTypes = [
 ];
 export const statuses = [
   {
-    statusID: "Active",
-    text: "Active",
+    statusID: "A",
+    text: "A",
   },
   {
-    statusID: "Inactive",
-    text: "Inactive",
+    statusID: "I",
+    text: "I",
   },
   {
-    statusID: "Draft",
-    text: "Draft",
+    statusID: "D",
+    text: "D",
   },
   {
-    statusID: "Confirmed",
-    text: "Confirmed",
+    statusID: "C",
+    text: "C",
   },
 ];
+export interface RoleTypes {
+  readonly value: string;
+  readonly label: string;
+  readonly check: boolean;
+}
 
-export const roleTypes = [
+export const roleTypes: RoleTypes[] = [
   {
     value: "role1",
     label: "Role 1",
@@ -538,7 +543,12 @@ export const roleTypes = [
     check: false,
   },
 ];
-export const groupTypes = [
+export interface GroupTypes {
+  readonly value: string;
+  readonly label: string;
+}
+
+export const groupTypes: GroupTypes[] = [
   {
     value: "group1",
     label: "Group 1",
@@ -756,7 +766,7 @@ export const viewLogColumns = [
 ];
 export const userTableHeaders = [
   {
-    field: "empID",
+    field: "userId",
     headerName: "Employee ID",
     width: 150,
   },
@@ -776,9 +786,9 @@ export const userTableHeaders = [
     width: 150,
   },
   {
-    field: "email",
+    field: "emailId",
     headerName: "Email ID",
-    width: 250,
+    width: 300,
   },
   {
     field: "designation",
@@ -791,12 +801,12 @@ export const userTableHeaders = [
     width: 100,
   },
   {
-    field: "role",
+    field: "roles",
     headerName: "Role",
     width: 100,
   },
   {
-    field: "group",
+    field: "usergroups",
     headerName: "Group",
     width: 100,
   },
@@ -1099,7 +1109,7 @@ export const viewLogRows = [
 ];
 export const userGroupTableHeaders = [
   {
-    field: "groupID",
+    field: "groupId",
     headerName: "Group ID",
     width: 100,
   },
@@ -1109,7 +1119,7 @@ export const userGroupTableHeaders = [
     width: 150,
   },
   {
-    field: "description",
+    field: "groupDesc",
     headerName: "Descriptions",
     width: 200,
   },

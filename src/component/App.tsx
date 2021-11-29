@@ -40,6 +40,8 @@ import ManageUserGroupSmall from "./ManageUserGroupSmall";
 import CreateGroupSmall from "./CreateGroupSmall";
 import ManageUserSmall from "./ManageUserSmall";
 import UserUpdateSmall from "./UserUpdateSmall";
+import UserCreate from "./UserCreate";
+import UpdateUser from "./UpdateUser";
 
 const theme = createTheme({
   palette: {
@@ -309,23 +311,23 @@ function App() {
                   />
                   <AuthRoute
                     path="/userconfig/usercreate"
-                    component={UserCreateSmall}
+                    component={UserCreate}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/userconfig/usercreate"
-                    component={UserCreateSmall}
+                    component={UserCreate}
                   />
                   <AuthRoute
                     path="/userconfig/userupdate"
-                    component={UserUpdateSmall}
+                    component={UpdateUser}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/userconfig/userupdate"
-                    component={UserUpdateSmall}
+                    component={UpdateUser}
                   />
                   <AuthRoute
                     path="/userconfig/usergroup"

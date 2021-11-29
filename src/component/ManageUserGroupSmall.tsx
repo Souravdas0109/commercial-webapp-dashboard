@@ -9,7 +9,7 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.css";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { teal } from "@material-ui/core/colors";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -154,6 +154,8 @@ function ManageUserGroupSmall(props: any) {
                 headerStyle={{
                   fontSize: "10px",
                   width: column.width,
+                  backgroundColor: teal[900],
+                  color: "white",
                 }}
                 body={
                   (column.field === "groupID" && groupIDTemplate) ||

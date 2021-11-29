@@ -15,6 +15,8 @@ import { components } from "react-select";
 import CloseIcon from "@material-ui/icons/Close";
 import { TextareaAutosize } from "@material-ui/core";
 import { teal } from "@material-ui/core/colors";
+import axios from "axios";
+import { Toast } from "primereact/toast";
 import {
   statuses,
   groupTypes,
@@ -178,7 +180,7 @@ const useStyles = makeStyles(theme => ({
 function CreateGroup() {
   const theme = useTheme();
   const classes = useStyles();
-  const [groupID, setGroupID] = useState("");
+  const [groupId, setGroupId] = useState("");
   const [groupname, setGroupname] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -186,6 +188,7 @@ function CreateGroup() {
   const [viewProductEl, setViewProductEl] = useState(null);
   const [locationNames, setLocationNames] = useState([]);
   const [viewLocationEl, setViewLocationEl] = useState(null);
+  const toast = useRef<any>(null);
   const productCustomStyles: StylesConfig<ProducthierarchyTypes, true> = {
     option: (provided: any, state: any) => ({
       ...provided,
@@ -264,7 +267,7 @@ function CreateGroup() {
     </>
   );
   const ongroupIDChange = (e: any) => {
-    setGroupID(e.target.value);
+    setGroupId(e.target.value);
   };
   const ongroupnameChange = (e: any) => {
     setGroupname(e.target.value);
@@ -472,8 +475,70 @@ function CreateGroup() {
     </Popover>
   );
 
+  const handleCreateGroup = (e: any) => {
+    e.preventDefault();
+
+    const formData = {
+      groupName: groupname,
+      groupDesc: description,
+      status: status,
+      //locationHierarchy: "",
+      // productHierarchy: [
+      //   {
+      //     hierarchyLevel: "GROUP1",
+      //     hierarchyId: "Core",
+      //     startDate: "2021-11-09T10:57:56.884359",
+      //     endDate: "2099-12-31T00:00:00",
+      //   },
+      // ],
+    };
+    let accessToken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accessToken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+
+    axios
+      .put(
+        `https://dev-api.morrisons.com/commercial-user/v1/usergroups/${groupId}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formData,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
+        //console.log(res.data.message);
+        if (statusCode === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data.message,
+            life: 6000,
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        let statusCode = err.response.data.error;
+        console.log(statusCode);
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+  };
+
   return (
     <>
+      <Toast ref={toast} position="bottom-left" />
       <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
         <Grid container spacing={1}>
           <Grid container item xs={10}>
@@ -522,7 +587,7 @@ function CreateGroup() {
                   </Box>
                 </Box>
               </Box>
-              <form>
+              <form onSubmit={handleCreateGroup}>
                 <Box
                   sx={{
                     display: "flex",
@@ -537,12 +602,12 @@ function CreateGroup() {
                     <Typography variant="subtitle2">
                       <input
                         type="text"
-                        name="groupID"
-                        id="groupID"
+                        name="groupId"
+                        id="groupId"
                         placeholder="eg. 012345"
                         className={classes.inputFields}
                         onChange={ongroupIDChange}
-                        value={groupID}
+                        value={groupId}
                       />
                     </Typography>
                   </Box>
@@ -729,7 +794,9 @@ function CreateGroup() {
                     <Button
                       variant="contained"
                       color="primary"
+                      type="submit"
                       className={classes.buttons}
+                      onClick={handleCreateGroup}
                     >
                       Submit
                     </Button>

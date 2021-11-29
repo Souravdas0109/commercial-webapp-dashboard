@@ -1,4 +1,4 @@
-import { AppBar, Grid, makeStyles, Toolbar } from "@material-ui/core";
+import { AppBar, Grid, makeStyles, Snackbar, Toolbar } from "@material-ui/core";
 import GoogleLogin from "react-google-login";
 import { useHistory } from "react-router-dom";
 import { LogoMin } from "./Logos";
@@ -82,7 +82,12 @@ function Login(props: any) {
     console.log(error);
     history.push("/login");
   };
-
+  useEffect(() => {
+    if (error) {
+      history.push("/login");
+      alert("Invalid user");
+    }
+  }, [error, history]);
   return (
     <div style={{ flexGrow: 1 }}>
       <AppBar style={{ alignItems: "center", justifyContent: "center" }}>
