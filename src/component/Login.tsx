@@ -5,8 +5,10 @@ import { LogoMin } from "./Logos";
 import { userV2Login } from "./fetch";
 import { loginUser } from "../redux/Actions/Login";
 import { connect } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCallback } from "react";
+import { Toast } from "primereact/toast";
+import { ServiceResponse } from "./Message";
 
 const useStyles = makeStyles(theme => ({
   menuIcon: {
@@ -42,17 +44,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Login(props: any) {
-  const { loginUser, error, user, isTokenExpired, isLoading } = props;
+  const { loginUser, error, user, isTokenExpired, isLoading, errorMessage } =
+    props;
   const classes = useStyles();
   let history = useHistory();
-
+  const toast = useRef<any>(null);
   const responseGoogle = useCallback(
     (response: any) => {
       console.log("starting response");
       if ("tokenId" in response) {
         if (response && response.tokenId) {
           localStorage.setItem("_Gresponse", JSON.stringify(response));
-          // sessionStorage.setItem('_Gresponse',JSON.stringify(response))
           const idToken =
             response && response.tokenObj && response.tokenObj.id_token;
           console.log(idToken);
@@ -83,51 +85,101 @@ function Login(props: any) {
     history.push("/login");
   };
   useEffect(() => {
-    if (error) {
+    if (errorMessage) {
+      let errorCode = ServiceResponse.getMessage("login", "serviceUnavailable");
       history.push("/login");
-      alert("Invalid user");
+      // alert("Invalid user");
+      if (errorMessage === errorCode) {
+        toast.current.show({
+          severity: "error",
+          summary: "",
+          detail: "Login failed. Service is not available.",
+          life: 6000,
+        });
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "",
+          detail: "Login failed. Employee does not exist.",
+          life: 6000,
+        });
+      }
     }
-  }, [error, history]);
+  }, [errorMessage]);
+
+  // useEffect(() => {
+  //   if (error) {
+  //     let Errorcode;
+  //     if (localStorage && localStorage.getItem("errorCode")) {
+  //       Errorcode = localStorage && localStorage.getItem("_GresponseV2");
+  //     }
+  //     if (Errorcode === "500") {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "",
+  //         detail: "Service Unavailable",
+  //         life: 6000,
+  //       });
+  //     }
+  //     if (
+  //       Errorcode === "400" ||
+  //       Errorcode === "404" ||
+  //       Errorcode === "403" ||
+  //       Errorcode === "401"
+  //     ) {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "",
+  //         detail: "Login failed. Employee does not exist.",
+  //         life: 6000,
+  //       });
+  //     }
+  //   }
+  // }, [error]);
+
   return (
-    <div style={{ flexGrow: 1 }}>
-      <AppBar style={{ alignItems: "center", justifyContent: "center" }}>
-        <Toolbar style={{ alignItems: "center", justifyContent: "center" }}>
-          <Grid container className={classes.gridContainer}>
-            <Grid
-              item
-              className={classes.logo}
-              justifyContent="center"
-              xs={4}
-              xl={4}
-              md={4}
-              lg={4}
-            >
-              <LogoMin />
+    <>
+      <Toast ref={toast} position="bottom-left" />
+      <div style={{ flexGrow: 1 }}>
+        <AppBar style={{ alignItems: "center", justifyContent: "center" }}>
+          <Toolbar style={{ alignItems: "center", justifyContent: "center" }}>
+            <Grid container className={classes.gridContainer}>
+              <Grid
+                item
+                className={classes.logo}
+                justifyContent="center"
+                xs={4}
+                xl={4}
+                md={4}
+                lg={4}
+              >
+                <LogoMin />
+              </Grid>
             </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          marginTop: 10,
-        }}
-      >
-        <h1>Sign in with Google</h1>
-        <GoogleLogin
-          clientId="171849099600-gb5qs9al4mvmk93j3nuam7mgqvv0pmct.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogleerror}
-          cookiePolicy={"single_host_origin"}
-          style={{ flex: 1 }}
-          autoLoad={false}
-        />
+          </Toolbar>
+        </AppBar>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            marginTop: 10,
+          }}
+        >
+          <h1>Sign in with Google</h1>
+          <GoogleLogin
+            clientId="171849099600-gb5qs9al4mvmk93j3nuam7mgqvv0pmct.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogleerror}
+            cookiePolicy={"single_host_origin"}
+            style={{ flex: 1 }}
+            autoLoad={false}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -135,6 +187,7 @@ const mapStateToProps = (state: any) => {
   return {
     user: state.loginReducer.user,
     error: state.loginReducer.error,
+    errorMessage: state.loginReducer.errorMessage,
   };
 };
 

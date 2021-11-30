@@ -36,12 +36,12 @@ export const loginUser = (idToken: any) => (dispatch: any) => {
       if (error && error.response && error.response.status === 500) {
         dispatch({
           type: LOGIN_USER_FAILURE,
-          // payload: serviceResponse.getMessage('login', 'serviceUnavailable'),
+          payload: ServiceResponse.getMessage("login", "serviceUnavailable"),
         });
       } else {
         dispatch({
           type: LOGIN_USER_FAILURE,
-          //payload: ServiceResponse.getMessage("login", "userNotExist"),
+          payload: ServiceResponse.getMessage("login", "userNotExist"),
         });
       }
     });

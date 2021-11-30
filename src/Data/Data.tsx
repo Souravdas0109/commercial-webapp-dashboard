@@ -803,12 +803,12 @@ export const userTableHeaders = [
   {
     field: "roles",
     headerName: "Role",
-    width: 100,
+    width: 150,
   },
   {
     field: "usergroups",
     headerName: "Group",
-    width: 100,
+    width: 150,
   },
   {
     field: "comments",

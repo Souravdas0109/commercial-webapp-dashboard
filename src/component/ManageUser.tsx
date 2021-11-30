@@ -120,9 +120,9 @@ function ManageUser(props: any) {
     let roles = "";
     rowData.roles.map((role: any) => {
       if (roles) {
-        roles = roles + ", " + role.roleId;
+        roles = roles + "," + role.roleId;
       } else {
-        roles = roles + role.roleId;
+        roles = role.roleId;
       }
       return null;
     });
@@ -135,7 +135,7 @@ function ManageUser(props: any) {
       if (groups) {
         groups = groups + ", " + group.groupId;
       } else {
-        groups = groups + group.groupId;
+        groups = group.groupId;
       }
       return null;
     });
