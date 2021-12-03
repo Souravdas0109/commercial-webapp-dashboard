@@ -64,16 +64,6 @@ function Login(props: any) {
     },
     [loginUser]
   );
-  // useEffect(() => {
-  //   console.log("before enter")
-  //   if(localStorage.getItem('_Gresponse') && localStorage.getItem('_GresponseV2')) {
-  //    console.log("enter")
-  //     history.push('/Commercial/dashboard')
-  //   }
-  //   else if (localStorage.getItem('_Gresponse')) {
-  //     responseGoogle(localStorage.getItem('_Gresponse'))
-  //   }
-  // }, [responseGoogle, history])
   useEffect(() => {
     if (user) {
       history.push("/Commercial/dashboard");
@@ -88,7 +78,6 @@ function Login(props: any) {
     if (errorMessage) {
       let errorCode = ServiceResponse.getMessage("login", "serviceUnavailable");
       history.push("/login");
-      // alert("Invalid user");
       if (errorMessage === errorCode) {
         toast.current.show({
           severity: "error",

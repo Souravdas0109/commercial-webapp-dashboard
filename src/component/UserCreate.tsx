@@ -13,20 +13,21 @@ import {
 
 // import axios from 'axios';
 import Autocomplete from "@material-ui/lab/Autocomplete";
-
+import { Toast } from "primereact/toast";
 import { makeStyles, styled } from "@material-ui/styles";
 import React from "react";
 import { useHistory } from "react-router-dom";
 // import SideBar from '../Layout/SideBar'
 import Select, { StylesConfig } from "react-select";
 import { default as ReactSelect } from "react-select";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { components } from "react-select";
 import {
   viewLogRows,
   viewLogColumns,
   groupTypes,
   GroupTypes,
+  userData,
 } from "../Data/Data";
 import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
 import axios from "axios";
@@ -226,6 +227,8 @@ function UserCreate() {
   const [groupOpen, setGroupOpen] = React.useState(false);
   //integration changes start
   const [roles, setRoles] = useState([]);
+  const [groupsData, setGroupsData] = useState([]);
+  const toast = useRef<any>(null);
   //integration changes start
   React.useEffect(() => {
     setGroupInput(groups);
@@ -238,6 +241,10 @@ function UserCreate() {
       backgroundColor: state.isSelected ? teal[900] : "white",
       color: state.isSelected ? "white" : teal[900],
     }),
+    // menu:(provided: any, state: any)=>({
+    //   ...provided,
+    //   height:"300px"
+    // })
   };
   //integration changes start
 
@@ -249,6 +256,25 @@ function UserCreate() {
       );
     }
     console.log(accessToken.access_token);
+
+    // axios({
+    //   method: "GET",
+    //   url: `https://dev-api.morrisons.com/commercial-user/v1/userdetails?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    //   headers: {
+    //     "content-type": "application/json",
+    //     Authorization: `Bearer ${accessToken.access_token}`,
+    //   },
+    // })
+    //   .then(res => {
+    //     console.log(res.data);
+
+    //     setRoles(rolesValues);
+    //     console.log(rolesValues);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+
     axios({
       method: "GET",
       url: `https://dev-api.morrisons.com/commercial-user/v1/roles?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
@@ -272,6 +298,37 @@ function UserCreate() {
         });
         setRoles(rolesValues);
         console.log(rolesValues);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    axios({
+      method: "GET",
+      url: `https://dev-api.morrisons.com/commercial-user/v1/usergroups?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken.access_token}`,
+      },
+    })
+      .then(res => {
+        console.log(res.data);
+        const groupValues = res.data.usergroups.map((group: any) => {
+          if (group.groupId) {
+            return {
+              label: group.groupName,
+              value: group.groupId,
+              groupId: group.groupId,
+              groupName: group.groupName,
+              groupDesc: group.groupDesc,
+              status: group.status,
+              locationHierarchy: group.locationHierarchy,
+              productHierarchy: group.productHierarchy,
+            };
+          }
+        });
+        setGroupsData(groupValues);
+        console.log(groupValues);
       })
       .catch(err => {
         console.log(err);
@@ -335,23 +392,27 @@ function UserCreate() {
 
   const typeAheadSearch = (
     <Autocomplete
-      options={employeeDetails}
-      getOptionLabel={(option: any) => (option.empID ? "" + option.empID : "")}
+      // options={employeeDetails}
+      options={userData}
+      // getOptionLabel={(option: any) => (option.user.empID ? "" + option.user.empID : "")}
+      getOptionLabel={(option: any) =>
+        option.user.userId ? "" + option.user.userId : ""
+      }
       disablePortal
-      value={selectEmployeeID}
+      // inputValue={selectEmployeeID}
+      getOptionDisabled={(option: any) => option.value === "select employee Id"}
+      value={
+        selectEmployeeID
+          ? selectEmployeeID
+          : {
+              user: {
+                userId: "select employee Id",
+              },
+            }
+      }
       onChange={(event: any, newValue: {} | null) => {
         setSelectEmployeeID(newValue);
       }}
-      // sx={{
-      //     display: 'inline-block',
-      //     '& input': {
-      //         width: 200,
-      //         bgcolor: 'background.paper',
-      //         color: (theme: any) =>
-      //             theme.palette.getContrastText(theme.palette.background.paper),
-      //     },
-      // }}
-
       renderInput={params => (
         <TextField
           {...params}
@@ -379,6 +440,7 @@ function UserCreate() {
   };
 
   const handleGroupsInput = (selected: any) => {
+    console.log(selected);
     setGroupInput(selected);
   };
 
@@ -386,7 +448,7 @@ function UserCreate() {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 400,
+          height: 450,
           width: dialogwidth,
           p: 2,
           display: "flex",
@@ -411,7 +473,8 @@ function UserCreate() {
             }}
           >
             <Select
-              options={groupTypes}
+              // options={groupTypes}
+              options={groupsData}
               isMulti
               onChange={handleGroupsInput}
               components={{
@@ -445,13 +508,40 @@ function UserCreate() {
 
   React.useEffect(() => {
     if (selectEmployeeID) {
-      setEmployeeID(selectEmployeeID.empID);
-      setFirstName(selectEmployeeID.firstName);
-      setMiddleName(selectEmployeeID.middleName);
-      setLastName(selectEmployeeID.lastName);
-      setEmail(selectEmployeeID.email);
-      setDesignation(selectEmployeeID.designation);
-      setStatus(selectEmployeeID.status);
+      setEmployeeID(selectEmployeeID.user.userId);
+      setFirstName(selectEmployeeID.user.firstName);
+      setMiddleName(selectEmployeeID.user.middleName);
+      setLastName(selectEmployeeID.user.lastName);
+      setEmail(selectEmployeeID.user.emailId);
+      setDesignation(selectEmployeeID.user.designation);
+      setStatus(selectEmployeeID.user.status);
+      setRoleNames(
+        selectEmployeeID.roles.map((role: any) => {
+          return {
+            label: role.roleId,
+            value: role.roleId,
+          };
+        })
+      );
+
+      setGroupInput(
+        selectEmployeeID.usergroups.map((group: any) => {
+          return {
+            label: group.groupId,
+            value: group.groupId,
+            status: group.status,
+          };
+        })
+      );
+      setGroups(
+        selectEmployeeID.usergroups.map((group: any) => {
+          return {
+            label: group.groupId,
+            value: group.groupId,
+            status: group.status,
+          };
+        })
+      );
     } else {
       setEmployeeID("");
       setFirstName("");
@@ -475,7 +565,6 @@ function UserCreate() {
       <Box
         sx={{
           width: dialogwidth,
-
           border: "3px solid green",
           borderRadius: 4,
           display: "flex",
@@ -581,6 +670,79 @@ function UserCreate() {
     history.goBack();
   };
 
+  const handleCreateRequest = (e: any) => {
+    e.preventDefault();
+    const formData = {
+      user: {
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: "BUYER",
+        designation: designation,
+        status: status,
+      },
+      roles: roleNames.map((role: any) => {
+        return {
+          roleId: role.value,
+        };
+      }),
+      usergroups: groups.map((group: any) => {
+        return {
+          groupId: group.value,
+          status: group.status,
+        };
+      }),
+    };
+
+    let accessToken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accessToken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+    console.log(accessToken.access_token);
+    axios
+      .put(
+        `https://dev-api.morrisons.com/commercial-user/v1/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formData,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
+        //console.log(res.data.message);
+        if (statusCode === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data.message,
+            life: 6000,
+          });
+          //alert(res);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        let statusCode = err.response.data.error;
+        console.log(statusCode);
+        //alert(err);
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+
+    console.log(formData);
+  };
+
   const createForm = (
     <Box
       sx={{
@@ -627,7 +789,7 @@ function UserCreate() {
             flexDirection: "row",
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               paddingLeft: 5,
             }}
@@ -642,7 +804,7 @@ function UserCreate() {
             }}
           >
             |
-          </Box>
+          </Box> */}
           <Box
             sx={{
               paddingLeft: 5,
@@ -654,7 +816,7 @@ function UserCreate() {
           </Box>
         </Box>
       </Box>
-      <form>
+      <form onSubmit={handleCreateRequest}>
         <Box
           sx={{
             display: "flex",
@@ -677,7 +839,7 @@ function UserCreate() {
                 name="requesttype"
                 id="requesttype"
                 className={classes.selectField}
-                defaultValue=""
+                defaultValue="New"
                 onChange={e => {
                   setRequestType(e.target.value);
                 }}
@@ -926,7 +1088,7 @@ function UserCreate() {
             </Typography>
           </Box>
         </Box>
-        <Box className={classes.eachRow}>
+        {/* <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">Reference Document</Typography>
           </Box>
@@ -999,7 +1161,7 @@ function UserCreate() {
               <button className={classes.backButton}>view(3)</button>
             </Box>
           </Box>
-        </Box>
+        </Box> */}
         <Box
           sx={{
             display: "flex",
@@ -1062,7 +1224,6 @@ function UserCreate() {
               }}
             >
               <Button
-                type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.whiteButton}
@@ -1076,7 +1237,6 @@ function UserCreate() {
               }}
             >
               <Button
-                type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.whiteButton}
@@ -1167,6 +1327,7 @@ function UserCreate() {
 
   return (
     <>
+      <Toast ref={toast} position="bottom-left" />
       <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
         <Grid container spacing={1}>
           <Grid container item xs={10}>

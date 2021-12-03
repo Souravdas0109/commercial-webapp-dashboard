@@ -58,8 +58,11 @@ function ManageUser(props: any) {
   //change end
   const handleNameClick = (e: any) => {
     console.log(e.target.value);
-    const selectedRow = rows.filter(row => row.empID == e.target.value);
+    const selectedRow = manageUserData.filter(
+      (row: any) => row.userId == e.target.value
+    );
     set_empID(selectedRow);
+    console.log(selectedRow);
     history.push("/userconfig/userupdate");
   };
   //change start
@@ -148,6 +151,17 @@ function ManageUser(props: any) {
       </a>
     );
   };
+  const userIdTemplate = (rowData: any) => {
+    return (
+      <button
+        className={classes.exploreButton}
+        value={rowData.userId}
+        onClick={handleNameClick}
+      >
+        {rowData.userId}
+      </button>
+    );
+  };
 
   return (
     <>
@@ -228,8 +242,8 @@ function ManageUser(props: any) {
                         }}
                         body={
                           (column.field === "roles" && roleTemplate) ||
-                          (column.field === "usergroups" && groupTemplate) ||
-                          (column.field === "emailId" && emailTemplate)
+                          (column.field === "userId" && userIdTemplate) ||
+                          (column.field === "usergroups" && groupTemplate)
                         }
                         sortable
                       />

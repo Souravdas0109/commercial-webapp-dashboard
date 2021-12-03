@@ -16,7 +16,7 @@ import SidepanelUser from "./SidepanelUser";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { makeStyles, styled } from "@material-ui/styles";
-import React from "react";
+import React, { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 // import SideBar from '../Layout/SideBar'
 import Select, { StylesConfig } from "react-select";
@@ -39,6 +39,8 @@ import { Column } from "primereact/column";
 import { teal } from "@material-ui/core/colors";
 import { connect } from "react-redux";
 import { reset_empID } from "../redux/Actions/ManageUser";
+import axios from "axios";
+import { Toast } from "primereact/toast";
 
 const fieldWidth = window.innerWidth - 80;
 const useStyles = makeStyles((theme: any) => {
@@ -221,20 +223,21 @@ function UpdateUser(props: any) {
   const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>();
   const [employeeID, setEmployeeID] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [designation, setDesignation] = React.useState("");
+  const [designation, setDesignation] = React.useState<any>();
   const [status, setStatus] = React.useState("");
   const [comments, setComments] = React.useState("");
   const [referenceDoc, setReferenceDoc] = React.useState<any>();
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
-
+  const [groupData, setGroupData] = React.useState<any>();
   const [groups, setGroups] = React.useState([]);
   const [groupInput, setGroupInput] = React.useState([]);
   const [groupOpen, setGroupOpen] = React.useState(false);
-
+  const [roles, setRoles] = React.useState([]);
   const [tasks, setTasks] = React.useState(taskList);
   const [taskSelected, setTaskSelected] = React.useState<any>(null);
   const [taskOpen, setTaskOpen] = React.useState(false);
+  const toast = useRef<any>(null);
 
   React.useEffect(() => {
     if (!empDetails) {
@@ -243,6 +246,63 @@ function UpdateUser(props: any) {
       console.log(empDetails[0]);
       setSelectEmployeeID(empDetails[0]);
       setTasks(taskList);
+
+      let accessToken;
+      if (localStorage && localStorage.getItem("_GresponseV2")) {
+        accessToken = JSON.parse(
+          (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+        );
+      }
+
+      axios({
+        method: "GET",
+        url: `https://dev-api.morrisons.com/commercial-user/v1/roles?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken.access_token}`,
+        },
+      })
+        .then(res => {
+          console.log(res.data);
+          const rolesValues = res.data.roles.map((role: any) => {
+            if (role.roleId) {
+              return {
+                label: role.roleId,
+                value: role.roleId,
+                roleId: role.roleId,
+                roleName: role.roleName,
+                roleDesc: role.roleDesc,
+              };
+            }
+          });
+          setRoles(rolesValues);
+          console.log(rolesValues);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+      console.log(accessToken.access_token);
+      axios({
+        method: "GET",
+        url: `https://dev-api.morrisons.com/commercial-user/v1/usergroups?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken.access_token}`,
+        },
+      })
+        .then(res => {
+          const groupValues = res.data.usergroups.map((group: any) => {
+            return {
+              label: group.groupName,
+              value: group.groupId,
+            };
+          });
+          setGroupData(groupValues);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }, []);
 
@@ -300,7 +360,7 @@ function UpdateUser(props: any) {
   const roleSelect1 = (
     <>
       <Select
-        options={roleTypes}
+        options={roles}
         isMulti
         onChange={handleRoleChange1}
         components={{
@@ -317,13 +377,39 @@ function UpdateUser(props: any) {
 
   React.useEffect(() => {
     if (selectEmployeeID) {
-      setEmployeeID(selectEmployeeID.empID);
+      setEmployeeID(selectEmployeeID.userId);
       setFirstName(selectEmployeeID.firstName);
       setMiddleName(selectEmployeeID.middleName);
       setLastName(selectEmployeeID.lastName);
-      setEmail(selectEmployeeID.email);
+      setEmail(selectEmployeeID.emailId);
       setDesignation(selectEmployeeID.designation);
       setStatus(selectEmployeeID.status);
+      setRoleNames(
+        selectEmployeeID.roles.map((role: any) => {
+          return {
+            label: role.roleId,
+            value: role.roleId,
+          };
+        })
+      );
+      setGroupInput(
+        selectEmployeeID.usergroups.map((group: any) => {
+          return {
+            label: group.groupId,
+            value: group.groupId,
+            status: group.status,
+          };
+        })
+      );
+      setGroups(
+        selectEmployeeID.usergroups.map((group: any) => {
+          return {
+            label: group.groupId,
+            value: group.groupId,
+            status: group.status,
+          };
+        })
+      );
       setComments(selectEmployeeID.comments);
     } else {
       setEmployeeID("");
@@ -334,7 +420,7 @@ function UpdateUser(props: any) {
       setDesignation("");
       setStatus("");
     }
-  }, [selectEmployeeID]);
+  }, [selectEmployeeID, groupData]);
 
   const handleOpenGroups = (e: any) => {
     e.preventDefault();
@@ -357,7 +443,7 @@ function UpdateUser(props: any) {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 400,
+          height: 450,
           width: dialogwidth,
           p: 2,
           display: "flex",
@@ -396,7 +482,7 @@ function UpdateUser(props: any) {
                             placeholder="select groups"
                         /> */}
             <Select
-              options={groupTypes}
+              options={groupData}
               isMulti
               onChange={handleGroupsInput}
               components={{
@@ -648,6 +734,78 @@ function UpdateUser(props: any) {
     </Dialog>
   );
 
+  const handleUpdateUser = (e: any) => {
+    e.preventDefault();
+    const formData = {
+      user: {
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: "BUYER",
+        designation: designation,
+        status: status,
+      },
+      roles: roleNames.map((role: any) => {
+        return {
+          roleId: role.value,
+        };
+      }),
+      usergroups: groups.map((group: any) => {
+        return {
+          groupId: group.value,
+          status: group.status,
+        };
+      }),
+    };
+    console.log(formData);
+
+    let accessToken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accessToken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+    console.log(accessToken.access_token);
+    axios
+      .put(
+        `https://dev-api.morrisons.com/commercial-user/v1/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formData,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
+        //console.log(res.data.message);
+        if (statusCode === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data.message,
+            life: 6000,
+          });
+          // alert(res)
+        }
+      })
+      .catch(err => {
+        console.log(err.response);
+        let statusCode = err.response.status;
+        console.log(statusCode);
+        // alert(err)
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+  };
+
   const createForm = (
     <Box
       sx={{
@@ -721,7 +879,7 @@ function UpdateUser(props: any) {
           </Box>
         </Box>
       </Box>
-      <form>
+      <form onSubmit={handleUpdateUser}>
         <Box
           // sx={{
           //     display: "flex",
@@ -740,7 +898,7 @@ function UpdateUser(props: any) {
                 name="requesttype"
                 id="requesttype"
                 className={classes.selectField}
-                defaultValue=""
+                defaultValue="Modify"
                 onChange={e => {
                   setRequestType(e.target.value);
                 }}
@@ -801,9 +959,9 @@ function UpdateUser(props: any) {
                 id="firstname"
                 placeholder="eg. Mike"
                 className={classes.inputFields}
-                onChange={e => {
-                  setFirstName(e.target.value);
-                }}
+                // onChange={e => {
+                //   setFirstName(e.target.value);
+                // }}
                 value={firstName}
                 disabled
               />
@@ -823,9 +981,9 @@ function UpdateUser(props: any) {
                 id="middlename"
                 placeholder="eg. Dallas"
                 className={classes.inputFields}
-                onChange={e => {
-                  setMiddleName(e.target.value);
-                }}
+                // onChange={e => {
+                //   setMiddleName(e.target.value);
+                // }}
                 value={middleName}
                 disabled
               />
@@ -845,9 +1003,9 @@ function UpdateUser(props: any) {
                 id="lastname"
                 placeholder="eg. Black"
                 className={classes.inputFields}
-                onChange={e => {
-                  setLastName(e.target.value);
-                }}
+                // onChange={e => {
+                //   setLastName(e.target.value);
+                // }}
                 value={lastName}
                 disabled
               />
@@ -868,9 +1026,9 @@ function UpdateUser(props: any) {
                 id="email"
                 placeholder="eg. abc.xyz@morrisonsplc.co.uk"
                 className={classes.inputFields}
-                onChange={e => {
-                  setEmail(e.target.value);
-                }}
+                // onChange={e => {
+                //   setEmail(e.target.value);
+                // }}
                 value={email}
                 disabled
               />
@@ -946,9 +1104,9 @@ function UpdateUser(props: any) {
                 id="status"
                 placeholder="eg. Active"
                 className={classes.inputFields}
-                onChange={e => {
-                  setStatus(e.target.value);
-                }}
+                // onChange={e => {
+                //   setStatus(e.target.value);
+                // }}
                 value={status}
                 disabled
               />
@@ -1125,7 +1283,6 @@ function UpdateUser(props: any) {
               }}
             >
               <Button
-                type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.whiteButton}
@@ -1139,7 +1296,6 @@ function UpdateUser(props: any) {
               }}
             >
               <Button
-                type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.whiteButton}
@@ -1230,21 +1386,11 @@ function UpdateUser(props: any) {
 
   return (
     <>
-      {/* <div className={classes.root}>
-            <div className={classes.value}>
-                <Grid container className={classes.container}>
-                    <Grid item lg={2} md={2} sm={4} xs={5}>
-                        <SidepanelUser />
-                    </Grid>
-                    <Grid item lg={10} md={10} sm={8} xs={7}> */}
+      <Toast ref={toast} position="bottom-left" />
       {createForm}
       {viewLog}
       {viewGroups}
       {manageTasks}
-      {/* </Grid>
-                </Grid>
-            </div>
-        </div > */}
     </>
   );
 }

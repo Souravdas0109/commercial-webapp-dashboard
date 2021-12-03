@@ -751,6 +751,126 @@ export const employeeDetails = [
     status: "on-call",
   },
 ];
+export const userData = [
+  {
+    user: {
+      userId: "40011200",
+      firstName: "test",
+      middleName: "123",
+      lastName: "test",
+      emailId: "sample.testsit@test.morrisonsplc.co.uk",
+      additionalInfo: "BUYER",
+      designation: "null",
+      status: "A",
+    },
+    roles: [
+      {
+        roleId: "ADMIN",
+      },
+      {
+        roleId: "BUYER",
+      },
+    ],
+    usergroups: [
+      {
+        groupId: "10005",
+        status: "A",
+      },
+    ],
+  },
+  {
+    user: {
+      userId: "40011368",
+      firstName: "Admin",
+      middleName: "sit",
+      lastName: "test",
+      emailId: "admin.testsit@test.morrisonsplc.co.uk",
+      additionalInfo: "ADMIN",
+      designation: "null",
+      status: "A",
+    },
+    roles: [
+      {
+        roleId: "ADMIN",
+      },
+    ],
+    usergroups: [
+      {
+        groupId: "10004",
+        status: "A",
+      },
+    ],
+  },
+  {
+    user: {
+      userId: "40011367",
+      firstName: "Buyer",
+      middleName: "sit",
+      lastName: "test",
+      emailId: "buyer.testsit@test.morrisonsplc.co.uk",
+      additionalInfo: "BUYER",
+      designation: "null",
+      status: "I",
+    },
+    roles: [
+      {
+        roleId: "BUYER",
+      },
+    ],
+    usergroups: [
+      {
+        groupId: "10005",
+        status: "A",
+      },
+    ],
+  },
+  {
+    user: {
+      userId: "40011366",
+      firstName: "Seller",
+      middleName: "sit",
+      lastName: "test",
+      emailId: "seller.testsit@test.morrisonsplc.co.uk",
+      additionalInfo: "SELLER",
+      designation: "null",
+      status: "A",
+    },
+    roles: [
+      {
+        roleId: "SCSPL",
+      },
+    ],
+    usergroups: [
+      {
+        groupId: "10006",
+        status: "A",
+      },
+    ],
+  },
+  {
+    user: {
+      userId: "40011365",
+      firstName: "Merchant",
+      middleName: "sit",
+      lastName: "test",
+      emailId: "merchant.testsit@test.morrisonsplc.co.uk",
+      additionalInfo: "MERCHANT",
+      designation: "null",
+      status: "A",
+    },
+    roles: [
+      {
+        roleId: "MERCH",
+      },
+    ],
+    usergroups: [
+      {
+        groupId: "10007",
+        status: "A",
+      },
+    ],
+  },
+];
 export const viewLogColumns = [
   { field: "timestamp", headerName: "Timestamp", width: 150 },
   { field: "userID", headerName: "User ID", width: 80 },
