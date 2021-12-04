@@ -94,7 +94,7 @@ function Login(props: any) {
         });
       }
     }
-  }, [errorMessage]);
+  }, [errorMessage, history]);
 
   // useEffect(() => {
   //   if (error) {

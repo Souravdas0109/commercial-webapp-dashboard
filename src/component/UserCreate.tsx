@@ -9,11 +9,14 @@ import {
   DialogTitle,
   useTheme,
   useMediaQuery,
+  OutlinedInput,
+  IconButton,
+  InputAdornment,
 } from "@material-ui/core";
 
 // import axios from 'axios';
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Toast } from "primereact/toast";
+import SearchIcon from "@material-ui/icons/Search";
 import { makeStyles, styled } from "@material-ui/styles";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -22,6 +25,7 @@ import Select, { StylesConfig } from "react-select";
 import { default as ReactSelect } from "react-select";
 import { useState, useEffect, useRef } from "react";
 import { components } from "react-select";
+import { Toast } from "primereact/toast";
 import {
   viewLogRows,
   viewLogColumns,
@@ -38,6 +42,7 @@ import { Column } from "primereact/column";
 // import 'primereact/resources/themes/fluent-light/theme.css';
 import { teal } from "@material-ui/core/colors";
 import { RoleTypes } from "../Data/Data";
+import { SearchOutlined } from "@material-ui/icons";
 
 const fieldWidth = window.innerWidth - 80;
 
@@ -205,9 +210,9 @@ function UserCreate() {
   const theme = useTheme();
   const width = useMediaQuery(theme.breakpoints.up("md"));
   const dialogwidth = width ? 600 : fieldWidth;
-  const [roleNames, setRoleNames] = React.useState([]);
+  const [roleNames, setRoleNames] = React.useState<any>();
   // const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [empIdInput, setEmpIdInput] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [middleName, setMiddleName] = React.useState("");
@@ -222,8 +227,8 @@ function UserCreate() {
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
 
-  const [groups, setGroups] = React.useState([]);
-  const [groupInput, setGroupInput] = React.useState([]);
+  const [groups, setGroups] = React.useState<any>();
+  const [groupInput, setGroupInput] = React.useState<any>();
   const [groupOpen, setGroupOpen] = React.useState(false);
   //integration changes start
   const [roles, setRoles] = useState([]);
@@ -359,7 +364,7 @@ function UserCreate() {
   };
 
   const handleReset = () => {
-    setRoleNames([]);
+    setEmpIdInput("");
   };
 
   const handleFileUpload = (event: any) => {
@@ -390,16 +395,20 @@ function UserCreate() {
     </>
   );
 
+  const defVal = {
+    user: {
+      userId: "select employee Id",
+    },
+  };
   const typeAheadSearch = (
     <Autocomplete
       // options={employeeDetails}
       options={userData}
       // getOptionLabel={(option: any) => (option.user.empID ? "" + option.user.empID : "")}
       getOptionLabel={(option: any) =>
-        option.user.userId ? "" + option.user.userId : ""
+        option.user.userId ? option.user.userId : ""
       }
       disablePortal
-      // inputValue={selectEmployeeID}
       getOptionDisabled={(option: any) => option.value === "select employee Id"}
       value={
         selectEmployeeID
@@ -419,7 +428,7 @@ function UserCreate() {
           placeholder="Employee ID"
           style={{
             border: "1px solid black",
-            fontSize: "0.875rem",
+            fontSize: "0.7rem",
           }}
         />
       )}
@@ -670,6 +679,83 @@ function UserCreate() {
     history.goBack();
   };
 
+  const handleSearchEmployee = () => {
+    // let selectedEmp = userData.filter((user: any) => {
+    //   return user.user.userId === empIdInput
+    // })
+
+    axios({
+      method: "GET",
+      url: `https://sit-api.morrisons.com/colleague/v1/colleagues/${empIdInput}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Basic dnFhaURSWnpTUWhBNkNQQXkwclNvdHNRQWtSZXBwclg6THhhVk01SllpckJya1FRdQ==`,
+      },
+    })
+      .then((response: any) => {
+        //console.log(response);
+        if (response.status === 200) {
+          let userData = response.data;
+          setEmployeeID(empIdInput);
+          setFirstName(userData.FirstName);
+          setLastName(userData.LastName);
+          setEmail(userData.email);
+          setDesignation(userData.jobRole.jobTitle);
+          setStatus(userData.employee_status);
+        }
+      })
+      .catch(err => {
+        //console.log(err);
+        handleReset();
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: "Invalid Employee ID",
+          life: 6000,
+        });
+      });
+
+    // if (selectedEmp.length > 0) {
+    //   console.log(selectedEmp[0])
+    //   setEmployeeID(selectedEmp[0].user.userId);
+    //   setFirstName(selectedEmp[0].user.firstName);
+    //   setMiddleName(selectedEmp[0].user.middleName);
+    //   setLastName(selectedEmp[0].user.lastName);
+    //   setEmail(selectedEmp[0].user.emailId);
+    //   setDesignation(selectedEmp[0].user.designation);
+    //   setStatus(selectedEmp[0].user.status);
+    //   selectedEmp[0] && setRoleNames(selectedEmp[0].roles.map((role: any) => {
+    //     return {
+    //       label: role.roleId,
+    //       value: role.roleId
+    //     }
+    //   }))
+
+    //   selectedEmp[0] && setGroupInput(selectedEmp[0].usergroups.map((group: any) => {
+    //     return {
+    //       label: group.groupId,
+    //       value: group.groupId,
+    //       status: group.status
+    //     }
+    //   }))
+    //   selectedEmp[0] && setGroups(selectedEmp[0].usergroups.map((group: any) => {
+    //     return {
+    //       label: group.groupId,
+    //       value: group.groupId,
+    //       status: group.status
+    //     }
+    //   }))
+    // }
+    // else {
+    //   toast.current.show({
+    //     severity: "error",
+    //     summary: "Error!",
+    //     detail: "Invalid Employee Id",
+    //     life: 6000,
+    //   });
+    // }
+  };
+
   const handleCreateRequest = (e: any) => {
     e.preventDefault();
     const formData = {
@@ -694,6 +780,7 @@ function UserCreate() {
         };
       }),
     };
+    console.log(formData);
 
     let accessToken;
     if (localStorage && localStorage.getItem("_GresponseV2")) {
@@ -724,14 +811,23 @@ function UserCreate() {
             detail: res.data.message,
             life: 6000,
           });
-          //alert(res);
+          // alert(res)
+          setEmployeeID("");
+          setFirstName("");
+          setMiddleName("");
+          setLastName("");
+          setEmail("");
+          setDesignation("");
+          setStatus("");
+          setGroups([]);
+          setRoleNames([]);
         }
       })
       .catch(err => {
-        console.log(err);
-        let statusCode = err.response.data.error;
+        console.log(err.response);
+        let statusCode = err.response.status;
         console.log(statusCode);
-        //alert(err);
+        // alert(err)
         toast.current.show({
           severity: "error",
           summary: "Error!",
@@ -739,8 +835,6 @@ function UserCreate() {
           life: 6000,
         });
       });
-
-    console.log(formData);
   };
 
   const createForm = (
@@ -874,7 +968,24 @@ function UserCreate() {
           </Box>
 
           <Box className={classes.inputFieldBox}>
-            <Typography variant="subtitle2">{typeAheadSearch}</Typography>
+            <Typography variant="subtitle2">
+              {/* {typeAheadSearch} */}
+              <OutlinedInput
+                value={empIdInput}
+                onChange={e => setEmpIdInput(e.target.value)}
+                className={classes.inputFields}
+                style={{ backgroundColor: "white" }}
+                placeholder="Search Employee ID"
+                required
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleSearchEmployee} edge="end">
+                      <SearchOutlined />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </Typography>
           </Box>
         </Box>
 
@@ -1047,6 +1158,7 @@ function UserCreate() {
             </Typography>
           </Box>
         </Box>
+
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">Role</Typography>
@@ -1088,80 +1200,7 @@ function UserCreate() {
             </Typography>
           </Box>
         </Box>
-        {/* <Box className={classes.eachRow}>
-          <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Reference Document</Typography>
-          </Box>
 
-          <Box
-            className={classes.inputFieldBox}
-            sx={{
-              [theme.breakpoints.up("sm")]: {
-                flexDirection: "row",
-              },
-              [theme.breakpoints.down("sm")]: {
-                flexDirection: "column",
-              },
-
-              // width: 400,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
-              sx={{
-                // flexGrow: 1,
-                display: "flex",
-              }}
-            >
-              <Typography variant="subtitle2">
-                {
-                  <input
-                    type="text"
-                    value={referenceDoc ? referenceDoc.name : ""}
-                    onClick={() =>
-                      document.getElementById("selectedFile")!.click()
-                    }
-                    className={classes.uploadTextfield}
-                    placeholder="No file selected"
-                    readOnly
-                  />
-                }
-                <Input
-                  type="file"
-                  id="selectedFile"
-                  onChange={handleFileUpload}
-                />
-                <button
-                  type="button"
-                  onClick={() =>
-                    document.getElementById("selectedFile")!.click()
-                  }
-                  className={classes.uploadButton}
-                >
-                  Browse...
-                </button>
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                paddingLeft: 5,
-                paddingRight: 5,
-                fontSize: "x-large",
-                display: "flex",
-              }}
-            >
-              {width && <>|</>}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-              }}
-            >
-              <button className={classes.backButton}>view(3)</button>
-            </Box>
-          </Box>
-        </Box> */}
         <Box
           sx={{
             display: "flex",
@@ -1224,6 +1263,7 @@ function UserCreate() {
               }}
             >
               <Button
+                type="reset"
                 variant="contained"
                 color="primary"
                 className={classes.whiteButton}
@@ -1327,10 +1367,10 @@ function UserCreate() {
 
   return (
     <>
-      <Toast ref={toast} position="bottom-left" />
       <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
         <Grid container spacing={1}>
           <Grid container item xs={10}>
+            <Toast ref={toast} position="bottom-left" />
             {createForm}
             {viewLog}
             {viewGroups}
