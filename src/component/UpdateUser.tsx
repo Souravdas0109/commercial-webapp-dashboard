@@ -296,6 +296,9 @@ function UpdateUser(props: any) {
             return {
               label: group.groupName,
               value: group.groupId,
+              groupId: group.groupId,
+              groupName: group.groupName,
+              status: group.status,
             };
           });
           setGroupData(groupValues);

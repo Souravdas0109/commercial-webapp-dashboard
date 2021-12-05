@@ -9,6 +9,7 @@ import { useEffect, useRef } from "react";
 import { useCallback } from "react";
 import { Toast } from "primereact/toast";
 import { ServiceResponse } from "./Message";
+import ProgressLoader from "./ProgressLoader";
 
 const useStyles = makeStyles(theme => ({
   menuIcon: {
@@ -130,7 +131,10 @@ function Login(props: any) {
     <>
       <Toast ref={toast} position="bottom-left" />
       <div style={{ flexGrow: 1 }}>
-        <AppBar style={{ alignItems: "center", justifyContent: "center" }}>
+        <AppBar
+          elevation={0}
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
           <Toolbar style={{ alignItems: "center", justifyContent: "center" }}>
             <Grid container className={classes.gridContainer}>
               <Grid
@@ -167,6 +171,7 @@ function Login(props: any) {
             autoLoad={false}
           />
         </div>
+        <ProgressLoader showLoader={isLoading} />
       </div>
     </>
   );
@@ -177,6 +182,7 @@ const mapStateToProps = (state: any) => {
     user: state.loginReducer.user,
     error: state.loginReducer.error,
     errorMessage: state.loginReducer.errorMessage,
+    isLoading: state.loginReducer.isLoading,
   };
 };
 

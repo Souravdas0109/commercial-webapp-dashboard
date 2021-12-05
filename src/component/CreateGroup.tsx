@@ -492,6 +492,7 @@ function CreateGroup() {
       //   },
       // ],
     };
+    console.log(formData);
     let accessToken;
     if (localStorage && localStorage.getItem("_GresponseV2")) {
       accessToken = JSON.parse(
