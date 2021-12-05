@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 import { useCallback } from "react";
 import { Toast } from "primereact/toast";
 import { ServiceResponse } from "./Message";
-import ProgressLoader from "./ProgressLoader";
+import LoadingComponent from "./LoadingComponent";
 
 const useStyles = makeStyles(theme => ({
   menuIcon: {
@@ -171,7 +171,8 @@ function Login(props: any) {
             autoLoad={false}
           />
         </div>
-        <ProgressLoader showLoader={isLoading} />
+        {/* <ProgressLoader showLoader={isLoading} /> */}
+        <LoadingComponent showLoader={isLoading} />
       </div>
     </>
   );

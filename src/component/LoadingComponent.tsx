@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProgressLoader = props => {
+const LoadingComponent = (props: any) => {
   const classes = useStyles();
 
   const loadingText =
@@ -62,4 +62,4 @@ const ProgressLoader = props => {
   return progressBar;
 };
 
-export default ProgressLoader;
+export default LoadingComponent;
