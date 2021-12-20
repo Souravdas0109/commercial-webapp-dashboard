@@ -27,6 +27,9 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     backgroundColor: theme.palette.secondary.dark,
   },
+  error: {
+    color: "red",
+  },
   modwidth: {
     flexGrow: 1,
     transition: theme.transitions.create("margin", {
@@ -75,27 +78,27 @@ function Login(props: any) {
     console.log(error);
     history.push("/login");
   };
-  useEffect(() => {
-    if (errorMessage) {
-      let errorCode = ServiceResponse.getMessage("login", "serviceUnavailable");
-      history.push("/login");
-      if (errorMessage === errorCode) {
-        toast.current.show({
-          severity: "error",
-          summary: "",
-          detail: "Login failed. Service is not available.",
-          life: 6000,
-        });
-      } else {
-        toast.current.show({
-          severity: "error",
-          summary: "",
-          detail: "Login failed. Employee does not exist.",
-          life: 6000,
-        });
-      }
-    }
-  }, [errorMessage, history]);
+  // useEffect(() => {
+  //   if (errorMessage) {
+  //     let errorCode = ServiceResponse.getMessage("login", "serviceUnavailable");
+  //     history.push("/login");
+  //     if (errorMessage === errorCode) {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "",
+  //         detail: "Login failed. Service is not available.",
+  //         life: 6000,
+  //       });
+  //     } else {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "",
+  //         detail: "Login failed. Employee does not exist.",
+  //         life: 6000,
+  //       });
+  //     }
+  //   }
+  // }, [errorMessage, history]);
 
   // useEffect(() => {
   //   if (error) {
@@ -170,6 +173,18 @@ function Login(props: any) {
             style={{ flex: 1 }}
             autoLoad={false}
           />
+        </div>
+        <div
+          className={classes.error}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            marginTop: 10,
+          }}
+        >
+          {errorMessage}
         </div>
         {/* <ProgressLoader showLoader={isLoading} /> */}
         <LoadingComponent showLoader={isLoading} />

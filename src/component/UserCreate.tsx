@@ -33,7 +33,12 @@ import {
   GroupTypes,
   userData,
 } from "../Data/Data";
-import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
+import {
+  requestTypes,
+  roleTypes,
+  employeeDetails,
+  statuses,
+} from "../Data/Data";
 import axios from "axios";
 
 import { DataTable } from "primereact/datatable";
@@ -77,6 +82,12 @@ const useStyles = makeStyles((theme: any) => {
         width: fieldWidth,
       },
       height: 38,
+      color: teal[900],
+    },
+    selectOptions: {
+      "&:hover": {
+        backgroundColor: theme.palette.primary.main,
+      },
     },
     inputLabel: {
       [theme.breakpoints.up("sm")]: {
@@ -218,11 +229,14 @@ function UserCreate() {
   const [middleName, setMiddleName] = React.useState("");
   const [requestType, setRequestType] = React.useState("");
   const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>();
+  const [referenceDocData, setReferenceDocData] = React.useState<any>();
   const [employeeID, setEmployeeID] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [designation, setDesignation] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [comments, setComments] = React.useState("");
+  const [additionalInfo, setAdditionalInfo] = React.useState("");
+  const [submitFlag, setSubmitFlag] = React.useState("");
   const [referenceDoc, setReferenceDoc] = React.useState<any>();
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
@@ -261,24 +275,6 @@ function UserCreate() {
       );
     }
     console.log(accessToken.access_token);
-
-    // axios({
-    //   method: "GET",
-    //   url: `https://dev-api.morrisons.com/commercial-user/v1/userdetails?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
-    //   headers: {
-    //     "content-type": "application/json",
-    //     Authorization: `Bearer ${accessToken.access_token}`,
-    //   },
-    // })
-    //   .then(res => {
-    //     console.log(res.data);
-
-    //     setRoles(rolesValues);
-    //     console.log(rolesValues);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
 
     axios({
       method: "GET",
@@ -369,7 +365,25 @@ function UserCreate() {
 
   const handleFileUpload = (event: any) => {
     setReferenceDoc(event.target.files[0]);
+    if (event.target.files[0]) {
+      // let reader = new FileReader();
+      // reader.readAsDataURL(event.target.files[0]);
+
+      // reader.onload = (e: any) => {
+      //   console.log(e.target.result);
+      setReferenceDocData(event.target.files[0]);
+      // };
+    }
   };
+  const onstatusChange = (e: any) => {
+    setStatus(e.target.value);
+  };
+  const onrequestTypeChange = (e: any) => {
+    setRequestType(e.target.value);
+  };
+  useEffect(() => {
+    console.log(requestType);
+  }, [requestType]);
 
   const handleRoleChange1 = (selected: any) => {
     console.log(selected);
@@ -391,6 +405,14 @@ function UserCreate() {
         hideSelectedOptions={false}
         className={classes.multiSelect}
         styles={roleSelectStyle}
+        //required
+      />
+      <input
+        tabIndex={-1}
+        autoComplete="off"
+        style={{ opacity: 0, height: 0 }}
+        value={roleNames}
+        required
       />
     </>
   );
@@ -701,7 +723,8 @@ function UserCreate() {
           setLastName(userData.LastName);
           setEmail(userData.email);
           setDesignation(userData.jobRole.jobTitle);
-          setStatus(userData.employee_status);
+
+          //setStatus(userData.employee_status);
         }
       })
       .catch(err => {
@@ -714,59 +737,36 @@ function UserCreate() {
           life: 6000,
         });
       });
-
-    // if (selectedEmp.length > 0) {
-    //   console.log(selectedEmp[0])
-    //   setEmployeeID(selectedEmp[0].user.userId);
-    //   setFirstName(selectedEmp[0].user.firstName);
-    //   setMiddleName(selectedEmp[0].user.middleName);
-    //   setLastName(selectedEmp[0].user.lastName);
-    //   setEmail(selectedEmp[0].user.emailId);
-    //   setDesignation(selectedEmp[0].user.designation);
-    //   setStatus(selectedEmp[0].user.status);
-    //   selectedEmp[0] && setRoleNames(selectedEmp[0].roles.map((role: any) => {
-    //     return {
-    //       label: role.roleId,
-    //       value: role.roleId
-    //     }
-    //   }))
-
-    //   selectedEmp[0] && setGroupInput(selectedEmp[0].usergroups.map((group: any) => {
-    //     return {
-    //       label: group.groupId,
-    //       value: group.groupId,
-    //       status: group.status
-    //     }
-    //   }))
-    //   selectedEmp[0] && setGroups(selectedEmp[0].usergroups.map((group: any) => {
-    //     return {
-    //       label: group.groupId,
-    //       value: group.groupId,
-    //       status: group.status
-    //     }
-    //   }))
-    // }
-    // else {
-    //   toast.current.show({
-    //     severity: "error",
-    //     summary: "Error!",
-    //     detail: "Invalid Employee Id",
-    //     life: 6000,
-    //   });
-    // }
   };
+  React.useEffect(() => {
+    let employeedetails;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      employeedetails = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+    let empid = employeedetails.empId;
+    console.log(empid);
+    if (empid === "40011368") {
+      setSubmitFlag("ADMIN");
+    } else {
+      setSubmitFlag("USER");
+    }
+  }, []);
 
   const handleCreateRequest = (e: any) => {
     e.preventDefault();
     const formData = {
+      requestType: requestType,
       user: {
+        EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: "BUYER",
-        designation: designation,
+        additionalInfo: designation,
         status: status,
+        designation: designation.toUpperCase(),
       },
       roles: roleNames.map((role: any) => {
         return {
@@ -779,6 +779,7 @@ function UserCreate() {
           status: group.status,
         };
       }),
+      submitFlag: submitFlag,
     };
     console.log(formData);
 
@@ -791,7 +792,7 @@ function UserCreate() {
     console.log(accessToken.access_token);
     axios
       .put(
-        `https://dev-api.morrisons.com/commercial-user/v1/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
         formData,
         {
           headers: {
@@ -804,6 +805,81 @@ function UserCreate() {
         console.log(res);
         let statusCode = res.status;
         //console.log(res.data.message);
+        //    if (statusCode === 200) {
+        //   toast.current.show({
+        //     severity: "success",
+        //     summary: "",
+        //     detail: res.data.message,
+        //     life: 6000,
+        //   });
+        //   // alert(res)
+        //   setEmployeeID("");
+        //   setFirstName("");
+        //   setMiddleName("");
+        //   setLastName("");
+        //   setEmail("");
+        //   setDesignation("");
+        //   setStatus("");
+        //   setGroups([]);
+        //   setRoleNames([]);
+        // }
+        if (statusCode === 202) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data,
+            life: 6000,
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err.response);
+        let statusCode = err.response.status;
+        console.log(statusCode);
+        // alert(err)
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+
+    const formDataforAttachment: any = {
+      requestId: "SYSTCS109",
+      timestamp: "2021-12-12",
+      userId: employeeID,
+      role: "ADMIN",
+      camundaRequestId: "C1234567",
+      actionTaken: "New",
+      comments: "comments",
+    };
+
+    const formdata = new FormData();
+    formdata.append("fileIn", referenceDocData);
+    formdata.append(
+      "postData",
+      new Blob([JSON.stringify(formDataforAttachment)], {
+        type: "application/json",
+      })
+    );
+
+    //start
+    axios
+      .post(
+        `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formdata,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+            "content-type": "application/json",
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
         if (statusCode === 200) {
           toast.current.show({
             severity: "success",
@@ -811,16 +887,6 @@ function UserCreate() {
             detail: res.data.message,
             life: 6000,
           });
-          // alert(res)
-          setEmployeeID("");
-          setFirstName("");
-          setMiddleName("");
-          setLastName("");
-          setEmail("");
-          setDesignation("");
-          setStatus("");
-          setGroups([]);
-          setRoleNames([]);
         }
       })
       .catch(err => {
@@ -933,10 +999,8 @@ function UserCreate() {
                 name="requesttype"
                 id="requesttype"
                 className={classes.selectField}
-                defaultValue="New"
-                onChange={e => {
-                  setRequestType(e.target.value);
-                }}
+                defaultValue=""
+                onChange={onrequestTypeChange}
                 required
               >
                 <option disabled value="">
@@ -1111,6 +1175,9 @@ function UserCreate() {
                   placeholder="designation"
                   disabled
                   className={classes.designationField}
+                  onChange={e => {
+                    setDesignation(e.target.value);
+                  }}
                   value={designation}
                 />
               </Typography>
@@ -1138,37 +1205,71 @@ function UserCreate() {
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Status</Typography>
+            <Typography variant="subtitle2">
+              Status &nbsp;
+              <span
+                style={{
+                  color: "#ff0000",
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>
             <Typography variant="subtitle2">
-              <input
-                type="text"
+              <select
                 name="status"
                 id="status"
-                placeholder="eg. Active"
-                className={classes.inputFields}
-                onChange={e => {
-                  setStatus(e.target.value);
-                }}
-                value={status}
-                disabled
-              />
+                className={classes.selectField}
+                defaultValue=""
+                onChange={onstatusChange}
+                required
+              >
+                <option disabled value="" className={classes.selectOptions}>
+                  None
+                </option>
+                {statuses.map(type => {
+                  return (
+                    <option value={type.statusID} key={type.statusID}>
+                      {type.text}
+                    </option>
+                  );
+                })}
+              </select>
             </Typography>
           </Box>
         </Box>
 
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Role</Typography>
+            <Typography variant="subtitle2">
+              Role &nbsp;
+              <span
+                style={{
+                  color: "#ff0000",
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>{roleSelect1}</Box>
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">User Group</Typography>
+            <Typography variant="subtitle2">
+              User Group &nbsp;
+              <span
+                style={{
+                  color: "#ff0000",
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>
@@ -1197,7 +1298,88 @@ function UserCreate() {
                   Add
                 </button>
               )}
+              <input
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ opacity: 0, height: 0 }}
+                value={groups}
+                required
+              />
             </Typography>
+          </Box>
+        </Box>
+
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Reference Document</Typography>
+          </Box>
+
+          <Box
+            className={classes.inputFieldBox}
+            sx={{
+              [theme.breakpoints.up("sm")]: {
+                flexDirection: "row",
+              },
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+              },
+
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box
+              sx={{
+                // flexGrow: 1,
+                display: "flex",
+              }}
+            >
+              <Typography variant="subtitle2">
+                {
+                  <input
+                    type="text"
+                    value={referenceDoc ? referenceDoc.name : ""}
+                    onClick={() =>
+                      document.getElementById("selectedFile")!.click()
+                    }
+                    className={classes.uploadTextfield}
+                    placeholder="No file selected"
+                    readOnly
+                  />
+                }
+                <Input
+                  type="file"
+                  id="selectedFile"
+                  onChange={handleFileUpload}
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    document.getElementById("selectedFile")!.click()
+                  }
+                  className={classes.uploadButton}
+                >
+                  Browse...
+                </button>
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                fontSize: "x-large",
+                display: "flex",
+              }}
+            >
+              {width && <>|</>}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
+              <button className={classes.backButton}>view(3)</button>
+            </Box>
           </Box>
         </Box>
 

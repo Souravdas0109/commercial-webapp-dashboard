@@ -480,34 +480,48 @@ export const promotions = [
 ];
 export const requestTypes = [
   {
-    name: "new",
+    name: "New",
     text: "New",
   },
   {
-    name: "modify",
+    name: "Modify",
     text: "Modify",
   },
   {
-    name: "remove",
+    name: "Remove",
     text: "Remove",
   },
 ];
 export const statuses = [
   {
     statusID: "A",
-    text: "A",
+    text: "ACTIVE",
+  },
+  {
+    statusID: "W",
+    text: "INPROGRESS",
   },
   {
     statusID: "I",
-    text: "I",
+    text: "INACTIVE",
   },
   {
     statusID: "D",
-    text: "D",
+    text: "DELETED",
+  },
+];
+export const groupstatuses = [
+  {
+    statusID: "A",
+    text: "ACTIVE",
   },
   {
-    statusID: "C",
-    text: "C",
+    statusID: "I",
+    text: "INACTIVE",
+  },
+  {
+    statusID: "D",
+    text: "DELETED",
   },
 ];
 export interface RoleTypes {
@@ -657,56 +671,35 @@ export const producthierarchyTypes: ProducthierarchyTypes[] = [
 export interface LocationhierarchyTypes {
   readonly value: string;
   readonly label: string;
+  readonly hierarchyLevel: string;
+  readonly hierarchyId: string;
+  readonly startDate: string;
+  readonly endDate: string;
 }
 export const locationTypes: LocationhierarchyTypes[] = [
   {
-    value: "location1",
-    label: "Location 1",
+    value: "Online",
+    label: "Online",
+    hierarchyLevel: "channel",
+    hierarchyId: "Online",
+    startDate: "2021-12-10",
+    endDate: "2099-12-31",
   },
   {
-    value: "location2",
-    label: "Location 2",
+    value: "Wholesale",
+    label: "Wholesale",
+    hierarchyLevel: "channel",
+    hierarchyId: "Wholesale",
+    startDate: "2021-12-16",
+    endDate: "2099-01-01",
   },
   {
-    value: "location3",
-    label: "Location 3",
-  },
-  {
-    value: "location4",
-    label: "Location 4",
-  },
-  {
-    value: "location5",
-    label: "Location 5",
-  },
-  {
-    value: "location6",
-    label: "Location 6",
-  },
-  {
-    value: "location7",
-    label: "Location 7",
-  },
-  {
-    value: "location8",
-    label: "Location 8",
-  },
-
-  {
-    value: "location9",
-    label: "Location 9",
-  },
-  {
-    value: "location10",
-    label: "Location 10",
-  },
-  {
-    value: "location11",
-    label: "Location 11",
-  },
-  {
-    value: "location12",
-    label: "Location 12",
+    value: "Retail",
+    label: "Retail",
+    hierarchyLevel: "channel",
+    hierarchyId: "Retail",
+    startDate: "2021-12-16",
+    endDate: "2099-01-01",
   },
 ];
 export const employeeDetails = [
@@ -931,8 +924,8 @@ export const userTableHeaders = [
     width: 150,
   },
   {
-    field: "comments",
-    headerName: "Comments",
+    field: "additionalInfo",
+    headerName: "AdditionalInfo",
     width: 200,
   },
 ];

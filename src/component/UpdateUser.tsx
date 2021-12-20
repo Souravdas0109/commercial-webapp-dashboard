@@ -31,7 +31,7 @@ import {
 } from "../Data/Data";
 import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
 import { RoleTypes } from "../Data/Data";
-
+import { useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 // import 'primeicons/primeicons.css';
@@ -235,6 +235,7 @@ function UpdateUser(props: any) {
   const [groupOpen, setGroupOpen] = React.useState(false);
   const [roles, setRoles] = React.useState([]);
   const [tasks, setTasks] = React.useState(taskList);
+  const [referenceDocData, setReferenceDocData] = React.useState<any>();
   const [taskSelected, setTaskSelected] = React.useState<any>(null);
   const [taskOpen, setTaskOpen] = React.useState(false);
   const toast = useRef<any>(null);
@@ -335,9 +336,17 @@ function UpdateUser(props: any) {
   const handleReset = () => {
     setRoleNames([]);
   };
-
+  const onrequestTypeChange = (e: any) => {
+    setRequestType(e.target.value);
+  };
+  useEffect(() => {
+    console.log(requestType);
+  }, [requestType]);
   const handleFileUpload = (event: any) => {
     setReferenceDoc(event.target.files[0]);
+    if (event.target.files[0]) {
+      setReferenceDocData(event.target.files[0]);
+    }
   };
 
   const Option = (props: any) => {
@@ -740,13 +749,15 @@ function UpdateUser(props: any) {
   const handleUpdateUser = (e: any) => {
     e.preventDefault();
     const formData = {
+      requestType: requestType,
       user: {
+        EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: "BUYER",
-        designation: designation,
+        additionalInfo: designation,
+        designation: designation.toUpperCase(),
         status: status,
       },
       roles: roleNames.map((role: any) => {
@@ -772,7 +783,7 @@ function UpdateUser(props: any) {
     console.log(accessToken.access_token);
     axios
       .put(
-        `https://dev-api.morrisons.com/commercial-user/v1/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
         formData,
         {
           headers: {
@@ -785,6 +796,71 @@ function UpdateUser(props: any) {
         console.log(res);
         let statusCode = res.status;
         //console.log(res.data.message);
+        // if (statusCode === 200) {
+        //   toast.current.show({
+        //     severity: "success",
+        //     summary: "",
+        //     detail: res.data.message,
+        //     life: 6000,
+        //   });
+        //   // alert(res)
+        // }
+        if (statusCode === 202)
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data,
+            life: 6000,
+          });
+      })
+      .catch(err => {
+        console.log(err.response);
+        let statusCode = err.response.status;
+        console.log(statusCode);
+        // alert(err)
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+
+    const formDataforAttachment: any = {
+      requestId: "SYSTCS175",
+      timestamp: "2021-12-12",
+      userId: employeeID,
+      role: "ADMIN",
+      camundaRequestId: "C1234567",
+      actionTaken: "New",
+      comments: "comments",
+    };
+
+    const formdata = new FormData();
+    formdata.append("fileIn", referenceDocData);
+    formdata.append(
+      "postData",
+      new Blob([JSON.stringify(formDataforAttachment)], {
+        type: "application/json",
+      })
+    );
+
+    //start
+    axios
+      .post(
+        `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formdata,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+            "content-type": "application/json",
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
         if (statusCode === 200) {
           toast.current.show({
             severity: "success",
@@ -792,7 +868,6 @@ function UpdateUser(props: any) {
             detail: res.data.message,
             life: 6000,
           });
-          // alert(res)
         }
       })
       .catch(err => {
@@ -901,10 +976,8 @@ function UpdateUser(props: any) {
                 name="requesttype"
                 id="requesttype"
                 className={classes.selectField}
-                defaultValue="Modify"
-                onChange={e => {
-                  setRequestType(e.target.value);
-                }}
+                defaultValue=""
+                onChange={onrequestTypeChange}
                 required
               >
                 <option disabled value="">

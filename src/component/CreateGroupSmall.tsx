@@ -8,13 +8,15 @@ import {
   Popover,
   Dialog,
 } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Select, { StylesConfig } from "react-select";
 import { Link } from "react-router-dom";
 import ReactSelect from "react-select";
 import { components } from "react-select";
 import CloseIcon from "@material-ui/icons/Close";
 import { TextareaAutosize } from "@material-ui/core";
+import axios from "axios";
+import { Toast } from "primereact/toast";
 import { teal } from "@material-ui/core/colors";
 import {
   // statuses,
@@ -25,6 +27,19 @@ import {
   ProducthierarchyTypes,
   LocationhierarchyTypes,
 } from "../Data/Data";
+
+//product changes start
+const mainvalues = [
+  { value: "none", label: "Select.." },
+  { value: "division", label: "Division" },
+  { value: "group", label: "Trading Group" },
+  { value: "category", label: "Category" },
+  { value: "department", label: "Product Group" },
+  { value: "class", label: "Class" },
+  { value: "subclass", label: "Sub Class" },
+];
+//product changes end
+
 const useStyles = makeStyles(theme => ({
   table: {
     width: "100%",
@@ -179,7 +194,7 @@ const useStyles = makeStyles(theme => ({
 function CreateGroupSmall() {
   const theme = useTheme();
   const classes = useStyles();
-  const [groupID, setGroupID] = useState("");
+  const [groupId, setGroupId] = useState("");
   const [groupname, setGroupname] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -187,6 +202,36 @@ function CreateGroupSmall() {
   const [viewProductEl, setViewProductEl] = useState(null);
   const [locationNames, setLocationNames] = useState([]);
   const [viewLocationEl, setViewLocationEl] = useState(null);
+  const [currentDate, setCurrentDate] = useState("");
+  const toast = useRef<any>(null);
+  // changes start..........................
+  const BASE = "https://pre-api.morrisons.com";
+  const [error, setError] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [selected, setSelected] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
+  const [division, setDivision] = useState<any>([]);
+  const [uniquediv, setUniqueDiv] = useState<any>([]);
+  const [uniquedivobj, setUniqueDivObj] = useState<any>([]);
+  const [group, setGroup] = useState<any>([]);
+  const [uniquegrp, setUniqueGrp] = useState<any>([]);
+  const [uniquegrpobj, setUniqueGrpObj] = useState<any>([]);
+  const [cat, setCat] = useState<any>([]);
+  const [uniquecat, setUniqueCat] = useState<any>([]);
+  const [uniquecatobj, setUniqueCatObj] = useState<any>([]);
+  const [dep, setDep] = useState<any>([]);
+  const [uniquedep, setUniqueDep] = useState<any>([]);
+  const [uniquedepobj, setUniqueDepObj] = useState<any>([]);
+  const [cls, setCls] = useState<any>([]);
+  const [uniquecls, setUniqueCls] = useState<any>([]);
+  const [uniqueclsobj, setUniqueClsObj] = useState<any>([]);
+  const [scls, setScls] = useState<any>([]);
+  const [uniquescls, setUniqueScls] = useState<any>([]);
+  const [uniquesclsobj, setUniqueSclsObj] = useState<any>([]);
+  const [payload, setPayload] = useState<any>([]);
+  const [hierLevel, setHierLevel] = useState<any>({});
+  //changes end.....................
+
   const productCustomStyles: StylesConfig<ProducthierarchyTypes, true> = {
     option: (provided: any, state: any) => ({
       ...provided,
@@ -203,6 +248,254 @@ function CreateGroupSmall() {
       color: state.isSelected ? "white" : teal[900],
     }),
   };
+
+  //product changes started..................
+
+  //product changes start...........................................
+
+  useEffect(() => {
+    for (let d = 0; d < data.length; d++) {
+      data[d]["tag"] = data[d].name;
+      let tag = `${data[d].name}#${data[d].tag}#${data[d].id}`;
+      if (!uniquediv.includes(tag)) {
+        setUniqueDiv((prevState: any) => [...prevState, tag]);
+        const splitted = tag.split("#");
+        setUniqueDivObj((prevState: any) => [
+          ...prevState,
+          {
+            value: splitted[0],
+            label: splitted[1],
+            id: splitted[2],
+            hierGroup: "division",
+          },
+        ]);
+      }
+      for (let g = 0; g < data[d].nodes.length; g++) {
+        data[d].nodes[g]["tag"] = `${data[d].tag} > ${data[d].nodes[g].name}`;
+        let tag = `${data[d].nodes[g].name}#${data[d].nodes[g].tag}#${data[d].nodes[g].id}`;
+        if (!uniquegrp.includes(tag)) {
+          setUniqueGrp((prevState: any) => [...prevState, tag]);
+          const splitted = tag.split("#");
+          setUniqueGrpObj((prevState: any) => [
+            ...prevState,
+            {
+              value: splitted[0],
+              label: splitted[1],
+              id: splitted[2],
+              hierGroup: "group",
+            },
+          ]);
+        }
+        for (let c = 0; c < data[d].nodes[g].nodes.length; c++) {
+          data[d].nodes[g].nodes[c][
+            "tag"
+          ] = `${data[d].nodes[g].tag} > ${data[d].nodes[g].nodes[c].name}`;
+          let tag = `${data[d].nodes[g].nodes[c].name}#${data[d].nodes[g].nodes[c].tag}#${data[d].nodes[g].nodes[c].id}`;
+          if (!uniquecat.includes(tag)) {
+            setUniqueCat((prevState: any) => [...prevState, tag]);
+            const splitted = tag.split("#");
+            setUniqueCatObj((prevState: any) => [
+              ...prevState,
+              {
+                value: splitted[0],
+                label: splitted[1],
+                id: splitted[2],
+                hierGroup: "category",
+              },
+            ]);
+          }
+          for (let dp = 0; dp < data[d].nodes[g].nodes[c].nodes.length; dp++) {
+            data[d].nodes[g].nodes[c].nodes[dp][
+              "tag"
+            ] = `${data[d].nodes[g].nodes[c].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].name}`;
+            let tag = `${data[d].nodes[g].nodes[c].nodes[dp].name}#${data[d].nodes[g].nodes[c].nodes[dp].tag}#${data[d].nodes[g].nodes[c].nodes[dp].id}`;
+            if (!uniquedep.includes(tag)) {
+              setUniqueDep((prevState: any) => [...prevState, tag]);
+              const splitted = tag.split("#");
+              setUniqueDepObj((prevState: any) => [
+                ...prevState,
+                {
+                  value: splitted[0],
+                  label: splitted[1],
+                  id: splitted[2],
+                  hierGroup: "department",
+                },
+              ]);
+            }
+            for (
+              let cl = 0;
+              cl < data[d].nodes[g].nodes[c].nodes[dp].nodes.length;
+              cl++
+            ) {
+              data[d].nodes[g].nodes[c].nodes[dp].nodes[cl][
+                "tag"
+              ] = `${data[d].nodes[g].nodes[c].nodes[dp].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}`;
+              let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].id}`;
+              if (!uniquecls.includes(tag)) {
+                setUniqueCls((prevState: any) => [...prevState, tag]);
+                const splitted = tag.split("#");
+                setUniqueClsObj((prevState: any) => [
+                  ...prevState,
+                  {
+                    value: splitted[0],
+                    label: splitted[1],
+                    id: splitted[2],
+                    hierGroup: "class",
+                  },
+                ]);
+              }
+              for (
+                let scl = 0;
+                scl <
+                data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes.length;
+                scl++
+              ) {
+                data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl][
+                  "tag"
+                ] = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}`;
+                let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].id}`;
+                if (!uniquescls.includes(tag)) {
+                  setUniqueScls((prevState: any) => [...prevState, tag]);
+                  const splitted = tag.split("#");
+                  setUniqueSclsObj((prevState: any) => [
+                    ...prevState,
+                    {
+                      value: splitted[0],
+                      label: splitted[1],
+                      id: splitted[2],
+                      hierGroup: "subclass",
+                    },
+                  ]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    async function handleClick() {
+      setData([]);
+      setDivision([]);
+      setGroup([]);
+      setCat([]);
+      setDep([]);
+      setCls([]);
+      setScls([]);
+      setUniqueDivObj([]);
+      setUniqueGrpObj([]);
+      setUniqueCatObj([]);
+      setUniqueDepObj([]);
+      setUniqueClsObj([]);
+      setUniqueSclsObj([]);
+      setUniqueDiv([]);
+      setUniqueGrp([]);
+      setUniqueCat([]);
+      setUniqueDep([]);
+      setUniqueCls([]);
+      setUniqueScls([]);
+      setDisabled(true);
+      let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
+      const start = new Date();
+      while (nexturl !== "") {
+        console.log("to visit url: ", nexturl);
+        await axios
+          .get(nexturl, {
+            headers: {
+              Authorization:
+                "Basic QXJBYVpsdktWMDlEbFpzdDRhR3F4aWNPTnp2dEdicEk6d2txU0VjQWRHWllaRnc5Yg==",
+            },
+          })
+          .then(res => {
+            setData((prevState: any) => [
+              ...prevState,
+              ...res.data.hierarchy.nodes,
+            ]);
+            nexturl = res.data.metaData.links.next
+              ? `${BASE}${res.data.metaData.links.next}`
+              : "";
+            console.log(`up next: ${res.data.metaData.links.next}`);
+            console.log(res.data.hierarchy.nodes);
+          })
+          .catch(e => {
+            nexturl = "";
+            setError(e.message);
+          });
+      }
+      // const end = new Date();
+      // const timediff = end - start;
+      // console.log("Time taken for api calls: ", timediff);
+    }
+    handleClick();
+  }, []);
+
+  const handleChange = (e: any) => {
+    setHierLevel(mainvalues.filter(val => val.value === e.value));
+    switch (e.value) {
+      case "division":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquedivobj]);
+        break;
+      case "group":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquegrpobj]);
+        break;
+      case "category":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquecatobj]);
+        break;
+      case "department":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquedepobj]);
+        break;
+      case "class":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniqueclsobj]);
+        break;
+      case "subclass":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquesclsobj]);
+        break;
+      default:
+        setDisabled(true);
+        setPayload("");
+        setSelected([]);
+        break;
+    }
+  };
+
+  const handleHierarchyChange = (e: any) => {
+    let values = [];
+    for (let i = 0; i < e.length; i++) {
+      values.push({
+        value: e[i].label,
+        label: e[i].label,
+        hierarchyLevel: e[i].hierGroup,
+        hierarchyId: e[i].id,
+        startDate: new Date()
+          .toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+          .replace(/ /g, "-"),
+        endDate: "2099-12-31",
+      });
+    }
+    setPayload([...values]);
+    console.log(values);
+    console.log(payload);
+  };
+
+  //product changes ended................
 
   const viewProductOpen = Boolean(viewProductEl);
   const handleProductChange = (selected: any) => {
@@ -233,15 +526,18 @@ function CreateGroupSmall() {
   const productSelect = (
     <>
       <Select
-        options={producthierarchyTypes}
-        isMulti
-        onChange={handleProductChange}
-        components={{
-          Option,
-        }}
-        value={productNames}
         closeMenuOnSelect={false}
-        hideSelectedOptions={false}
+        //components={animatedComponents}
+        //defaultValue={[colourOptions[4], colourOptions[5]]}
+        // components={{
+        //   Option,
+        // }}
+        isDisabled={disabled}
+        isMulti
+        hideSelectedOptions={true}
+        options={selected}
+        value={payload}
+        onChange={handleHierarchyChange}
         className={classes.multiSelect}
         styles={productCustomStyles}
       />
@@ -265,7 +561,7 @@ function CreateGroupSmall() {
     </>
   );
   const ongroupIDChange = (e: any) => {
-    setGroupID(e.target.value);
+    setGroupId(e.target.value);
   };
   const ongroupnameChange = (e: any) => {
     setGroupname(e.target.value);
@@ -339,24 +635,64 @@ function CreateGroupSmall() {
             </button>
           </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            p: 2,
-          }}
-        >
-          <Typography variant="body2">
-            <b>Added Product Hierarchies</b>
-          </Typography>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              p: 2,
+            }}
+          >
+            <Typography variant="body2">
+              <b>Hierarchy Level</b>
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              // justifyContent: "center",
+              paddingLeft: "16px",
+              display: "flex",
+            }}
+          >
+            <Box className={classes.inputFieldBox}>
+              <Select
+                defaultValue={hierLevel}
+                isDisabled={data !== [] ? false : true}
+                isLoading={false}
+                // components={{
+                //   Option,
+                // }}
+                isRtl={false}
+                isSearchable={true}
+                name="color"
+                options={mainvalues}
+                onChange={handleChange}
+                className={classes.multiSelect}
+                styles={locationCustomStyles}
+                //value={hierLevel}
+              />
+            </Box>
+          </Box>
         </Box>
-        <Box
-          sx={{
-            justifyContent: "center",
-            display: "flex",
-            textAlign: "center",
-          }}
-        >
-          <Box className={classes.inputFieldBox}>{productSelect}</Box>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              p: 2,
+            }}
+          >
+            <Typography variant="body2">
+              <b>Search Hierrachies</b>
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              // justifyContent: "center",
+              paddingLeft: "16px",
+              display: "flex",
+            }}
+          >
+            <Box className={classes.inputFieldBox}>{productSelect}</Box>
+          </Box>
         </Box>
       </Box>
     </Dialog>
@@ -426,7 +762,7 @@ function CreateGroupSmall() {
           sx={{
             justifyContent: "center",
             display: "flex",
-            textAlign: "center",
+            //textAlign: "center",
           }}
         >
           <Box className={classes.inputFieldBox}>{locationSelect}</Box>
@@ -435,8 +771,102 @@ function CreateGroupSmall() {
     </Dialog>
   );
 
+  //start
+
+  React.useEffect(() => {
+    let today = new Date();
+    let dd = String(today.getDate());
+
+    let mm = String(today.getMonth() + 1);
+    let yyyy = String(today.getFullYear());
+    if (dd < "10") {
+      dd = "0" + dd;
+    }
+
+    if (mm < "10") {
+      mm = "0" + mm;
+    }
+    let startdate;
+    startdate = yyyy + "-" + mm + "-" + dd;
+    console.log(startdate);
+    setCurrentDate(startdate);
+  }, [locationNames]);
+
+  const handleCreateGroup = (e: any) => {
+    e.preventDefault();
+
+    const formData = {
+      groupName: groupname,
+      groupDesc: description,
+      status: status,
+      locationHierarchy: locationNames.map((location: any) => {
+        return {
+          hierarchyLevel: location.hierarchyLevel,
+          hierarchyId: location.hierarchyId,
+          startDate: currentDate,
+          endDate: location.endDate,
+        };
+      }),
+      productHierarchy: payload.map((product: any) => {
+        return {
+          hierarchyLevel: product.hierarchyLevel,
+          hierarchyId: product.hierarchyId,
+          startDate: currentDate,
+          endDate: product.endDate,
+        };
+      }),
+    };
+    //console.log(status);
+    console.log(formData);
+    let accessToken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accessToken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+
+    axios
+      .put(
+        `https://dev-api.morrisons.com/commercial-user/v1/usergroups/${groupId}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formData,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
+        //console.log(res.data.message);
+        if (statusCode === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data.message,
+            life: 6000,
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        let statusCode = err.response.data.error;
+        console.log(statusCode);
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
+  };
+
+  //end
+
   return (
     <>
+      <Toast ref={toast} position="bottom-left" />
       <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
         <Grid container spacing={1}>
           <Grid container item xs={12}>
@@ -477,13 +907,16 @@ function CreateGroupSmall() {
                       paddingLeft: 5,
                     }}
                   >
-                    <Link to="#" className={classes.backButton}>
+                    <Link
+                      to="/userconfig/usergroup"
+                      className={classes.backButton}
+                    >
                       Back
                     </Link>
                   </Box>
                 </Box>
               </Box>
-              <form>
+              <form onSubmit={handleCreateGroup}>
                 <Box
                   sx={{
                     display: "flex",
@@ -513,7 +946,7 @@ function CreateGroupSmall() {
                         placeholder="eg. 012345"
                         className={classes.inputFields}
                         onChange={ongroupIDChange}
-                        value={groupID}
+                        value={groupId}
                       />
                     </Typography>
                   </Box>
@@ -614,14 +1047,14 @@ function CreateGroupSmall() {
 
                   <Box className={classes.inputFieldBox}>
                     <Typography variant="subtitle1">
-                      {productNames ? (
-                        productNames.length > 0 ? (
+                      {payload ? (
+                        payload.length > 0 ? (
                           <Link
                             to="#"
                             className={classes.underlineRemove}
                             onClick={handleOpenViewProduct}
                           >
-                            Product Hierarchies({productNames.length})
+                            Product Hierarchies({payload.length})
                           </Link>
                         ) : (
                           <Link
@@ -718,6 +1151,7 @@ function CreateGroupSmall() {
                         variant="contained"
                         color="primary"
                         className={classes.buttons}
+                        onClick={handleCreateGroup}
                       >
                         Submit
                       </Button>

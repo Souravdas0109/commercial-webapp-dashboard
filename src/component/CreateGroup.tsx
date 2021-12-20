@@ -6,6 +6,7 @@ import {
   Box,
   useTheme,
   Popover,
+  Dialog,
 } from "@material-ui/core";
 import React, { useRef, useState } from "react";
 import Select, { StylesConfig } from "react-select";
@@ -17,14 +18,27 @@ import { TextareaAutosize } from "@material-ui/core";
 import { teal } from "@material-ui/core/colors";
 import axios from "axios";
 import { Toast } from "primereact/toast";
+import { useEffect } from "react";
 import {
-  statuses,
+  groupstatuses,
   groupTypes,
   locationTypes,
   producthierarchyTypes,
   ProducthierarchyTypes,
   LocationhierarchyTypes,
 } from "../Data/Data";
+
+//product changes start
+const mainvalues = [
+  { value: "none", label: "Select.." },
+  { value: "division", label: "Division" },
+  { value: "group", label: "Trading Group" },
+  { value: "category", label: "Category" },
+  { value: "department", label: "Product Group" },
+  { value: "class", label: "Class" },
+  { value: "subclass", label: "Sub Class" },
+];
+//product changes end
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -183,13 +197,323 @@ function CreateGroup() {
   const [groupId, setGroupId] = useState("");
   const [groupname, setGroupname] = useState("");
   const [description, setDescription] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
   const [status, setStatus] = useState("");
   const [productNames, setproductNames] = useState([]);
   const [viewProductEl, setViewProductEl] = useState(null);
   const [locationNames, setLocationNames] = useState([]);
   const [viewLocationEl, setViewLocationEl] = useState(null);
+  const [hierLevels, setHierLevels] = useState<any>([]);
+  const [hierLevelSelect, setHierLevelSelect] = useState<any>("");
+  const [hierarchyDetails, setHierarchyDetails] = useState<any>([]);
+  const [productHierarchyValues, setProductHierarchyValues] = useState<any>([]);
   const toast = useRef<any>(null);
-  const productCustomStyles: StylesConfig<ProducthierarchyTypes, true> = {
+  //product changes start.............................................
+  const BASE = "https://pre-api.morrisons.com";
+  const [error, setError] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [selected, setSelected] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
+  const [division, setDivision] = useState<any>([]);
+  const [uniquediv, setUniqueDiv] = useState<any>([]);
+  const [uniquedivobj, setUniqueDivObj] = useState<any>([]);
+  const [group, setGroup] = useState<any>([]);
+  const [uniquegrp, setUniqueGrp] = useState<any>([]);
+  const [uniquegrpobj, setUniqueGrpObj] = useState<any>([]);
+  const [cat, setCat] = useState<any>([]);
+  const [uniquecat, setUniqueCat] = useState<any>([]);
+  const [uniquecatobj, setUniqueCatObj] = useState<any>([]);
+  const [dep, setDep] = useState<any>([]);
+  const [uniquedep, setUniqueDep] = useState<any>([]);
+  const [uniquedepobj, setUniqueDepObj] = useState<any>([]);
+  const [cls, setCls] = useState<any>([]);
+  const [uniquecls, setUniqueCls] = useState<any>([]);
+  const [uniqueclsobj, setUniqueClsObj] = useState<any>([]);
+  const [scls, setScls] = useState<any>([]);
+  const [uniquescls, setUniqueScls] = useState<any>([]);
+  const [uniquesclsobj, setUniqueSclsObj] = useState<any>([]);
+  const [payload, setPayload] = useState<any>([]);
+  const [hierLevel, setHierLevel] = useState<any>({});
+  //product changes end ................................................
+
+  //product changes start...........................................
+
+  useEffect(() => {
+    for (let d = 0; d < data.length; d++) {
+      data[d]["tag"] = data[d].name;
+      let tag = `${data[d].name}#${data[d].tag}#${data[d].id}`;
+      if (!uniquediv.includes(tag)) {
+        setUniqueDiv((prevState: any) => [...prevState, tag]);
+        const splitted = tag.split("#");
+        setUniqueDivObj((prevState: any) => [
+          ...prevState,
+          {
+            value: splitted[0],
+            label: splitted[1],
+            id: splitted[2],
+            hierGroup: "division",
+          },
+        ]);
+      }
+      for (let g = 0; g < data[d].nodes.length; g++) {
+        data[d].nodes[g]["tag"] = `${data[d].tag} > ${data[d].nodes[g].name}`;
+        let tag = `${data[d].nodes[g].name}#${data[d].nodes[g].tag}#${data[d].nodes[g].id}`;
+        if (!uniquegrp.includes(tag)) {
+          setUniqueGrp((prevState: any) => [...prevState, tag]);
+          const splitted = tag.split("#");
+          setUniqueGrpObj((prevState: any) => [
+            ...prevState,
+            {
+              value: splitted[0],
+              label: splitted[1],
+              id: splitted[2],
+              hierGroup: "group",
+            },
+          ]);
+        }
+        for (let c = 0; c < data[d].nodes[g].nodes.length; c++) {
+          data[d].nodes[g].nodes[c][
+            "tag"
+          ] = `${data[d].nodes[g].tag} > ${data[d].nodes[g].nodes[c].name}`;
+          let tag = `${data[d].nodes[g].nodes[c].name}#${data[d].nodes[g].nodes[c].tag}#${data[d].nodes[g].nodes[c].id}`;
+          if (!uniquecat.includes(tag)) {
+            setUniqueCat((prevState: any) => [...prevState, tag]);
+            const splitted = tag.split("#");
+            setUniqueCatObj((prevState: any) => [
+              ...prevState,
+              {
+                value: splitted[0],
+                label: splitted[1],
+                id: splitted[2],
+                hierGroup: "category",
+              },
+            ]);
+          }
+          for (let dp = 0; dp < data[d].nodes[g].nodes[c].nodes.length; dp++) {
+            data[d].nodes[g].nodes[c].nodes[dp][
+              "tag"
+            ] = `${data[d].nodes[g].nodes[c].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].name}`;
+            let tag = `${data[d].nodes[g].nodes[c].nodes[dp].name}#${data[d].nodes[g].nodes[c].nodes[dp].tag}#${data[d].nodes[g].nodes[c].nodes[dp].id}`;
+            if (!uniquedep.includes(tag)) {
+              setUniqueDep((prevState: any) => [...prevState, tag]);
+              const splitted = tag.split("#");
+              setUniqueDepObj((prevState: any) => [
+                ...prevState,
+                {
+                  value: splitted[0],
+                  label: splitted[1],
+                  id: splitted[2],
+                  hierGroup: "department",
+                },
+              ]);
+            }
+            for (
+              let cl = 0;
+              cl < data[d].nodes[g].nodes[c].nodes[dp].nodes.length;
+              cl++
+            ) {
+              data[d].nodes[g].nodes[c].nodes[dp].nodes[cl][
+                "tag"
+              ] = `${data[d].nodes[g].nodes[c].nodes[dp].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}`;
+              let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].id}`;
+              if (!uniquecls.includes(tag)) {
+                setUniqueCls((prevState: any) => [...prevState, tag]);
+                const splitted = tag.split("#");
+                setUniqueClsObj((prevState: any) => [
+                  ...prevState,
+                  {
+                    value: splitted[0],
+                    label: splitted[1],
+                    id: splitted[2],
+                    hierGroup: "class",
+                  },
+                ]);
+              }
+              for (
+                let scl = 0;
+                scl <
+                data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes.length;
+                scl++
+              ) {
+                data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl][
+                  "tag"
+                ] = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}`;
+                let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].id}`;
+                if (!uniquescls.includes(tag)) {
+                  setUniqueScls((prevState: any) => [...prevState, tag]);
+                  const splitted = tag.split("#");
+                  setUniqueSclsObj((prevState: any) => [
+                    ...prevState,
+                    {
+                      value: splitted[0],
+                      label: splitted[1],
+                      id: splitted[2],
+                      hierGroup: "subclass",
+                    },
+                  ]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    async function handleClick() {
+      setData([]);
+      setDivision([]);
+      setGroup([]);
+      setCat([]);
+      setDep([]);
+      setCls([]);
+      setScls([]);
+      setUniqueDivObj([]);
+      setUniqueGrpObj([]);
+      setUniqueCatObj([]);
+      setUniqueDepObj([]);
+      setUniqueClsObj([]);
+      setUniqueSclsObj([]);
+      setUniqueDiv([]);
+      setUniqueGrp([]);
+      setUniqueCat([]);
+      setUniqueDep([]);
+      setUniqueCls([]);
+      setUniqueScls([]);
+      setDisabled(true);
+      let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
+      const start = new Date();
+      while (nexturl !== "") {
+        console.log("to visit url: ", nexturl);
+        await axios
+          .get(nexturl, {
+            headers: {
+              Authorization:
+                "Basic QXJBYVpsdktWMDlEbFpzdDRhR3F4aWNPTnp2dEdicEk6d2txU0VjQWRHWllaRnc5Yg==",
+            },
+          })
+          .then(res => {
+            setData((prevState: any) => [
+              ...prevState,
+              ...res.data.hierarchy.nodes,
+            ]);
+            nexturl = res.data.metaData.links.next
+              ? `${BASE}${res.data.metaData.links.next}`
+              : "";
+            console.log(`up next: ${res.data.metaData.links.next}`);
+            console.log(res.data.hierarchy.nodes);
+          })
+          .catch(e => {
+            nexturl = "";
+            setError(e.message);
+          });
+      }
+      // const end = new Date();
+      // const timediff = end - start;
+      // console.log("Time taken for api calls: ", timediff);
+    }
+    handleClick();
+  }, []);
+
+  const handleChange = (e: any) => {
+    setHierLevel(mainvalues.filter(val => val.value === e.value));
+    switch (e.value) {
+      case "division":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquedivobj]);
+        break;
+      case "group":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquegrpobj]);
+        break;
+      case "category":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquecatobj]);
+        break;
+      case "department":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquedepobj]);
+        break;
+      case "class":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniqueclsobj]);
+        break;
+      case "subclass":
+        setDisabled(false);
+        setPayload("");
+        setSelected([...uniquesclsobj]);
+        break;
+      default:
+        setDisabled(true);
+        setPayload("");
+        setSelected([]);
+        break;
+    }
+  };
+
+  const handleHierarchyChange = (e: any) => {
+    let values = [];
+    for (let i = 0; i < e.length; i++) {
+      values.push({
+        value: e[i].label,
+        label: e[i].label,
+        hierarchyLevel: e[i].hierGroup,
+        hierarchyId: e[i].id,
+        startDate: new Date()
+          .toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+          .replace(/ /g, "-"),
+        endDate: "2099-12-31",
+      });
+    }
+    setPayload([...values]);
+    console.log(values);
+    console.log(payload);
+  };
+
+  //product changes end...................
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: `https://pre-api.morrisons.com/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=1`,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Basic QXJBYVpsdktWMDlEbFpzdDRhR3F4aWNPTnp2dEdicEk6d2txU0VjQWRHWllaRnc5Yg==`,
+      },
+    }).then((response: any) => {
+      let hierarchyLevels: any = [];
+      hierarchyLevels.push(response.data.hierarchy.nodes[0].type);
+      hierarchyLevels.push(response.data.hierarchy.nodes[0].nodes[0].type);
+      hierarchyLevels.push(
+        response.data.hierarchy.nodes[0].nodes[0].nodes[0].type
+      );
+      hierarchyLevels.push(
+        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].type
+      );
+      hierarchyLevels.push(
+        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0]
+          .type
+      );
+      hierarchyLevels.push(
+        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0]
+          .nodes[0].type
+      );
+      console.log(hierarchyLevels);
+      setHierLevels(hierarchyLevels);
+      setHierarchyDetails(response.data.hierarchy);
+    });
+  }, []);
+
+  const productCustomStyles = {
     option: (provided: any, state: any) => ({
       ...provided,
       borderColor: teal[900],
@@ -209,12 +533,17 @@ function CreateGroup() {
   const viewProductOpen = Boolean(viewProductEl);
   const handleProductChange = (selected: any) => {
     setproductNames(selected);
+    console.log(selected);
   };
   const viewLocationOpen = Boolean(viewLocationEl);
   const handleLocationChange = (selected: any) => {
     setLocationNames(selected);
+    console.log(selected);
   };
   const handleReset = () => {
+    setGroupId("");
+    setGroupname("");
+    setDescription("");
     setproductNames([]);
     setLocationNames([]);
   };
@@ -234,8 +563,9 @@ function CreateGroup() {
   };
   const productSelect = (
     <>
-      <Select
-        options={producthierarchyTypes}
+      {/* <Select
+        // options={producthierarchyTypes}
+        options={productHierarchyValues && productHierarchyValues}
         isMulti
         onChange={handleProductChange}
         components={{
@@ -246,6 +576,23 @@ function CreateGroup() {
         hideSelectedOptions={false}
         className={classes.multiSelect}
         styles={productCustomStyles}
+      /> */}
+      <Select
+        closeMenuOnSelect={false}
+        //components={animatedComponents}
+        //defaultValue={[colourOptions[4], colourOptions[5]]}
+        // components={{
+        //   Option,
+        // }}
+        isDisabled={disabled}
+        isMulti
+        hideSelectedOptions={true}
+        options={selected}
+        value={payload}
+        onChange={handleHierarchyChange}
+        className={classes.multiSelect}
+        styles={productCustomStyles}
+        //value={payload !== "" ? payload.id : ""}
       />
     </>
   );
@@ -290,33 +637,104 @@ function CreateGroup() {
   const handleCloseViewLocation = () => {
     setViewLocationEl(null);
   };
+
+  //changes
+  const handleHierLevelSelect = (e: any) => {
+    console.log(e.target.value);
+    if (e.target.value === "division") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.name,
+            value: hier.id,
+            name: hier.name,
+            id: hier.id,
+            type: hier.type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    } else if (e.target.value === "group") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.nodes[0].name,
+            value: hier.nodes[0].id,
+            name: hier.nodes[0].name,
+            id: hier.nodes[0].id,
+            type: hier.nodes[0].type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    } else if (e.target.value === "category") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.nodes[0].nodes[0].name,
+            value: hier.nodes[0].nodes[0].id,
+            name: hier.nodes[0].nodes[0].name,
+            id: hier.nodes[0].nodes[0].id,
+            type: hier.nodes[0].nodes[0].type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    } else if (e.target.value === "department") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.nodes[0].nodes[0].nodes[0].name,
+            value: hier.nodes[0].nodes[0].nodes[0].id,
+            name: hier.nodes[0].nodes[0].nodes[0].name,
+            id: hier.nodes[0].nodes[0].nodes[0].id,
+            type: hier.nodes[0].nodes[0].nodes[0].type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    } else if (e.target.value === "class") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.nodes[0].nodes[0].nodes[0].nodes[0].name,
+            value: hier.nodes[0].nodes[0].nodes[0].nodes[0].id,
+            name: hier.nodes[0].nodes[0].nodes[0].nodes[0].name,
+            id: hier.nodes[0].nodes[0].nodes[0].nodes[0].id,
+            type: hier.nodes[0].nodes[0].nodes[0].nodes[0].type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    } else if (e.target.value === "subclass") {
+      const hierNames =
+        hierarchyDetails.nodes &&
+        hierarchyDetails.nodes.map((hier: any) => {
+          return {
+            label: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].name,
+            value: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].id,
+            name: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].name,
+            id: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].id,
+            type: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].type,
+          };
+        });
+      setProductHierarchyValues(hierNames);
+    }
+  };
+
+  //changes
   const viewProduct = (
-    <Popover
+    <Dialog
       id="basic-menu"
-      anchorEl={viewProductEl}
       open={viewProductOpen}
       onClose={handleCloseViewProduct}
-      anchorReference="anchorPosition"
-      anchorPosition={{
-        top: window.innerHeight / 5,
-        left: window.innerWidth / 2,
-      }}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-      elevation={0}
     >
       <Box
         sx={{
-          width: 700,
+          width: 600,
           height: 500,
           border: "3px solid green",
-          borderRadius: 4,
+          borderRadius: 5,
           display: "flex",
           flexDirection: "column",
           p: 1,
@@ -372,15 +790,79 @@ function CreateGroup() {
         </Box>
         <Box
           sx={{
-            justifyContent: "center",
+            paddingLeft: 20,
             display: "flex",
-            textAlign: "center",
           }}
         >
-          <Box className={classes.inputFieldBox}>{productSelect}</Box>
+          <Box
+            className={classes.inputFieldBox}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* {productSelect} */}
+            <Box>
+              <label>Hierarchy Level</label>
+            </Box>
+            <Box>
+              {/* <select
+                style={{ width: 150 }}
+                defaultValue="0"
+                onChange={handleHierLevelSelect}
+              >
+                <option disabled value="0">
+                  --- Select Hierarchy Level ---
+                </option>
+                {hierLevels &&
+                  hierLevels.map((lvl: any, index: any) => {
+                    return (
+                      <option key={index} value={lvl}>
+                        {lvl.toUpperCase()}
+                      </option>
+                    );
+                  })}
+              </select> */}
+              <Select
+                defaultValue={hierLevel}
+                isDisabled={data !== [] ? false : true}
+                isLoading={false}
+                // components={{
+                //   Option,
+                // }}
+                isRtl={false}
+                isSearchable={true}
+                name="color"
+                options={mainvalues}
+                onChange={handleChange}
+                className={classes.multiSelect}
+                styles={locationCustomStyles}
+                //value={hierLevel}
+              />
+              {/* <TreeSelect value={hierLevelSelect} options={hierLevelValues} onChange={(e)=>setHierLevelSelect(e.value)}/> */}
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            padding: 20,
+          }}
+        >
+          <Box>
+            <label>Search Hierrachies</label>
+          </Box>
+          <Box
+            sx={{
+              justifyContent: "center",
+
+              paddingRight: 10,
+            }}
+          >
+            {productSelect}
+          </Box>
         </Box>
       </Box>
-    </Popover>
+    </Dialog>
   );
   const viewLocation = (
     <Popover
@@ -464,9 +946,9 @@ function CreateGroup() {
         </Box>
         <Box
           sx={{
-            justifyContent: "center",
+            //justifyContent: "center",
             display: "flex",
-            textAlign: "center",
+            p: 2,
           }}
         >
           <Box className={classes.inputFieldBox}>{locationSelect}</Box>
@@ -474,6 +956,24 @@ function CreateGroup() {
       </Box>
     </Popover>
   );
+  React.useEffect(() => {
+    let today = new Date();
+    let dd = String(today.getDate());
+
+    let mm = String(today.getMonth() + 1);
+    let yyyy = String(today.getFullYear());
+    if (dd < "10") {
+      dd = "0" + dd;
+    }
+
+    if (mm < "10") {
+      mm = "0" + mm;
+    }
+    let startdate;
+    startdate = yyyy + "-" + mm + "-" + dd;
+    console.log(startdate);
+    setCurrentDate(startdate);
+  }, [locationNames]);
 
   const handleCreateGroup = (e: any) => {
     e.preventDefault();
@@ -482,16 +982,24 @@ function CreateGroup() {
       groupName: groupname,
       groupDesc: description,
       status: status,
-      //locationHierarchy: "",
-      // productHierarchy: [
-      //   {
-      //     hierarchyLevel: "GROUP1",
-      //     hierarchyId: "Core",
-      //     startDate: "2021-11-09T10:57:56.884359",
-      //     endDate: "2099-12-31T00:00:00",
-      //   },
-      // ],
+      locationHierarchy: locationNames.map((location: any) => {
+        return {
+          hierarchyLevel: location.hierarchyLevel,
+          hierarchyId: location.hierarchyId,
+          startDate: currentDate,
+          endDate: location.endDate,
+        };
+      }),
+      productHierarchy: payload.map((product: any) => {
+        return {
+          hierarchyLevel: product.hierarchyLevel,
+          hierarchyId: product.hierarchyId,
+          startDate: currentDate,
+          endDate: product.endDate,
+        };
+      }),
     };
+    //console.log(status);
     console.log(formData);
     let accessToken;
     if (localStorage && localStorage.getItem("_GresponseV2")) {
@@ -597,7 +1105,16 @@ function CreateGroup() {
                   }}
                 >
                   <Box className={classes.inputLabel}>
-                    <Typography variant="subtitle2">Group ID</Typography>
+                    <Typography variant="subtitle2">
+                      Group ID &nbsp;
+                      <span
+                        style={{
+                          color: "#ff0000",
+                        }}
+                      >
+                        *
+                      </span>
+                    </Typography>
                   </Box>
                   <Box className={classes.inputFieldBox}>
                     <Typography variant="subtitle2">
@@ -609,13 +1126,23 @@ function CreateGroup() {
                         className={classes.inputFields}
                         onChange={ongroupIDChange}
                         value={groupId}
+                        required
                       />
                     </Typography>
                   </Box>
                 </Box>
                 <Box className={classes.eachRow}>
                   <Box className={classes.inputLabel}>
-                    <Typography variant="subtitle2">Group Name</Typography>
+                    <Typography variant="subtitle2">
+                      Group Name &nbsp;
+                      <span
+                        style={{
+                          color: "#ff0000",
+                        }}
+                      >
+                        *
+                      </span>
+                    </Typography>
                   </Box>
                   <Box className={classes.inputFieldBox}>
                     <Typography variant="subtitle2">
@@ -627,6 +1154,7 @@ function CreateGroup() {
                         className={classes.inputFields}
                         onChange={ongroupnameChange}
                         value={groupname}
+                        required
                       />
                     </Typography>
                   </Box>
@@ -656,7 +1184,16 @@ function CreateGroup() {
                 </Box>
                 <Box className={classes.eachRow}>
                   <Box className={classes.inputLabel}>
-                    <Typography variant="subtitle2">Status</Typography>
+                    <Typography variant="subtitle2">
+                      Status &nbsp;
+                      <span
+                        style={{
+                          color: "#ff0000",
+                        }}
+                      >
+                        *
+                      </span>
+                    </Typography>
                   </Box>
                   <Box className={classes.inputFieldBox}>
                     <Typography variant="subtitle2">
@@ -666,6 +1203,7 @@ function CreateGroup() {
                         className={classes.selectField}
                         defaultValue=""
                         onChange={onstatusChange}
+                        required
                       >
                         <option
                           disabled
@@ -674,7 +1212,7 @@ function CreateGroup() {
                         >
                           None
                         </option>
-                        {statuses.map(type => {
+                        {groupstatuses.map(type => {
                           return (
                             <option value={type.statusID} key={type.statusID}>
                               {type.text}
@@ -694,14 +1232,14 @@ function CreateGroup() {
 
                   <Box className={classes.inputFieldBox}>
                     <Typography variant="subtitle1">
-                      {productNames ? (
-                        productNames.length > 0 ? (
+                      {payload ? (
+                        payload.length > 0 ? (
                           <Link
                             to="#"
                             className={classes.underlineRemove}
                             onClick={handleOpenViewProduct}
                           >
-                            Product Hierarchies({productNames.length})
+                            Product Hierarchies({payload.length})
                           </Link>
                         ) : (
                           <Link
@@ -779,12 +1317,12 @@ function CreateGroup() {
                     }}
                   >
                     <Button
-                      type="submit"
+                      type="reset"
                       variant="contained"
                       className={classes.submitButton}
                       onClick={handleReset}
                     >
-                      Cancel
+                      Reset
                     </Button>
                   </Box>
                   <Box

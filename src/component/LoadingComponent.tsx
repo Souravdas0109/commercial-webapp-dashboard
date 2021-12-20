@@ -56,7 +56,7 @@ const LoadingComponent = (props: any) => {
         {loadingText}
       </div>
     ) : (
-      <div>""</div>
+      <div></div>
     );
 
   return progressBar;
