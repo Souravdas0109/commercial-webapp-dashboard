@@ -385,7 +385,7 @@ function CreateGroup() {
       let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
       const start = new Date();
       while (nexturl !== "") {
-        console.log("to visit url: ", nexturl);
+        // console.log("to visit url: ", nexturl);
         await axios
           .get(nexturl, {
             headers: {
@@ -401,8 +401,8 @@ function CreateGroup() {
             nexturl = res.data.metaData.links.next
               ? `${BASE}${res.data.metaData.links.next}`
               : "";
-            console.log(`up next: ${res.data.metaData.links.next}`);
-            console.log(res.data.hierarchy.nodes);
+            // console.log(`up next: ${res.data.metaData.links.next}`);
+            // console.log(res.data.hierarchy.nodes);
           })
           .catch(e => {
             nexturl = "";
@@ -477,41 +477,9 @@ function CreateGroup() {
     }
     setPayload([...values]);
     console.log(values);
-    console.log(payload);
   };
 
   //product changes end...................
-  useEffect(() => {
-    axios({
-      method: "GET",
-      url: `https://pre-api.morrisons.com/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=1`,
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Basic QXJBYVpsdktWMDlEbFpzdDRhR3F4aWNPTnp2dEdicEk6d2txU0VjQWRHWllaRnc5Yg==`,
-      },
-    }).then((response: any) => {
-      let hierarchyLevels: any = [];
-      hierarchyLevels.push(response.data.hierarchy.nodes[0].type);
-      hierarchyLevels.push(response.data.hierarchy.nodes[0].nodes[0].type);
-      hierarchyLevels.push(
-        response.data.hierarchy.nodes[0].nodes[0].nodes[0].type
-      );
-      hierarchyLevels.push(
-        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].type
-      );
-      hierarchyLevels.push(
-        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0]
-          .type
-      );
-      hierarchyLevels.push(
-        response.data.hierarchy.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0]
-          .nodes[0].type
-      );
-      console.log(hierarchyLevels);
-      setHierLevels(hierarchyLevels);
-      setHierarchyDetails(response.data.hierarchy);
-    });
-  }, []);
 
   const productCustomStyles = {
     option: (provided: any, state: any) => ({
@@ -533,12 +501,12 @@ function CreateGroup() {
   const viewProductOpen = Boolean(viewProductEl);
   const handleProductChange = (selected: any) => {
     setproductNames(selected);
-    console.log(selected);
+    // console.log(selected);
   };
   const viewLocationOpen = Boolean(viewLocationEl);
   const handleLocationChange = (selected: any) => {
     setLocationNames(selected);
-    console.log(selected);
+    // console.log(selected);
   };
   const handleReset = () => {
     setGroupId("");
@@ -638,91 +606,6 @@ function CreateGroup() {
     setViewLocationEl(null);
   };
 
-  //changes
-  const handleHierLevelSelect = (e: any) => {
-    console.log(e.target.value);
-    if (e.target.value === "division") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.name,
-            value: hier.id,
-            name: hier.name,
-            id: hier.id,
-            type: hier.type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    } else if (e.target.value === "group") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.nodes[0].name,
-            value: hier.nodes[0].id,
-            name: hier.nodes[0].name,
-            id: hier.nodes[0].id,
-            type: hier.nodes[0].type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    } else if (e.target.value === "category") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.nodes[0].nodes[0].name,
-            value: hier.nodes[0].nodes[0].id,
-            name: hier.nodes[0].nodes[0].name,
-            id: hier.nodes[0].nodes[0].id,
-            type: hier.nodes[0].nodes[0].type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    } else if (e.target.value === "department") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.nodes[0].nodes[0].nodes[0].name,
-            value: hier.nodes[0].nodes[0].nodes[0].id,
-            name: hier.nodes[0].nodes[0].nodes[0].name,
-            id: hier.nodes[0].nodes[0].nodes[0].id,
-            type: hier.nodes[0].nodes[0].nodes[0].type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    } else if (e.target.value === "class") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.nodes[0].nodes[0].nodes[0].nodes[0].name,
-            value: hier.nodes[0].nodes[0].nodes[0].nodes[0].id,
-            name: hier.nodes[0].nodes[0].nodes[0].nodes[0].name,
-            id: hier.nodes[0].nodes[0].nodes[0].nodes[0].id,
-            type: hier.nodes[0].nodes[0].nodes[0].nodes[0].type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    } else if (e.target.value === "subclass") {
-      const hierNames =
-        hierarchyDetails.nodes &&
-        hierarchyDetails.nodes.map((hier: any) => {
-          return {
-            label: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].name,
-            value: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].id,
-            name: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].name,
-            id: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].id,
-            type: hier.nodes[0].nodes[0].nodes[0].nodes[0].nodes[0].type,
-          };
-        });
-      setProductHierarchyValues(hierNames);
-    }
-  };
-
-  //changes
   const viewProduct = (
     <Dialog
       id="basic-menu"
@@ -971,7 +854,7 @@ function CreateGroup() {
     }
     let startdate;
     startdate = yyyy + "-" + mm + "-" + dd;
-    console.log(startdate);
+    //console.log(startdate);
     setCurrentDate(startdate);
   }, [locationNames]);
 
@@ -1020,7 +903,7 @@ function CreateGroup() {
         }
       )
       .then(res => {
-        console.log(res);
+        //console.log(res);
         let statusCode = res.status;
         //console.log(res.data.message);
         if (statusCode === 200) {
@@ -1033,7 +916,7 @@ function CreateGroup() {
         }
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         let statusCode = err.response.data.error;
         console.log(statusCode);
         toast.current.show({

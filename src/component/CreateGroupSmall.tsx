@@ -400,7 +400,7 @@ function CreateGroupSmall() {
       let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
       const start = new Date();
       while (nexturl !== "") {
-        console.log("to visit url: ", nexturl);
+        // console.log("to visit url: ", nexturl);
         await axios
           .get(nexturl, {
             headers: {
@@ -416,8 +416,8 @@ function CreateGroupSmall() {
             nexturl = res.data.metaData.links.next
               ? `${BASE}${res.data.metaData.links.next}`
               : "";
-            console.log(`up next: ${res.data.metaData.links.next}`);
-            console.log(res.data.hierarchy.nodes);
+            //console.log(`up next: ${res.data.metaData.links.next}`);
+            //console.log(res.data.hierarchy.nodes);
           })
           .catch(e => {
             nexturl = "";
@@ -491,8 +491,8 @@ function CreateGroupSmall() {
       });
     }
     setPayload([...values]);
-    console.log(values);
-    console.log(payload);
+    //console.log(values);
+    //console.log(payload);
   };
 
   //product changes ended................
@@ -788,7 +788,7 @@ function CreateGroupSmall() {
     }
     let startdate;
     startdate = yyyy + "-" + mm + "-" + dd;
-    console.log(startdate);
+    //console.log(startdate);
     setCurrentDate(startdate);
   }, [locationNames]);
 
@@ -837,7 +837,7 @@ function CreateGroupSmall() {
         }
       )
       .then(res => {
-        console.log(res);
+        //console.log(res);
         let statusCode = res.status;
         //console.log(res.data.message);
         if (statusCode === 200) {
@@ -850,7 +850,7 @@ function CreateGroupSmall() {
         }
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         let statusCode = err.response.data.error;
         console.log(statusCode);
         toast.current.show({
