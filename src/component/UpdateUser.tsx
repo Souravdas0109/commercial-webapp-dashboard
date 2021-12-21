@@ -225,6 +225,7 @@ function UpdateUser(props: any) {
   const [email, setEmail] = React.useState("");
   const [designation, setDesignation] = React.useState<any>();
   const [status, setStatus] = React.useState("");
+  const [statusWithValue, setStatusWithValue] = React.useState("");
   const [comments, setComments] = React.useState("");
   const [referenceDoc, setReferenceDoc] = React.useState<any>();
   const [viewLogEl, setViewLogEl] = React.useState(null);
@@ -395,7 +396,20 @@ function UpdateUser(props: any) {
       setLastName(selectEmployeeID.lastName);
       setEmail(selectEmployeeID.emailId);
       setDesignation(selectEmployeeID.designation);
-      setStatus(selectEmployeeID.status);
+      if (selectEmployeeID.status === "A") {
+        setStatus(selectEmployeeID.status);
+        setStatusWithValue("ACTIVE");
+      } else if (selectEmployeeID.satus === "W") {
+        setStatus(selectEmployeeID.status);
+        setStatusWithValue("INPROGRESS");
+      } else if (selectEmployeeID.satus === "I") {
+        setStatus(selectEmployeeID.status);
+        setStatusWithValue("INACTIVE");
+      } else {
+        setStatus(selectEmployeeID.status);
+        setStatusWithValue("DELETED");
+      }
+
       setRoleNames(
         selectEmployeeID.roles.map((role: any) => {
           return {
@@ -1183,7 +1197,7 @@ function UpdateUser(props: any) {
                 // onChange={e => {
                 //   setStatus(e.target.value);
                 // }}
-                value={status}
+                value={statusWithValue}
                 disabled
               />
             </Typography>

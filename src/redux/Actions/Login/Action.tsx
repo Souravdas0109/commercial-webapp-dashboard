@@ -1,5 +1,9 @@
 import { ColleagueInfo } from "../../../component/ColleagueInfo";
-import { colleagueV2Login, userV2Login } from "../../../component/fetch";
+import {
+  colleagueV2Login,
+  userDetailsLogin,
+  userV2Login,
+} from "../../../component/fetch";
 import { ServiceResponse } from "../../../component/Message";
 import { ServiceResponses } from "../../../component/ServiceResponses";
 import {
@@ -20,12 +24,17 @@ export const loginUser = (idToken: any) => (dispatch: any) => {
         localStorage.setItem("_GresponseV2", JSON.stringify(data));
         // dispatch(getUser(data && data.empId))
         const accesToken = data && data.access_token;
+        const employeeID = data && data.empId;
         console.log(accesToken);
         colleagueV2Login(accesToken).then(response => {
           const dataone = response;
           localStorage.setItem("_Colresponse", JSON.stringify(dataone));
           console.log(dataone);
           dispatch(getUserRequest(dataone));
+        });
+        userDetailsLogin(accesToken, employeeID).then(response => {
+          const userdata = response;
+          localStorage.setItem("_userDetails", JSON.stringify(userdata));
         });
       } else {
         throw new Error("Invalid Login");
