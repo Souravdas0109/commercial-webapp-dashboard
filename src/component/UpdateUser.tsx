@@ -399,10 +399,10 @@ function UpdateUser(props: any) {
       if (selectEmployeeID.status === "A") {
         setStatus(selectEmployeeID.status);
         setStatusWithValue("ACTIVE");
-      } else if (selectEmployeeID.satus === "W") {
+      } else if (selectEmployeeID.status === "W") {
         setStatus(selectEmployeeID.status);
         setStatusWithValue("INPROGRESS");
-      } else if (selectEmployeeID.satus === "I") {
+      } else if (selectEmployeeID.status === "I") {
         setStatus(selectEmployeeID.status);
         setStatusWithValue("INACTIVE");
       } else {
