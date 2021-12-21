@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
 }));
+
 function ManageUserSmall(props: any) {
   const { set_empID } = props;
   const history = useHistory();
