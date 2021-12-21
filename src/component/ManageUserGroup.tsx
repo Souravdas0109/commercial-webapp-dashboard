@@ -205,11 +205,7 @@ function ManageUserGroup() {
   );
   //integration changes stop
   const groupIDTemplate = (rowData: any) => {
-    return (
-      <Link to="#" className={classes.links}>
-        {rowData.groupId}
-      </Link>
-    );
+    return <div className={classes.links}>{rowData.groupId}</div>;
   };
 
   return (

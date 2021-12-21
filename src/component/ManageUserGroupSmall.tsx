@@ -72,13 +72,14 @@ function ManageUserGroupSmall(props: any) {
     })
       .then(res => {
         const groupValues = res.data.usergroups.map((group: any) => {
-          if (group.productHierarchy[0]) {
+          if (group.productHierarchy[0] && group.locationHierarchy[0]) {
             return {
               groupId: group.groupId,
               groupName: group.groupName,
               groupDesc: group.groupDesc,
               status: group.status,
               productHierarchy: group.productHierarchy,
+              locationHierarchy: group.locationHierarchy,
             };
           } else if (group.locationHierarchy[0]) {
             return {
@@ -88,14 +89,13 @@ function ManageUserGroupSmall(props: any) {
               status: group.status,
               locationHierarchy: group.locationHierarchy,
             };
-          } else if (group.productHierarchy[0] && group.locationHierarchy[0]) {
+          } else if (group.productHierarchy[0]) {
             return {
               groupId: group.groupId,
               groupName: group.groupName,
               groupDesc: group.groupDesc,
               status: group.status,
               productHierarchy: group.productHierarchy,
-              locationHierarchy: group.locationHierarchy,
             };
           } else {
             return {
@@ -198,11 +198,7 @@ function ManageUserGroupSmall(props: any) {
   );
   //integration changes stop
   const groupIDTemplate = (rowData: any) => {
-    return (
-      <Link to="#" className={classes.links}>
-        {rowData.groupId}
-      </Link>
-    );
+    return <div className={classes.links}>{rowData.groupId}</div>;
   };
 
   //end

@@ -33,8 +33,12 @@ const useStyles = makeStyles(theme => ({
   },
   exploreButton: {
     color: "blue",
-    cursor: "pointer",
+    // cursor: "pointer",
     fontSize: "12px",
+  },
+  exploreButtonforid: {
+    color: "blue",
+    cursor: "pointer",
   },
 }));
 function ManageUserSmall(props: any) {
@@ -123,7 +127,7 @@ function ManageUserSmall(props: any) {
       return null;
     });
     // console.log(roles)
-    return <button className={classes.exploreButton}>{roles}</button>;
+    return <div className={classes.exploreButton}>{roles}</div>;
   };
   const groupTemplate = (rowData: any) => {
     let groups = "";
@@ -135,7 +139,7 @@ function ManageUserSmall(props: any) {
       }
       return null;
     });
-    return <button className={classes.exploreButton}>{groups}</button>;
+    return <div className={classes.exploreButton}>{groups}</div>;
   };
   const emailTemplate = (rowData: any) => {
     return (
@@ -147,7 +151,7 @@ function ManageUserSmall(props: any) {
   const userIdTemplate = (rowData: any) => {
     return (
       <button
-        className={classes.exploreButton}
+        className={classes.exploreButtonforid}
         value={rowData.userId}
         onClick={handleNameClick}
       >
