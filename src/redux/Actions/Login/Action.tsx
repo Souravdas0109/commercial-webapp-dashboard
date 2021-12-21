@@ -1,7 +1,6 @@
 import { ColleagueInfo } from "../../../component/ColleagueInfo";
 import {
   colleagueV2Login,
-  //userDetailsLogin,
   userV2Login,
 } from "../../../component/fetch";
 import { ServiceResponse } from "../../../component/Message";
@@ -32,10 +31,6 @@ export const loginUser = (idToken: any) => (dispatch: any) => {
           console.log(dataone);
           dispatch(getUserRequest(dataone));
         });
-        // userDetailsLogin(accesToken, employeeID).then(response => {
-        //   const userdata = response;
-        //   localStorage.setItem("_userDetails", JSON.stringify(userdata));
-        // });
       } else {
         throw new Error("Invalid Login");
       }
