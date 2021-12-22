@@ -12,10 +12,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { userGroupDetails, userGroupTableHeaders } from "../Data/Data";
+import {
+  userGroupDetails,
+  userGroupTableHeaders,
+  viewHierarchy,
+} from "../Data/Data";
 import { teal } from "@material-ui/core/colors";
 import axios from "axios";
-
+const fieldWidth = window.innerWidth - 80;
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -37,6 +41,29 @@ const useStyles = makeStyles(theme => ({
   links: {
     color: "blue",
   },
+  viewlogTable: {
+    [theme.breakpoints.up("sm")]: {
+      width: fieldWidth - 350,
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: fieldWidth - 20,
+    },
+  },
+  closeViewLog: {
+    color: "white",
+    backgroundColor: theme.palette.primary.main,
+    fontSize: "18px",
+    "&:hover": {
+      color: "yellow",
+      backgroundColor: "green",
+      cursor: "pointer",
+    },
+  },
+  viewLogTitle: {
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+    alignItems: "baseline",
+  },
   backButton: {
     border: 0,
     color: "blue",
@@ -54,11 +81,13 @@ function ManageUserGroup() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   //integration changes started
+  const width = useMediaQuery(theme.breakpoints.up("md"));
+  const dialogwidth = width ? 600 : fieldWidth;
   const [userGroupsData, setUserGroupsData] = useState<any>();
   const [openProduct, setOpenProduct] = React.useState(false);
   const [productData, setProductData] = useState<any>();
   const [openLocation, setOpenLocation] = React.useState(false);
-  const [locationData, setLocationData] = useState<any>();
+  const [locationData, setLocationData] = useState<any>([]);
   const [userGroupLoading, setUserGroupLoading] = React.useState(false);
 
   useEffect(() => {
@@ -78,40 +107,16 @@ function ManageUserGroup() {
       },
     })
       .then(res => {
+        console.log(res.data);
         const groupValues = res.data.usergroups.map((group: any) => {
-          if (group.productHierarchy[0] && group.locationHierarchy[0]) {
-            return {
-              groupId: group.groupId,
-              groupName: group.groupName,
-              groupDesc: group.groupDesc,
-              status: group.status,
-              productHierarchy: group.productHierarchy,
-              locationHierarchy: group.locationHierarchy,
-            };
-          } else if (group.locationHierarchy[0]) {
-            return {
-              groupId: group.groupId,
-              groupName: group.groupName,
-              groupDesc: group.groupDesc,
-              status: group.status,
-              locationHierarchy: group.locationHierarchy,
-            };
-          } else if (group.productHierarchy[0]) {
-            return {
-              groupId: group.groupId,
-              groupName: group.groupName,
-              groupDesc: group.groupDesc,
-              status: group.status,
-              productHierarchy: group.productHierarchy,
-            };
-          } else {
-            return {
-              groupId: group.groupId,
-              groupName: group.groupName,
-              groupDesc: group.groupDesc,
-              status: group.status,
-            };
-          }
+          return {
+            groupId: group.groupId,
+            groupName: group.groupName,
+            groupDesc: group.groupDesc,
+            status: group.status,
+            productHierarchy: group.productHierarchy,
+            locationHierarchy: group.locationHierarchy,
+          };
         });
         setUserGroupsData(groupValues);
       })
@@ -122,6 +127,9 @@ function ManageUserGroup() {
       setUserGroupsData([]);
     };
   }, []);
+  useEffect(() => {
+    console.log(userGroupsData);
+  }, [userGroupsData]);
   useEffect(() => {
     if (userGroupsData) {
       setUserGroupLoading(false);
@@ -148,10 +156,10 @@ function ManageUserGroup() {
   const locationTemplate = (rowData: any) => {
     return (
       <>
-        {rowData.locationHierarchy ? (
+        {rowData.locationHierarchy.length > 0 ? (
           <button
             className={classes.exploreButton}
-            onClick={() => handleOpenLocation(rowData.locationHierarchy[0])}
+            onClick={() => handleOpenLocation(rowData.locationHierarchy)}
           >
             View
           </button>
@@ -164,10 +172,10 @@ function ManageUserGroup() {
   const productTemplate = (rowData: any) => {
     return (
       <>
-        {rowData.productHierarchy ? (
+        {rowData.productHierarchy.length > 0 ? (
           <button
             className={classes.exploreButton}
-            onClick={() => handleOpenProduct(rowData.productHierarchy[0])}
+            onClick={() => handleOpenProduct(rowData.productHierarchy)}
           >
             View
           </button>
@@ -177,32 +185,209 @@ function ManageUserGroup() {
       </>
     );
   };
-  const viewProductHierarchy = (
+
+  const viewProductHierarchyLog = (
     <Dialog open={openProduct} onClose={handleCloseProduct}>
-      <p>{productData && productData.hierarchyId && productData.hierarchyId}</p>
-      <p>
-        {productData &&
-          productData.hierarchyLevel &&
-          productData.hierarchyLevel}
-      </p>
-      <p>{productData && productData.startDate && productData.startDate}</p>
-      <p>{productData && productData.endDate && productData.endDate}</p>
+      <Box
+        sx={{
+          width: dialogwidth,
+          border: "3px solid green",
+          borderRadius: 4,
+          display: "flex",
+          flexDirection: "column",
+          p: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            height: 30,
+            flexDirection: "row",
+          }}
+          className={classes.viewLogTitle}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="subtitle1">Location Hierarchy</Typography>
+          </Box>
+          <Box
+            sx={{
+              paddingRight: 2,
+            }}
+          >
+            <button
+              style={{
+                border: 0,
+                padding: 0,
+                height: 22,
+                width: 22,
+              }}
+              className={classes.closeViewLog}
+              onClick={handleCloseProduct}
+            >
+              <b>X</b>
+            </button>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            p: 2,
+          }}
+        ></Box>
+        <Box
+          sx={{
+            // justifyContent: "center",
+            display: "flex",
+
+            // textAlign: "center"
+          }}
+        >
+          <DataTable
+            value={productData}
+            paginator
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            rows={5}
+            style={{
+              fontSize: "12px",
+              backgroundColor: "#f7f7f7",
+              // width: fieldWidth,
+            }}
+            className={`p-datatable-sm ${classes.viewlogTable}`}
+            scrollable
+            scrollHeight="400px"
+          >
+            {viewHierarchy.map(column => {
+              return (
+                <Column
+                  key={column.field}
+                  field={column.field}
+                  header={column.headerName}
+                  bodyStyle={{
+                    fontSize: "12px",
+                    width: column.width,
+                  }}
+                  headerStyle={{
+                    fontSize: "12px",
+                    width: column.width,
+                    backgroundColor: teal[900],
+                    color: "white",
+                  }}
+                ></Column>
+              );
+            })}
+          </DataTable>
+        </Box>
+      </Box>
     </Dialog>
   );
-  const viewLocationHierarchy = (
+
+  const viewLocationHierarchyLog = (
     <Dialog open={openLocation} onClose={handleCloseLocation}>
-      <p>
-        {locationData && locationData.hierarchyId && locationData.hierarchyId}
-      </p>
-      <p>
-        {locationData &&
-          locationData.hierarchyLevel &&
-          locationData.hierarchyLevel}
-      </p>
-      <p>{locationData && locationData.startDate && locationData.startDate}</p>
-      <p>{locationData && locationData.endDate && locationData.endDate}</p>
+      <Box
+        sx={{
+          width: dialogwidth,
+          border: "3px solid green",
+          borderRadius: 4,
+          display: "flex",
+          flexDirection: "column",
+          p: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            height: 30,
+            flexDirection: "row",
+          }}
+          className={classes.viewLogTitle}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="subtitle1">Location Hierarchy</Typography>
+          </Box>
+          <Box
+            sx={{
+              paddingRight: 2,
+            }}
+          >
+            <button
+              style={{
+                border: 0,
+                padding: 0,
+                height: 22,
+                width: 22,
+              }}
+              className={classes.closeViewLog}
+              onClick={handleCloseLocation}
+            >
+              <b>X</b>
+            </button>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            p: 2,
+          }}
+        ></Box>
+        <Box
+          sx={{
+            // justifyContent: "center",
+            display: "flex",
+
+            // textAlign: "center"
+          }}
+        >
+          <DataTable
+            value={locationData}
+            paginator
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            rows={5}
+            style={{
+              fontSize: "12px",
+              backgroundColor: "#f7f7f7",
+              // width: fieldWidth,
+            }}
+            className={`p-datatable-sm ${classes.viewlogTable}`}
+            scrollable
+            scrollHeight="400px"
+          >
+            {viewHierarchy.map(column => {
+              return (
+                <Column
+                  key={column.field}
+                  field={column.field}
+                  header={column.headerName}
+                  bodyStyle={{
+                    fontSize: "12px",
+                    width: column.width,
+                  }}
+                  headerStyle={{
+                    fontSize: "12px",
+                    width: column.width,
+                    backgroundColor: teal[900],
+                    color: "white",
+                  }}
+                ></Column>
+              );
+            })}
+          </DataTable>
+        </Box>
+      </Box>
     </Dialog>
   );
+
   //integration changes stop
   const groupIDTemplate = (rowData: any) => {
     return <div className={classes.links}>{rowData.groupId}</div>;
@@ -332,8 +517,8 @@ function ManageUserGroup() {
         </div>
       </div>
       {/* Integration changes start */}
-      {viewProductHierarchy}
-      {viewLocationHierarchy}
+      {viewProductHierarchyLog}
+      {viewLocationHierarchyLog}
       {/* Integration changes stop */}
     </>
   );

@@ -877,6 +877,12 @@ export const viewLogColumns = [
   },
   { field: "comments", headerName: "Comments", width: 90 },
 ];
+export const viewHierarchy = [
+  { field: "hierarchyId", headerName: "Hierarchy Id", width: 150 },
+  { field: "hierarchyLevel", headerName: "Hierarchy Level", width: 80 },
+  { field: "startDate", headerName: "Start Date", width: 70 },
+  { field: "endDate", headerName: "End Date", width: 70 },
+];
 export const userTableHeaders = [
   {
     field: "userId",

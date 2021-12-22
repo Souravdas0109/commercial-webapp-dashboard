@@ -478,8 +478,8 @@ function CreateGroupSmall() {
       values.push({
         value: e[i].label,
         label: e[i].label,
-        hierarchyLevel: e[i].hierGroup,
-        hierarchyId: e[i].id,
+        hierarchyLevel: e[i].hierGroup ? e[i].hierGroup : e[i].hierarchyLevel,
+        hierarchyId: e[i].id ? e[i].id : e[i].hierarchyId,
         startDate: new Date()
           .toLocaleDateString("en-GB", {
             day: "2-digit",
