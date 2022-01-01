@@ -25,3 +25,13 @@ export const colleagueV2Login = (accesToken: any) => {
     },
   });
 };
+export const userDetailsLogin = (accesToken: any, employeeID: any) => {
+  return axios({
+    method: "GET",
+    url: `https://dev-api.morrisons.com/commercial-user/v1/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    headers: {
+      "content-type": "application/json",
+      Authorization: `Bearer ${accesToken}`,
+    },
+  });
+};

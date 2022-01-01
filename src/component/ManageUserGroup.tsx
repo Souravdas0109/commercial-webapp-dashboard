@@ -109,14 +109,33 @@ function ManageUserGroup() {
       .then(res => {
         console.log(res.data);
         const groupValues = res.data.usergroups.map((group: any) => {
-          return {
-            groupId: group.groupId,
-            groupName: group.groupName,
-            groupDesc: group.groupDesc,
-            status: group.status,
-            productHierarchy: group.productHierarchy,
-            locationHierarchy: group.locationHierarchy,
-          };
+          if (group.status === "D")
+            return {
+              groupId: group.groupId,
+              groupName: group.groupName,
+              groupDesc: group.groupDesc,
+              status: "DELETED",
+              productHierarchy: group.productHierarchy,
+              locationHierarchy: group.locationHierarchy,
+            };
+          else if (group.status === "I")
+            return {
+              groupId: group.groupId,
+              groupName: group.groupName,
+              groupDesc: group.groupDesc,
+              status: "INACTIVE",
+              productHierarchy: group.productHierarchy,
+              locationHierarchy: group.locationHierarchy,
+            };
+          else
+            return {
+              groupId: group.groupId,
+              groupName: group.groupName,
+              groupDesc: group.groupDesc,
+              status: "ACTIVE",
+              productHierarchy: group.productHierarchy,
+              locationHierarchy: group.locationHierarchy,
+            };
         });
         setUserGroupsData(groupValues);
       })
@@ -213,7 +232,7 @@ function ManageUserGroup() {
               justifyContent: "center",
             }}
           >
-            <Typography variant="subtitle1">Location Hierarchy</Typography>
+            <Typography variant="subtitle1">Product Hierarchy</Typography>
           </Box>
           <Box
             sx={{

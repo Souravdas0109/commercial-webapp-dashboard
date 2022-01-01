@@ -26,6 +26,7 @@ import { default as ReactSelect } from "react-select";
 import { useState, useEffect, useRef } from "react";
 import { components } from "react-select";
 import { Toast } from "primereact/toast";
+import LoadingComponent from "./LoadingComponent";
 import {
   viewLogRows,
   viewLogColumns,
@@ -48,6 +49,8 @@ import { Column } from "primereact/column";
 import { teal } from "@material-ui/core/colors";
 import { RoleTypes } from "../Data/Data";
 import { SearchOutlined } from "@material-ui/icons";
+import { connect } from "react-redux";
+import { loggedUser } from "../redux/Actions/Login/Action";
 
 const fieldWidth = window.innerWidth - 80;
 
@@ -125,9 +128,9 @@ const useStyles = makeStyles((theme: any) => {
     },
 
     submitButton: {
-      width: 120,
-      height: 40,
-      fontSize: "bi",
+      width: "auto",
+      // height: 40,
+      // fontSize: "bi",
       display: "inline",
       "&:hover": {
         fontSize: "large",
@@ -135,7 +138,7 @@ const useStyles = makeStyles((theme: any) => {
     },
     buttons: {
       width: "auto",
-      height: 40,
+      // height: 40,
       "&:hover": {
         fontSize: "large",
       },
@@ -199,7 +202,7 @@ const useStyles = makeStyles((theme: any) => {
       color: theme.palette.primary.main,
       "&:hover": {
         color: "white",
-        backgroundColor: teal[900],
+        backgroundColor: theme.palette.primary.main,
       },
     },
     uploadButton: {
@@ -215,7 +218,8 @@ const Input = styled("input")({
   display: "none",
 });
 
-function UserCreate() {
+function UserCreate(props: any) {
+  const { userdata, loggedUser, isLoading } = props;
   const classes = useStyles();
   const history = useHistory();
   const theme = useTheme();
@@ -238,6 +242,7 @@ function UserCreate() {
   const [additionalInfo, setAdditionalInfo] = React.useState("");
   const [submitFlag, setSubmitFlag] = React.useState("");
   const [referenceDoc, setReferenceDoc] = React.useState<any>();
+  const [currentDate, setCurrentDate] = useState("");
   const [viewLogEl, setViewLogEl] = React.useState(null);
   const viewLogOpen = Boolean(viewLogEl);
 
@@ -253,7 +258,7 @@ function UserCreate() {
     setGroupInput(groups);
   }, [groups]);
 
-  const customStyles: StylesConfig<GroupTypes, true> = {
+  const customStyles = {
     option: (provided: any, state: any) => ({
       ...provided,
       borderColor: teal[900],
@@ -266,6 +271,17 @@ function UserCreate() {
     // })
   };
   //integration changes start
+  useEffect(() => {
+    let accesstoken;
+    if (localStorage && localStorage.getItem("_GresponseV2")) {
+      accesstoken = JSON.parse(
+        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
+      );
+    }
+    const accessToken = accesstoken.access_token;
+    const employeeId = accesstoken.empId;
+    loggedUser(accessToken, employeeId);
+  }, [loggedUser]);
 
   useEffect(() => {
     let accessToken;
@@ -289,7 +305,7 @@ function UserCreate() {
         const rolesValues = res.data.roles.map((role: any) => {
           if (role.roleId) {
             return {
-              label: role.roleId,
+              label: role.roleName,
               value: role.roleId,
               roleId: role.roleId,
               roleName: role.roleName,
@@ -484,9 +500,44 @@ function UserCreate() {
           p: 2,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
         }}
       >
+        <Box
+          sx={{
+            display: "flex",
+            height: 30,
+            flexDirection: "row",
+          }}
+          className={classes.viewLogTitle}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="subtitle1">View Groups</Typography>
+          </Box>
+          <Box
+            sx={{
+              paddingRight: 2,
+            }}
+          >
+            <button
+              style={{
+                border: 0,
+                padding: 0,
+                height: 22,
+                width: 22,
+              }}
+              className={classes.closeViewLog}
+              onClick={handleCloseGroups}
+            >
+              <b>X</b>
+            </button>
+          </Box>
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -523,6 +574,7 @@ function UserCreate() {
           sx={{
             display: "flex",
             justifyContent: "end",
+            padding: "20px",
           }}
         >
           <Button
@@ -545,11 +597,11 @@ function UserCreate() {
       setLastName(selectEmployeeID.user.lastName);
       setEmail(selectEmployeeID.user.emailId);
       setDesignation(selectEmployeeID.user.designation);
-      setStatus(selectEmployeeID.user.status);
+      //setStatus(selectEmployeeID.user.status);
       setRoleNames(
         selectEmployeeID.roles.map((role: any) => {
           return {
-            label: role.roleId,
+            label: role.roleName,
             value: role.roleId,
           };
         })
@@ -558,7 +610,7 @@ function UserCreate() {
       setGroupInput(
         selectEmployeeID.usergroups.map((group: any) => {
           return {
-            label: group.groupId,
+            label: group.groupName,
             value: group.groupId,
             status: group.status,
           };
@@ -754,16 +806,55 @@ function UserCreate() {
     }
   }, []);
 
+  React.useEffect(() => {
+    let today = new Date();
+    let dd = String(today.getDate());
+
+    let mm = String(today.getMonth() + 1);
+    let yyyy = String(today.getFullYear());
+    if (dd < "10") {
+      dd = "0" + dd;
+    }
+
+    if (mm < "10") {
+      mm = "0" + mm;
+    }
+    let startdate;
+    startdate = yyyy + "-" + mm + "-" + dd;
+    //console.log(startdate);
+    setCurrentDate(startdate);
+  });
+  useEffect(() => {
+    console.log(status);
+  }, [status]);
   const handleCreateRequest = (e: any) => {
     e.preventDefault();
+    let userDetails;
+    if (localStorage && localStorage.getItem("_userDetails")) {
+      userDetails = JSON.parse(
+        (localStorage && localStorage.getItem("_userDetails")) || "{}"
+      );
+    }
+
     const formData = {
-      requestType: requestType,
+      requestorDetails: {
+        emailId: userdata.userdetails[0].user.emailId,
+        requestBy: userdata.userdetails[0].user.userId,
+        requestedDate: currentDate,
+        requestType: "Approved",
+      },
+      requestorRoles: userdata.userdetails[0].roles.map((role: any) => {
+        return {
+          roleId: role.roleId,
+        };
+      }),
       user: {
-        EmployeeId: employeeID,
+        employeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
         emailId: email,
+        // requestBy: userdata.userdetails[0].user.userId,
         additionalInfo: designation,
         status: status,
         designation: designation.toUpperCase(),
@@ -779,7 +870,6 @@ function UserCreate() {
           status: group.status,
         };
       }),
-      submitFlag: submitFlag,
     };
     console.log(formData);
 
@@ -792,7 +882,7 @@ function UserCreate() {
     console.log(accessToken.access_token);
     axios
       .put(
-        `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        `https://cmv1.dev.np.commercial.morconnect.com/camuser/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
         formData,
         {
           headers: {
@@ -823,7 +913,7 @@ function UserCreate() {
         //   setGroups([]);
         //   setRoleNames([]);
         // }
-        if (statusCode === 202) {
+        if (statusCode === 200) {
           toast.current.show({
             severity: "success",
             summary: "",
@@ -833,14 +923,14 @@ function UserCreate() {
         }
       })
       .catch(err => {
-        console.log(err.response);
-        let statusCode = err.response.status;
-        console.log(statusCode);
+        //console.log(err.response);
+        //let statusCode = err.response.status;
+        //console.log(statusCode);
         // alert(err)
         toast.current.show({
           severity: "error",
           summary: "Error!",
-          detail: err.response.data.error,
+          detail: "error",
           life: 6000,
         });
       });
@@ -865,42 +955,42 @@ function UserCreate() {
     );
 
     //start
-    axios
-      .post(
-        `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
-        formdata,
-        {
-          headers: {
-            "Cache-Control": "no-cache",
-            Authorization: `Bearer ${accessToken.access_token}`,
-            "content-type": "application/json",
-          },
-        }
-      )
-      .then(res => {
-        console.log(res);
-        let statusCode = res.status;
-        if (statusCode === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "",
-            detail: res.data.message,
-            life: 6000,
-          });
-        }
-      })
-      .catch(err => {
-        console.log(err.response);
-        let statusCode = err.response.status;
-        console.log(statusCode);
-        // alert(err)
-        toast.current.show({
-          severity: "error",
-          summary: "Error!",
-          detail: err.response.data.error,
-          life: 6000,
-        });
-      });
+    // axios
+    //   .post(
+    //     `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    //     formdata,
+    //     {
+    //       headers: {
+    //         "Cache-Control": "no-cache",
+    //         Authorization: `Bearer ${accessToken.access_token}`,
+    //         "content-type": "application/json",
+    //       },
+    //     }
+    //   )
+    //   .then(res => {
+    //     console.log(res);
+    //     let statusCode = res.status;
+    //     if (statusCode === 200) {
+    //       toast.current.show({
+    //         severity: "success",
+    //         summary: "",
+    //         detail: res.data.message,
+    //         life: 6000,
+    //       });
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err.response);
+    //     let statusCode = err.response.status;
+    //     console.log(statusCode);
+    //     // alert(err)
+    //     toast.current.show({
+    //       severity: "error",
+    //       summary: "Error!",
+    //       detail: err.response.data.error,
+    //       life: 6000,
+    //     });
+    //   });
   };
 
   const createForm = (
@@ -976,6 +1066,7 @@ function UserCreate() {
           </Box>
         </Box>
       </Box>
+
       <form onSubmit={handleCreateRequest}>
         <Box
           sx={{
@@ -1439,7 +1530,7 @@ function UserCreate() {
               },
             }}
           >
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
               }}
@@ -1452,7 +1543,7 @@ function UserCreate() {
               >
                 Cancel
               </Button>
-            </Box>
+            </Box> */}
             <Box
               sx={{
                 display: "flex",
@@ -1551,7 +1642,7 @@ function UserCreate() {
     <>
       <Box sx={{ flexGrow: 1, p: 1, display: "flex" }}>
         <Grid container spacing={1}>
-          <Grid container item xs={10}>
+          <Grid container item xs={10} md={12} lg={10} sm={10}>
             <Toast ref={toast} position="bottom-left" />
             {createForm}
             {viewLog}
@@ -1559,8 +1650,22 @@ function UserCreate() {
           </Grid>
         </Grid>
       </Box>
+      <LoadingComponent showLoader={isLoading} />
     </>
   );
 }
 
-export default UserCreate;
+const mapStateToProps = (state: any) => {
+  return {
+    userdata: state.loginReducer.userdata,
+    isLoading: state.loginReducer.isLoading,
+  };
+};
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    loggedUser: (accessToken: any, employeeId: any) =>
+      dispatch(loggedUser(accessToken, employeeId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserCreate);

@@ -33,7 +33,7 @@ function DropDrawer(props: DropDrawerProps) {
     localStorage.removeItem("_Gresponse");
     localStorage.removeItem("_GresponseV2");
     localStorage.removeItem("_Colresponse");
-    localStorage.removeItem("_userDetails");
+    // localStorage.removeItem("_userDetails");
     console.log("LogOut");
     props.logOutUserRequest();
     history.push("/login");

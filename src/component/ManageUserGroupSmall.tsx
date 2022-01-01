@@ -219,7 +219,7 @@ function ManageUserGroupSmall(props: any) {
               justifyContent: "center",
             }}
           >
-            <Typography variant="subtitle1">Location Hierarchy</Typography>
+            <Typography variant="subtitle1">Product Hierarchy</Typography>
           </Box>
           <Box
             sx={{

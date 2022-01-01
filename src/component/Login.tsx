@@ -5,7 +5,7 @@ import { LogoMin } from "./Logos";
 import { userV2Login } from "./fetch";
 import { loginUser } from "../redux/Actions/Login";
 import { connect } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { Toast } from "primereact/toast";
 import { ServiceResponse } from "./Message";
@@ -48,11 +48,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Login(props: any) {
-  const { loginUser, error, user, isTokenExpired, isLoading, errorMessage } =
-    props;
+  const { loginUser, error, user, userdata, isLoading, errorMessage } = props;
   const classes = useStyles();
   let history = useHistory();
   const toast = useRef<any>(null);
+  const [status, setStatus] = useState("");
   const responseGoogle = useCallback(
     (response: any) => {
       console.log("starting response");
@@ -68,11 +68,19 @@ function Login(props: any) {
     },
     [loginUser]
   );
+
   useEffect(() => {
-    if (user) {
-      history.push("/Commercial/dashboard");
+    if (user && !userdata) {
+      history.push("/login");
+    } else if (userdata) {
+      if (user && userdata.userdetails[0].user.status === "A") {
+        history.push("/Commercial/dashboard");
+      } else if (user && userdata.userdetails[0].user.status !== "A") {
+        history.push("/login");
+        setStatus("NULl");
+      }
     }
-  }, [user, history]);
+  }, [user, userdata, history]);
 
   const responseGoogleerror = (error: any) => {
     console.log(error);
@@ -186,6 +194,31 @@ function Login(props: any) {
         >
           {errorMessage}
         </div>
+        {status.toUpperCase() === "NULL" ? (
+          <div
+            className={classes.error}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: 10,
+            }}
+          >
+            Login Failed. Employee status is not Active
+          </div>
+        ) : (
+          <div
+            className={classes.error}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: 10,
+            }}
+          ></div>
+        )}
         {/* <ProgressLoader showLoader={isLoading} /> */}
         <LoadingComponent showLoader={isLoading} />
       </div>
@@ -196,6 +229,7 @@ function Login(props: any) {
 const mapStateToProps = (state: any) => {
   return {
     user: state.loginReducer.user,
+    userdata: state.loginReducer.userdata,
     error: state.loginReducer.error,
     errorMessage: state.loginReducer.errorMessage,
     isLoading: state.loginReducer.isLoading,

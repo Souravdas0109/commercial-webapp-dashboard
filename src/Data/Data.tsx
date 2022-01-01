@@ -878,10 +878,10 @@ export const viewLogColumns = [
   { field: "comments", headerName: "Comments", width: 90 },
 ];
 export const viewHierarchy = [
-  { field: "hierarchyId", headerName: "Hierarchy Id", width: 150 },
+  { field: "hierarchyId", headerName: "Hierarchy Id", width: 100 },
   { field: "hierarchyLevel", headerName: "Hierarchy Level", width: 80 },
-  { field: "startDate", headerName: "Start Date", width: 70 },
-  { field: "endDate", headerName: "End Date", width: 70 },
+  { field: "startDate", headerName: "Start Date", width: 100 },
+  { field: "endDate", headerName: "End Date", width: 100 },
 ];
 export const userTableHeaders = [
   {
@@ -935,6 +935,140 @@ export const userTableHeaders = [
     width: 200,
   },
 ];
+//
+export const pendingActionTableHeaders = [
+  {
+    field: "requestedId",
+    headerName: "Requested ID",
+    width: 100,
+  },
+  {
+    field: "assignedTo",
+    headerName: "Assigned To",
+    width: 100,
+  },
+  {
+    field: "timeStamp",
+    headerName: "timestamp",
+    width: 100,
+  },
+  {
+    field: "requestedBy",
+    headerName: "Requested By",
+    width: 100,
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 100,
+  },
+  {
+    field: "comments",
+    headerName: "Comments",
+    width: 200,
+  },
+  {
+    field: "firstName",
+    headerName: "First Name",
+    width: 100,
+  },
+  {
+    field: "middleName",
+    headerName: "Middle Name",
+    width: 100,
+  },
+  {
+    field: "lastName",
+    headerName: "Last Name",
+    width: 100,
+  },
+  {
+    field: "employeeId",
+    headerName: "Employee Id",
+    width: 100,
+  },
+  {
+    field: "emailId",
+    headerName: "Email ID",
+    width: 300,
+  },
+];
+
+export const pendingActionDetails = [
+  {
+    requestedId: "0123456",
+    assignedTo: "Mark B",
+    timeStamp: "18-Oct-21",
+    requestedBy: "Daniel Paul",
+    role: "Role 1",
+    action: "Create New User",
+    comments: "Please modify personal details",
+    firstName: "John",
+    middleName: "K",
+    lastName: "Smith",
+    employeeId: "123456",
+    emailId: "johnksmith@morrisonsplc.co.uk",
+  },
+  {
+    requestedId: "325641",
+    assignedTo: "Mark B",
+    timeStamp: "19-Oct-21",
+    requestedBy: "Rio Lobo",
+    role: "Role 2",
+    action: "Reassign",
+    comments: "Please provide role and group details",
+    firstName: "Jordan",
+    middleName: "M",
+    lastName: "Black",
+    employeeId: "123456",
+    emailId: "jordanmblack@morrisonsplc.co.uk",
+  },
+];
+
+export const pendingActionUpdateTableHeaders = [
+  {
+    field: "requestedId",
+    headerName: "Requested ID",
+    width: 100,
+  },
+  {
+    field: "assignedTo",
+    headerName: "Assigned To",
+    width: 100,
+  },
+  {
+    field: "timeStamp",
+    headerName: "timestamp",
+    width: 100,
+  },
+  {
+    field: "requestedBy",
+    headerName: "Requested By",
+    width: 100,
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 100,
+  },
+  {
+    field: "comments",
+    headerName: "Comments",
+    width: 200,
+  },
+];
+
+//
 export const userDetails = [
   {
     empID: 297,

@@ -1,6 +1,5 @@
 import { Divider, Grid, Typography, makeStyles } from "@material-ui/core";
 import React from "react";
-import UserConfig from "./UserConfig";
 import SidepanelUser from "./SidepanelUser";
 import UserCreate1 from "./UserCreate1";
 import ManageUser from "./ManageUser";

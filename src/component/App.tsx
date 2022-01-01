@@ -22,26 +22,22 @@ import store from "../redux/store";
 import { Provider } from "react-redux";
 import Login from "./Login";
 import AuthRoute from "./AuthRoute";
-import UserInformation from "./UserInformationCreate";
-import UserConfiguration from "./UserConfiguration";
-import UserConfigurationSmall from "./UserConfigurationSmall";
-import UserConfig from "./UserConfig";
-import UserInformationDashboard from "./UserInformationDashboard";
+
 import UserCreateDashboard from "./UserCreateDashboard";
-import UserInformationCreate from "./UserInformationCreate";
-import UserCreate1 from "./UserCreate1";
 import UserUpdateDashboard from "./UserUpdateDashboard";
-import UserUpdate from "./UserUpdate";
-import UserCreateSmall from "./UserCreateSmall";
 import ManageUserDashboard from "./ManageUserDashboard";
 import ManageUserGroupDashboard from "./ManageUserGroupDashboard";
 import CreateGroup from "./CreateGroup";
 import ManageUserGroupSmall from "./ManageUserGroupSmall";
 import CreateGroupSmall from "./CreateGroupSmall";
 import ManageUserSmall from "./ManageUserSmall";
-import UserUpdateSmall from "./UserUpdateSmall";
 import UserCreate from "./UserCreate";
 import UpdateUser from "./UpdateUser";
+import PendingAction from "./PendingAction";
+import UpdatePendingAction from "./UpdatePendingAction";
+import UnassignedWorkflow from "./UnassignedWorkflow";
+import Error from "./Error";
+import AccessDenied from "./AccessDenied";
 
 const theme = createTheme({
   palette: {
@@ -101,6 +97,46 @@ function App() {
                     component={CommercialDashboard}
                   ></Route>
                   <AuthRoute
+                    path="/Commercial/pendingactions"
+                    component={PendingAction}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/Commercial/pendingactions"
+                    component={PendingAction}
+                  ></Route>
+                  <AuthRoute
+                    path="/pendingactions/update"
+                    component={UpdatePendingAction}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/pendingactions/update"
+                    component={UpdatePendingAction}
+                  ></Route>
+                  <AuthRoute
+                    path="/Commercial/unassignedworkflow"
+                    component={UnassignedWorkflow}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/Commercial/unassignedworkflow"
+                    component={UnassignedWorkflow}
+                  />
+                  <AuthRoute
+                    path="/Commercial/error"
+                    component={AccessDenied}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/Commercial/error"
+                    component={AccessDenied}
+                  />
+                  <AuthRoute
                     path="/Commercial/promotions"
                     component={Promotions}
                     isAuthorized={true}
@@ -152,13 +188,13 @@ function App() {
                   />
                   <AuthRoute
                     path="/Commercial/analytics"
-                    component={UserInformationDashboard}
+                    component={KpiAnalytics}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/Commercial/analytics"
-                    component={UserInformationDashboard}
+                    component={KpiAnalytics}
                   />
                   <AuthRoute
                     path="/userconfig/usergroup"
@@ -291,23 +327,13 @@ function App() {
                   />
                   <AuthRoute
                     path="/Commercial/analytics"
-                    component={UserConfig}
+                    component={KpiAnalyticsSmall}
                     isAuthorized={true}
                   />
                   <Route
                     exact
                     path="/Commercial/analytics"
-                    component={UserConfig}
-                  />
-                  <AuthRoute
-                    path="/userconfig/userinfo"
-                    component={UserConfigurationSmall}
-                    isAuthorized={true}
-                  />
-                  <Route
-                    exact
-                    path="/userconfig/userinfo"
-                    component={UserConfigurationSmall}
+                    component={KpiAnalyticsSmall}
                   />
                   <AuthRoute
                     path="/userconfig/usercreate"
@@ -338,6 +364,16 @@ function App() {
                     exact
                     path="/userconfig/usergroup"
                     component={ManageUserGroupSmall}
+                  />
+                  <AuthRoute
+                    path="/Commercial/error"
+                    component={AccessDenied}
+                    isAuthorized={true}
+                  />
+                  <Route
+                    exact
+                    path="/Commercial/error"
+                    component={AccessDenied}
                   />
                   <AuthRoute
                     path="/userconfig/groupcreate"

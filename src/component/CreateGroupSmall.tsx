@@ -876,7 +876,7 @@ function CreateGroupSmall() {
                 display: "flex",
                 p: 2,
                 paddingLeft: 40,
-                paddingRight: 30,
+                //paddingRight: 30,
                 textAlign: "left",
                 width: 270,
               }}

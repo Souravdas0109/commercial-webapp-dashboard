@@ -16,7 +16,7 @@ import SidepanelUser from "./SidepanelUser";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { makeStyles, styled } from "@material-ui/styles";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 // import SideBar from '../Layout/SideBar'
 import Select, { StylesConfig } from "react-select";
@@ -28,6 +28,7 @@ import {
   taskList,
   GroupTypes,
   groupTypes,
+  pendingActionUpdateTableHeaders,
 } from "../Data/Data";
 import { requestTypes, roleTypes, employeeDetails } from "../Data/Data";
 import { RoleTypes } from "../Data/Data";
@@ -41,8 +42,7 @@ import { connect } from "react-redux";
 import { reset_empID } from "../redux/Actions/ManageUser";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import { loggedUser } from "../redux/Actions/Login/Action";
-import LoadingComponent from "./LoadingComponent";
+import { reset_pendingAction } from "../redux/Actions/PendingAction";
 
 const fieldWidth = window.innerWidth - 80;
 const useStyles = makeStyles((theme: any) => {
@@ -207,8 +207,9 @@ const Input = styled("input")({
   display: "none",
 });
 
-function UpdateUser(props: any) {
-  const { empDetails, reset_empID, userdata, loggedUser, isLoading } = props;
+function UpdatePendingAction(props: any) {
+  const { pendingActionDetails, reset_empID } = props;
+
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -216,13 +217,14 @@ function UpdateUser(props: any) {
   const dialogwidth = width ? 600 : fieldWidth;
   const [roleNames, setRoleNames] = React.useState([]);
   // const [anchorEl, setAnchorEl] = React.useState(null);
-  const [currentDate, setCurrentDate] = useState("");
+
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [middleName, setMiddleName] = React.useState("");
   const [requestType, setRequestType] = React.useState("");
   const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>();
   const [employeeID, setEmployeeID] = React.useState("");
+  const [requestedId, setRequestedId] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [designation, setDesignation] = React.useState<any>();
   const [status, setStatus] = React.useState("");
@@ -243,11 +245,12 @@ function UpdateUser(props: any) {
   const toast = useRef<any>(null);
 
   React.useEffect(() => {
-    if (!empDetails) {
-      history.push("/userconfig/usermanage");
+    if (!pendingActionDetails) {
+      history.push("/Commercial/pendingactions");
     } else {
-      console.log(empDetails[0]);
-      setSelectEmployeeID(empDetails[0]);
+      console.log(pendingActionDetails[0]);
+      setSelectEmployeeID(pendingActionDetails[0]);
+      console.log(selectEmployeeID);
       setTasks(taskList);
 
       let accessToken;
@@ -266,11 +269,11 @@ function UpdateUser(props: any) {
         },
       })
         .then(res => {
-          // console.log(res.data);
+          console.log(res.data);
           const rolesValues = res.data.roles.map((role: any) => {
             if (role.roleId) {
               return {
-                label: role.roleName,
+                label: role.roleId,
                 value: role.roleId,
                 roleId: role.roleId,
                 roleName: role.roleName,
@@ -313,7 +316,7 @@ function UpdateUser(props: any) {
   }, []);
 
   const goBack = () => {
-    reset_empID();
+    reset_pendingAction();
     history.goBack();
   };
 
@@ -391,15 +394,16 @@ function UpdateUser(props: any) {
 
   React.useEffect(() => {
     if (selectEmployeeID) {
-      setEmployeeID(selectEmployeeID.userId);
+      setRequestedId(selectEmployeeID.requestedId);
+      setEmployeeID(selectEmployeeID.employeeId);
       setFirstName(selectEmployeeID.firstName);
       setMiddleName(selectEmployeeID.middleName);
       setLastName(selectEmployeeID.lastName);
       setEmail(selectEmployeeID.emailId);
       setDesignation(selectEmployeeID.designation);
-      if (selectEmployeeID.status === "A") {
+      if (selectEmployeeID.status === "D") {
         setStatus(selectEmployeeID.status);
-        setStatusWithValue("ACTIVE");
+        setStatusWithValue("DELETED");
       } else if (selectEmployeeID.status === "W") {
         setStatus(selectEmployeeID.status);
         setStatusWithValue("INPROGRESS");
@@ -408,35 +412,35 @@ function UpdateUser(props: any) {
         setStatusWithValue("INACTIVE");
       } else {
         setStatus(selectEmployeeID.status);
-        setStatusWithValue("DELETED");
+        setStatusWithValue("ACTIVE");
       }
 
-      setRoleNames(
-        selectEmployeeID.roles.map((role: any) => {
-          return {
-            label: role.roleName,
-            value: role.roleId,
-          };
-        })
-      );
-      setGroupInput(
-        selectEmployeeID.usergroups.map((group: any) => {
-          return {
-            label: group.groupName,
-            value: group.groupId,
-            status: group.status,
-          };
-        })
-      );
-      setGroups(
-        selectEmployeeID.usergroups.map((group: any) => {
-          return {
-            label: group.groupName,
-            value: group.groupId,
-            status: group.status,
-          };
-        })
-      );
+      //   setRoleNames(
+      //     selectEmployeeID.roles.map((role: any) => {
+      //       return {
+      //         label: role.roleId,
+      //         value: role.roleId,
+      //       };
+      //     })
+      //   );
+      //   setGroupInput(
+      //     selectEmployeeID.usergroups.map((group: any) => {
+      //       return {
+      //         label: group.groupId,
+      //         value: group.groupId,
+      //         status: group.status,
+      //       };
+      //     })
+      //   );
+      //   setGroups(
+      //     selectEmployeeID.usergroups.map((group: any) => {
+      //       return {
+      //         label: group.groupId,
+      //         value: group.groupId,
+      //         status: group.status,
+      //       };
+      //     })
+      //   );
       setComments(selectEmployeeID.comments);
     } else {
       setEmployeeID("");
@@ -475,45 +479,9 @@ function UpdateUser(props: any) {
           p: 2,
           display: "flex",
           flexDirection: "column",
-          // justifyContent: "space-between",
+          justifyContent: "space-between",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            height: 30,
-            flexDirection: "row",
-          }}
-          className={classes.viewLogTitle}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexGrow: 1,
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="subtitle1">View Groups</Typography>
-          </Box>
-          <Box
-            sx={{
-              paddingRight: 2,
-            }}
-          >
-            <button
-              style={{
-                border: 0,
-                padding: 0,
-                height: 22,
-                width: 22,
-              }}
-              className={classes.closeViewLog}
-              onClick={handleCloseGroups}
-            >
-              <b>X</b>
-            </button>
-          </Box>
-        </Box>
         <Box
           sx={{
             display: "flex",
@@ -563,7 +531,6 @@ function UpdateUser(props: any) {
           sx={{
             display: "flex",
             justifyContent: "end",
-            padding: "20px",
           }}
         >
           <Button
@@ -797,72 +764,29 @@ function UpdateUser(props: any) {
       </Box>
     </Dialog>
   );
-  React.useEffect(() => {
-    let today = new Date();
-    let dd = String(today.getDate());
-
-    let mm = String(today.getMonth() + 1);
-    let yyyy = String(today.getFullYear());
-    if (dd < "10") {
-      dd = "0" + dd;
-    }
-
-    if (mm < "10") {
-      mm = "0" + mm;
-    }
-    let startdate;
-    startdate = yyyy + "-" + mm + "-" + dd;
-    //console.log(startdate);
-    setCurrentDate(startdate);
-  });
-
-  useEffect(() => {
-    let accesstoken;
-    if (localStorage && localStorage.getItem("_GresponseV2")) {
-      accesstoken = JSON.parse(
-        (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
-      );
-    }
-    const accessToken = accesstoken.access_token;
-    const employeeId = accesstoken.empId;
-    loggedUser(accessToken, employeeId);
-  }, [loggedUser]);
 
   const handleUpdateUser = (e: any) => {
     e.preventDefault();
     const formData = {
-      requestorDetails: {
-        emailId: userdata.userdetails[0].user.emailId,
-        requestBy: userdata.userdetails[0].user.userId,
-        requestedDate: currentDate,
-        requestType: requestType,
-      },
-      requestorRoles: userdata.userdetails[0].roles.map((role: any) => {
-        return {
-          roleId: role.roleId,
-        };
-      }),
+      requestType: requestType,
       user: {
         EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        requestBy: userdata.userdetails[0].user.userId,
-        additionalInfo: "designation",
-        designation: "designation.toUpperCase()",
+        additionalInfo: designation,
+        designation: designation.toUpperCase(),
         status: status,
       },
       roles: roleNames.map((role: any) => {
         return {
           roleId: role.value,
-          //roleName: role.label,
         };
       }),
       usergroups: groups.map((group: any) => {
         return {
           groupId: group.value,
-          //groupName: group.label,
           status: group.status,
         };
       }),
@@ -878,7 +802,7 @@ function UpdateUser(props: any) {
     console.log(accessToken.access_token);
     axios
       .put(
-        `https://cmv1.dev.np.commercial.morconnect.com/camuser/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
         formData,
         {
           headers: {
@@ -910,73 +834,73 @@ function UpdateUser(props: any) {
       })
       .catch(err => {
         console.log(err.response);
-        // let statusCode = err.response.status;
-        //console.log(statusCode);
+        let statusCode = err.response.status;
+        console.log(statusCode);
         // alert(err)
         toast.current.show({
           severity: "error",
           summary: "Error!",
-          detail: "Please try again",
+          detail: err.response.data.error,
           life: 6000,
         });
       });
 
-    // const formDataforAttachment: any = {
-    //   requestId: "SYSTCS175",
-    //   timestamp: "2021-12-12",
-    //   userId: employeeID,
-    //   role: "ADMIN",
-    //   camundaRequestId: "C1234567",
-    //   actionTaken: "New",
-    //   comments: "comments",
-    // };
+    const formDataforAttachment: any = {
+      requestId: "SYSTCS175",
+      timestamp: "2021-12-12",
+      userId: employeeID,
+      role: "ADMIN",
+      camundaRequestId: "C1234567",
+      actionTaken: "New",
+      comments: "comments",
+    };
 
-    // const formdata = new FormData();
-    // formdata.append("fileIn", referenceDocData);
-    // formdata.append(
-    //   "postData",
-    //   new Blob([JSON.stringify(formDataforAttachment)], {
-    //     type: "application/json",
-    //   })
-    // );
+    const formdata = new FormData();
+    formdata.append("fileIn", referenceDocData);
+    formdata.append(
+      "postData",
+      new Blob([JSON.stringify(formDataforAttachment)], {
+        type: "application/json",
+      })
+    );
 
-    // //start
-    // axios
-    //   .post(
-    //     `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
-    //     formdata,
-    //     {
-    //       headers: {
-    //         "Cache-Control": "no-cache",
-    //         Authorization: `Bearer ${accessToken.access_token}`,
-    //         "content-type": "application/json",
-    //       },
-    //     }
-    //   )
-    //   .then(res => {
-    //     console.log(res);
-    //     let statusCode = res.status;
-    //     if (statusCode === 200) {
-    //       toast.current.show({
-    //         severity: "success",
-    //         summary: "",
-    //         detail: res.data.message,
-    //         life: 6000,
-    //       });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log(err.response);
-    //     let statusCode = err.response.status;
-    //     console.log(statusCode);
-    //     // alert(err)
-    //     toast.current.show({
-    //       severity: "error",
-    //       summary: "Error!",
-    //       detail: err.response.data.error,
-    //       life: 6000,
-    //     });
-    //   });
+    //start
+    axios
+      .post(
+        `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+        formdata,
+        {
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Bearer ${accessToken.access_token}`,
+            "content-type": "application/json",
+          },
+        }
+      )
+      .then(res => {
+        console.log(res);
+        let statusCode = res.status;
+        if (statusCode === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "",
+            detail: res.data.message,
+            life: 6000,
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err.response);
+        let statusCode = err.response.status;
+        console.log(statusCode);
+        // alert(err)
+        toast.current.show({
+          severity: "error",
+          summary: "Error!",
+          detail: err.response.data.error,
+          life: 6000,
+        });
+      });
   };
 
   const createForm = (
@@ -1016,7 +940,7 @@ function UpdateUser(props: any) {
             flexGrow: 1,
           }}
         >
-          <Typography variant="h5">Update User</Typography>
+          <Typography variant="h5">Pending Action - {requestedId}</Typography>
         </Box>
 
         <Box
@@ -1053,6 +977,54 @@ function UpdateUser(props: any) {
         </Box>
       </Box>
       <form onSubmit={handleUpdateUser}>
+        <Box className={classes.eachRow}>
+          <Box
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            <DataTable
+              value={pendingActionDetails}
+              paginator
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+              rows={10}
+              // globalFilter={globalFilter}
+              emptyMessage="No Users found."
+              //   scrollable
+              //   scrollHeight="500px"
+              //   style={{
+              //     width: "1000px",
+              //   }}
+              showGridlines
+              //loading={manageUserLoading}
+            >
+              {pendingActionUpdateTableHeaders.map(column => {
+                return (
+                  <Column
+                    key={column.field}
+                    field={column.field}
+                    header={column.headerName}
+                    bodyStyle={{
+                      fontSize: "14px",
+                      width: column.width,
+                    }}
+                    headerStyle={{
+                      fontSize: "14px",
+                      width: column.width,
+                      backgroundColor: teal[900],
+                      color: "white",
+                    }}
+                    // body={
+                    //   (column.field === "roles" && roleTemplate) ||
+                    //   (column.field === "requestedId" && requestIdTemplate)
+                    // }
+                    sortable
+                  />
+                );
+              })}
+            </DataTable>
+          </Box>
+        </Box>
         <Box
           // sx={{
           //     display: "flex",
@@ -1243,23 +1215,6 @@ function UpdateUser(props: any) {
                 />
               </Typography>
             </Box>
-            <Box
-              sx={{
-                paddingLeft: 5,
-                paddingRight: 5,
-                fontSize: "x-large",
-                display: "flex",
-              }}
-            >
-              {width && <>|</>}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-              }}
-            >
-              <button className={classes.backButton}>Additional Data</button>
-            </Box>
           </Box>
         </Box>
         <Box className={classes.eachRow}>
@@ -1448,7 +1403,7 @@ function UpdateUser(props: any) {
               },
             }}
           >
-            {/* <Box
+            <Box
               sx={{
                 display: "flex",
               }}
@@ -1460,7 +1415,7 @@ function UpdateUser(props: any) {
               >
                 Cancel
               </Button>
-            </Box> */}
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -1562,25 +1517,23 @@ function UpdateUser(props: any) {
       {viewLog}
       {viewGroups}
       {manageTasks}
-      <LoadingComponent showLoader={isLoading} />
     </>
   );
 }
 
 const mapStatetoProps = (state: any) => {
   return {
-    empDetails: state.manageUserReducer.empDetails,
-    userdata: state.loginReducer.userdata,
-    isLoading: state.loginReducer.isLoading,
+    pendingActionDetails: state.pendingActionReducer.pendingActionDetails,
   };
 };
 
 const matchDispatchToProps = (dispatch: any) => {
   return {
-    reset_empID: () => dispatch(reset_empID()),
-    loggedUser: (accessToken: any, employeeId: any) =>
-      dispatch(loggedUser(accessToken, employeeId)),
+    reset_pendingAction: () => dispatch(reset_pendingAction()),
   };
 };
 
-export default connect(mapStatetoProps, matchDispatchToProps)(UpdateUser);
+export default connect(
+  mapStatetoProps,
+  matchDispatchToProps
+)(UpdatePendingAction);
