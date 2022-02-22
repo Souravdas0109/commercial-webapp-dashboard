@@ -1,6 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./component/css/essential.css";
-import App from "./component/App";
+import "./styles/essential.css";
+import "./styles/hbtw.css";
+import App from "./pages/App";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);

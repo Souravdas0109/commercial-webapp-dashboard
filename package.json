@@ -1,5 +1,5 @@
 {
-  "name": "commercial-my-profile-page",
+  "name": "commercial-webapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -34,10 +34,20 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env REACT_APP_ENV=dev react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write src/**/*.{js,jsx,tsx,ts,css,scss,md}",
+    "build:dev": "CI=false && cross-env REACT_APP_ENV=dev  react-scripts build",
+    "build:sit": "CI=false && cross-env REACT_APP_ENV=sit  react-scripts build",
+    "build:pre": "CI=false && cross-env REACT_APP_ENV=pre  react-scripts build",
+    "build:prd": "CI=false && cross-env REACT_APP_ENV=prd  react-scripts build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -60,6 +70,10 @@
   "devDependencies": {
     "@types/react-material-ui-form-validator": "^2.1.1",
     "@types/react-router-dom": "^5.1.8",
-    "@types/redux-logger": "^3.0.9"
+    "@types/redux-logger": "^3.0.9",
+    "cross-env": "^7.0.3",
+    "husky": "^7.0.4",
+    "prettier": "^2.5.1",
+    "pretty-quick": "^3.1.3"
   }
 }
