@@ -145,10 +145,10 @@ function UserManage(props: any) {
   //   };
 
   return (
-    <div className="manageUser">
+    <div className={classes.root}>
       <div className={classes.value}>
         <Grid container className={classes.container}>
-          <Grid item sm={12} xs={12} className="manageRequest">
+          <Grid item sm={12} xs={12}>
             <Box
               sx={{
                 display: 'flex',
@@ -158,7 +158,7 @@ function UserManage(props: any) {
                 width: '100%',
                 flexWrap: 'wrap',
               }}
-              className="colorSecondary">
+            >
               <Box
                 sx={{
                   display: 'flex',

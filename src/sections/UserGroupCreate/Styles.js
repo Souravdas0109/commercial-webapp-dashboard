@@ -112,14 +112,46 @@ export const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
   },
   backButton: {
-    border: 0,
-    color: 'blue',
-    // backgroundColor: "white",
+    // border: 0,
+    // color: 'blue',
+    // // backgroundColor: "white",
+    // cursor: 'pointer',
+    // fontSize: '18px',
+    // '&:disabled': {
+    //   color: 'grey',
+    //   cursor: 'default',
+    // },
+    //backgroundColor: theme.palette.primary.main,
+    backgroundColor: '#E0E1E2',
+    padding: '2px',
     cursor: 'pointer',
-    fontSize: '18px',
-    '&:disabled': {
-      color: 'grey',
-      cursor: 'default',
+    fontSize: '16px !important',
+    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%)',
+    // "0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
+    svg: {
+      position: 'relative',
+      top: '8px',
+      fontSize: '1.2rem',
+      right: '-5px',
+    },
+    ' &:hover': {
+      fontSize: '16px !important',
+    },
+  },
+  createRequest: {
+    backgroundColor: '#F0F0F0',
+    padding: '20px !important',
+    // @media (min-width: 320px) and (max-width: 768px) {
+    //   padding: 20px !important;
+    // }
+  },
+  createRequestContainer: {
+    backgroundColor: 'white',
+    padding: '25px',
+    additionalData: {
+      fontSize: '16px',
+      color: 'green',
+      display: 'block',
     },
   },
   eachRow: {
@@ -178,9 +210,16 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   underlineRemove: {
-    textDecoration: 'none',
-    color: '#0000ff',
+    // textDecoration: 'none',
+    // color: '#0000ff',
+    color: '#1b6420',
+    fontSize: '16px',
+    display: 'block',
+    fontWeight: 'normal',
+    fontFamily: 'MorrisonsAgenda',
+    fontWeight: 300,
   },
+
   submitButton: {
     width: 'auto',
     border: '1px solid',

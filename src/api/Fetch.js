@@ -225,6 +225,7 @@ export const getUserIdAPI = (userId) => {
   const params = 'limit=1000&statusIn=I,D'
   return serviceRequest(url, 'GET', undefined, params)
 }
+
 export const getUserForAllStatusAPI = (userId) => {
   let url = `${BASE_URL}${GET_USER_DETAILS_ID}`
   url = url.replace('{userId}', userId)

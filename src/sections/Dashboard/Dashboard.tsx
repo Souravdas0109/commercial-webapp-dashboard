@@ -10,27 +10,27 @@ import {
   Tooltip,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core";
-import React from "react";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+} from '@material-ui/core'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 // import { pendingStatusDetails } from './DataConstant'
-import { userTaskDashboard } from "./DataConstant";
-import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
-import { admins } from "../../util/Constants";
+import { userTaskDashboard } from './DataConstant'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
+import { admins } from '../../util/Constants'
 import {
   set_mygrouppendingAction,
   set_mygroupunassignAction,
   set_myinprogressAction,
   set_mypendingAction,
   reset_all,
-} from "../../redux/Actions/PendingAction/Action";
-import { getStatusCamundaAPI } from "../../api/Fetch";
-import { ServiceResponse } from "../../pages/Login/Messages";
+} from '../../redux/Actions/PendingAction/Action'
+import { getStatusCamundaAPI } from '../../api/Fetch'
+import { ServiceResponse } from '../../pages/Login/Messages'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(2),
   },
@@ -39,42 +39,42 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     backgroundColor: theme.palette.primary.main,
-    color: "white",
+    color: 'white',
   },
   wide: {
     [theme.breakpoints.up(900)]: {
       maxWidth: 600,
-      fontSize: "14px",
+      fontSize: '14px',
     },
     [theme.breakpoints.down(900)]: {
       maxWidth: 400,
-      fontSize: "14px",
+      fontSize: '14px',
     },
     [theme.breakpoints.down(750)]: {
       maxWidth: 400,
-      fontSize: "14px",
+      fontSize: '14px',
     },
     [theme.breakpoints.down(500)]: {
       width: 300,
-      fontSize: "12px",
+      fontSize: '12px',
     },
     [theme.breakpoints.down(400)]: {
       width: 200,
-      fontSize: "12px",
+      fontSize: '12px',
     },
     [theme.breakpoints.down(300)]: {
       width: 200,
-      fontSize: "12px",
+      fontSize: '12px',
     },
   },
   color90: {
     color: theme.palette.primary.main,
   },
   color80: {
-    color: "#FFBF00",
+    color: '#FFBF00',
   },
   color60: {
-    color: "red",
+    color: 'red',
   },
   tool: {
     backgroundColor: theme.palette.secondary.main,
@@ -85,12 +85,12 @@ const useStyles = makeStyles(theme => ({
     // fontWeight: 'bold',
     marginLeft: theme.spacing(2),
   },
-}));
+}))
 function Dashboard(props: any) {
-  const [newMap, setNewMap] = useState<Array<any>>([]);
-  const theme = useTheme();
-  const active = useMediaQuery(theme.breakpoints.down(700));
-  const [isProgressLoader, setIsProgressLoader] = React.useState(false);
+  const [newMap, setNewMap] = useState<Array<any>>([])
+  const theme = useTheme()
+  const active = useMediaQuery(theme.breakpoints.down(700))
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   // let newMap1: Array<any> = []
 
   const {
@@ -104,71 +104,71 @@ function Dashboard(props: any) {
     set_mygroupunassignAction,
     reset_all,
     userDetail,
-  } = props;
-  const classes = useStyles();
+  } = props
+  const classes = useStyles()
 
   useEffect(() => {
-    setIsProgressLoader(true);
-    let pendingTasks: Array<any> = [];
-    let inprogressTasks: Array<any> = [];
-    let mygroupPendingTasks: Array<any> = [];
-    let mygroupUnassignTasks: Array<any> = [];
-    setNewMap([...userTaskDashboard]);
+    setIsProgressLoader(true)
+    let pendingTasks: Array<any> = []
+    let inprogressTasks: Array<any> = []
+    let mygroupPendingTasks: Array<any> = []
+    let mygroupUnassignTasks: Array<any> = []
+    setNewMap([...userTaskDashboard])
     getStatusCamundaAPI &&
       getStatusCamundaAPI()
-        .then(res => {
-          const pendingStatusDetails = res.data;
+        .then((res) => {
+          const pendingStatusDetails = res.data
 
-          setIsProgressLoader(false);
+          setIsProgressLoader(false)
           if (pendingStatusDetails && pendingStatusDetails.status) {
             pendingTasks =
               pendingStatusDetails &&
               pendingStatusDetails.status &&
               pendingStatusDetails.status.filter(
-                (item: any) => item.details.toLowerCase() === "mypendingtasks"
-              );
+                (item: any) => item.details.toLowerCase() === 'mypendingtasks'
+              )
 
             inprogressTasks =
               pendingStatusDetails &&
               pendingStatusDetails.status &&
               pendingStatusDetails.status.filter(
-                (item: any) => item.details.toLowerCase() === "myrequestedtasks"
-              );
+                (item: any) => item.details.toLowerCase() === 'myrequestedtasks'
+              )
             mygroupPendingTasks =
               pendingStatusDetails &&
               pendingStatusDetails.status &&
               pendingStatusDetails.status.filter(
                 (item: any) =>
-                  item.details.toLowerCase() === "mygrouppendingtasks"
-              );
+                  item.details.toLowerCase() === 'mygrouppendingtasks'
+              )
             mygroupUnassignTasks =
               pendingStatusDetails &&
               pendingStatusDetails.status &&
               pendingStatusDetails.status.filter(
                 (item: any) =>
-                  item.details.toLowerCase() === "mygroupunnassignedtasks"
-              );
+                  item.details.toLowerCase() === 'mygroupunnassignedtasks'
+              )
 
             // console.log(pendingTasks)
             // console.log(inprogressTasks)
             // console.log(mygroupPendingTasks)
             // console.log(mygroupUnassignTasks)
-            set_mypendingAction(pendingTasks);
-            set_myinprogressAction(inprogressTasks);
-            set_mygrouppendingAction(mygroupPendingTasks);
-            set_mygroupunassignAction(mygroupUnassignTasks);
+            set_mypendingAction(pendingTasks)
+            set_myinprogressAction(inprogressTasks)
+            set_mygrouppendingAction(mygroupPendingTasks)
+            set_mygroupunassignAction(mygroupUnassignTasks)
           }
         })
-        .catch(error => {
-          setIsProgressLoader(false);
-          set_mypendingAction([]);
-          set_myinprogressAction([]);
-          set_mygrouppendingAction([]);
-          set_mygroupunassignAction([]);
-        });
+        .catch((error) => {
+          setIsProgressLoader(false)
+          set_mypendingAction([])
+          set_myinprogressAction([])
+          set_mygrouppendingAction([])
+          set_mygroupunassignAction([])
+        })
     // }, [pendingStatusDetails])
-    return reset_all();
-  }, []);
+    return reset_all()
+  }, [])
 
   useEffect(() => {
     // console.log(mypendingAction)
@@ -185,45 +185,45 @@ function Dashboard(props: any) {
       const rolelist =
         userDetail &&
         userDetail.userdetails &&
-        userDetail.userdetails[0].roles.map((rl: any) => rl.roleId);
-      let adminqn = false;
+        userDetail.userdetails[0].roles.map((rl: any) => rl.roleId)
+      let adminqn = false
       for (let ad = 0; ad < admins.length; ad++) {
         if (rolelist.includes(admins[ad])) {
-          adminqn = true;
-          break;
+          adminqn = true
+          break
         }
       }
       const newMap1 =
         userDetail &&
-        userTaskDashboard.map(item => {
-          if (item.value.toLowerCase() === "usermanagement") {
+        userTaskDashboard.map((item) => {
+          if (item.value.toLowerCase() === 'usermanagement') {
             item.my.pendingActions =
               mypendingAction.length > 0 && mypendingAction[0].tasks.length > 0
                 ? mypendingAction[0].tasks.length
-                : 0;
+                : 0
             item.my.inProgressTask =
               myinprogressTasks.length > 0 &&
               myinprogressTasks[0].tasks.length > 0
                 ? myinprogressTasks[0].tasks.length
-                : 0;
+                : 0
             item.myGroup.pendingActions =
               adminqn &&
               mygroupPendingAction.length > 0 &&
               mygroupPendingAction[0].tasks.length > 0
                 ? mygroupPendingAction[0].tasks.length
-                : 0;
+                : 0
             item.myGroup.inProgressTask =
               adminqn &&
               mygroupUnassignTasks.length > 0 &&
               mygroupUnassignTasks[0].tasks.length > 0
                 ? mygroupUnassignTasks[0].tasks.length
-                : 0;
+                : 0
           }
 
-          return item;
-        });
+          return item
+        })
 
-      setNewMap([...newMap1]);
+      setNewMap([...newMap1])
     }
   }, [
     userDetail,
@@ -231,195 +231,190 @@ function Dashboard(props: any) {
     myinprogressTasks,
     mygroupPendingAction,
     mygroupUnassignTasks,
-  ]);
+  ])
 
   return (
-    <div style={{ padding: "0px" }}>
+    <div style={{ padding: '20px' }}>
       <LoadingComponent showLoader={isProgressLoader} />
-      <div className="dashBoardContainer">
-        <Typography variant="h6" color="primary" className={classes.tabHead}>
-          Task Dashboard{" "}
-          <Tooltip
-            title={ServiceResponse.getMessage("dashboard", "task")}
-            classes={{ tooltip: classes.wide }}
-            placement={!active ? "right-start" : "bottom"}
-          >
-            <IconButton>
-              <InfoOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Typography>
-        <Grid container>
-          {newMap &&
-            newMap.length > 0 &&
-            newMap.map((dash, index) => (
-              <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
-                <Card className={classes.card}>
-                  <CardHeader
-                    className="dashbordHeading"
-                    title={dash.title}
-                    //className={classes.header}
-                    titleTypographyProps={{ variant: "body1" }}
-                  />
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <table
-                          cellSpacing={5}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                          }}
-                        >
-                          <tbody>
-                            <tr>
-                              <th>
-                                <Typography variant="body1" color="primary">
-                                  My Task{" "}
-                                  <span className="rightArrow">{"⭆"}</span>
-                                </Typography>
-                              </th>
-                            </tr>
-                            <tr>
-                              <td>
-                                <Typography variant="body2" color="primary">
-                                  &#8226; Pending
-                                </Typography>
-                              </td>
+      <Typography variant="h6" color="primary" className={classes.tabHead}>
+        Task Dashboard{' '}
+        <Tooltip
+          title={ServiceResponse.getMessage('dashboard', 'task')}
+          classes={{ tooltip: classes.wide }}
+          placement={!active ? 'right-start' : 'bottom'}
+        >
+          <IconButton>
+            <InfoOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Typography>
+      <Grid container>
+        {newMap &&
+          newMap.length > 0 &&
+          newMap.map((dash, index) => (
+            <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
+              <Card className={classes.card}>
+                <CardHeader
+                  title={dash.title}
+                  className={classes.header}
+                  titleTypographyProps={{ variant: 'body1' }}
+                />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                      <table
+                        cellSpacing={5}
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                        }}
+                      >
+                        <tbody>
+                          <tr>
+                            <th>
+                              <Typography variant="body1" color="primary">
+                                My Task
+                              </Typography>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Typography variant="body2" color="primary">
+                                &#8226; Pending
+                              </Typography>
+                            </td>
 
-                              <td>
-                                <Typography
-                                  variant="body2"
-                                  color={
+                            <td>
+                              <Typography
+                                variant="body2"
+                                color={
+                                  dash.my.pendingActions > 0
+                                    ? 'primary'
+                                    : 'secondary'
+                                }
+                              >
+                                <Link
+                                  to={
                                     dash.my.pendingActions > 0
-                                      ? "primary"
-                                      : "secondary"
+                                      ? dash.my.pendingActionURL
+                                      : '#'
                                   }
                                 >
-                                  <Link
-                                    to={
-                                      dash.my.pendingActions > 0
-                                        ? dash.my.pendingActionURL
-                                        : "#"
-                                    }
-                                  >
-                                    {" "}
-                                    {dash.my.pendingActions}
-                                  </Link>
-                                </Typography>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <Typography variant="body2" color="primary">
-                                  &#8226; Requested
-                                </Typography>
-                              </td>
+                                  {' '}
+                                  {dash.my.pendingActions}
+                                </Link>
+                              </Typography>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Typography variant="body2" color="primary">
+                                &#8226; Requested
+                              </Typography>
+                            </td>
 
-                              <td>
-                                <Typography
-                                  variant="body2"
-                                  color={
+                            <td>
+                              <Typography
+                                variant="body2"
+                                color={
+                                  dash.my.inProgressTask > 0
+                                    ? 'primary'
+                                    : 'secondary'
+                                }
+                              >
+                                <Link
+                                  to={
                                     dash.my.inProgressTask > 0
-                                      ? "primary"
-                                      : "secondary"
+                                      ? dash.my.inProgressTaskURL
+                                      : '#'
                                   }
                                 >
-                                  <Link
-                                    to={
-                                      dash.my.inProgressTask > 0
-                                        ? dash.my.inProgressTaskURL
-                                        : "#"
-                                    }
-                                  >
-                                    {dash.my.inProgressTask}
-                                  </Link>
-                                </Typography>
-                              </td>
-                            </tr>
+                                  {dash.my.inProgressTask}
+                                </Link>
+                              </Typography>
+                            </td>
+                          </tr>
 
-                            <tr>
-                              <td colSpan={2}>
-                                <Divider />
-                              </td>
-                            </tr>
-                            <tr>
-                              <th>
-                                <Typography variant="body1" color="primary">
-                                  Group Task{" "}
-                                  <span className="rightArrow">{"⭆"}</span>
-                                </Typography>
-                              </th>
-                            </tr>
+                          <tr>
+                            <td>
+                              <Divider />
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>
+                              <Typography variant="body1" color="primary">
+                                Group Task
+                              </Typography>
+                            </th>
+                          </tr>
 
-                            <tr>
-                              <td>
-                                <Typography variant="body2" color="primary">
-                                  &#8226; Pending
-                                </Typography>
-                              </td>
+                          <tr>
+                            <td>
+                              <Typography variant="body2" color="primary">
+                                &#8226; Pending
+                              </Typography>
+                            </td>
 
-                              <td>
-                                <Typography
-                                  variant="body2"
-                                  color={
+                            <td>
+                              <Typography
+                                variant="body2"
+                                color={
+                                  dash.myGroup.pendingActions > 0
+                                    ? 'primary'
+                                    : 'secondary'
+                                }
+                              >
+                                <Link
+                                  to={
                                     dash.myGroup.pendingActions > 0
-                                      ? "primary"
-                                      : "secondary"
+                                      ? dash.myGroup.myGrouppendingActionURL
+                                      : '#'
                                   }
                                 >
-                                  <Link
-                                    to={
-                                      dash.myGroup.pendingActions > 0
-                                        ? dash.myGroup.myGrouppendingActionURL
-                                        : "#"
-                                    }
-                                  >
-                                    {dash.myGroup.pendingActions}
-                                  </Link>
-                                </Typography>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <Typography variant="body2" color="primary">
-                                  &#8226; Unassigned
-                                </Typography>
-                              </td>
+                                  {dash.myGroup.pendingActions}
+                                </Link>
+                              </Typography>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Typography variant="body2" color="primary">
+                                &#8226; Unassigned
+                              </Typography>
+                            </td>
 
-                              <td>
-                                <Typography
-                                  variant="body2"
-                                  color={
+                            <td>
+                              <Typography
+                                variant="body2"
+                                color={
+                                  dash.myGroup.inProgressTask > 0
+                                    ? 'primary'
+                                    : 'secondary'
+                                }
+                              >
+                                <Link
+                                  to={
                                     dash.myGroup.inProgressTask > 0
-                                      ? "primary"
-                                      : "secondary"
+                                      ? dash.myGroup.myGroupInprogressTaskURL
+                                      : '#'
                                   }
                                 >
-                                  <Link
-                                    to={
-                                      dash.myGroup.inProgressTask > 0
-                                        ? dash.myGroup.myGroupInprogressTaskURL
-                                        : "#"
-                                    }
-                                  >
-                                    {dash.myGroup.inProgressTask}
-                                  </Link>
-                                </Typography>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </Grid>
+                                  {dash.myGroup.inProgressTask}
+                                </Link>
+                              </Typography>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
-      </div>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
     </div>
-  );
+  )
 }
 
 const mapStateToProps = (state: any) => {
@@ -429,8 +424,8 @@ const mapStateToProps = (state: any) => {
     mygroupPendingAction: state.pendingActionReducer.mygroupPendingAction,
     mygroupUnassignTasks: state.pendingActionReducer.mygroupUnassignTasks,
     userDetail: state.loginReducer.userDetail,
-  };
-};
+  }
+}
 
 const matchDispatchToProps = (dispatch: any) => {
   return {
@@ -443,7 +438,7 @@ const matchDispatchToProps = (dispatch: any) => {
     set_mygroupunassignAction: (mygroupUnassignTasks: any) =>
       dispatch(set_mygroupunassignAction(mygroupUnassignTasks)),
     reset_all: () => dispatch(reset_all()),
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, matchDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, matchDispatchToProps)(Dashboard)

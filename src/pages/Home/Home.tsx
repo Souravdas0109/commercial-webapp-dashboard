@@ -136,7 +136,7 @@ const Home = (props: any) => {
         location={location}
       />
       <div className={classes.height} />
-      <div className="paddingaccross"></div>
+      <br />
       <ScrollToTop />
       <UserRouter
         open={open}

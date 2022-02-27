@@ -69,7 +69,7 @@ function Header(props: HeaderProps) {
   const classes = useStyles(props.drawWidth)();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
-  const active = useMediaQuery(theme.breakpoints.down(769));
+  const active = useMediaQuery(theme.breakpoints.down(600));
   //const [openMod, setOpenMod] = useState(false);
 
   const handleClose = () => {
@@ -90,7 +90,7 @@ function Header(props: HeaderProps) {
         <Toolbar>
           {active ? (
             <Grid container className={classes.gridContainer}>
-              <Grid className="flexNav">
+              <Grid item xs={4}>
                 <IconButton
                   className={classes.menuButton}
                   onClick={props.toggledraw}
@@ -98,17 +98,17 @@ function Header(props: HeaderProps) {
                   <MenuIcon className={classes.menuIcon} />
                 </IconButton>
               </Grid>
-              <Grid className="navLogo">
+              <Grid item className={classes.logo} xs={6}>
                 <div
                 //className={props.open ? classes.modwidth : classes.fullwidth}
                 >
                   <LogoMin />
                 </div>
               </Grid>
-              <Grid className="headeLeabel">
-                <Typography variant="h6">Commercial Web Application</Typography>
-              </Grid>
-              <Grid className="singInfo">
+              {/* <Grid item>
+            <Typography variant="h6">Morrisons Commercial Dashboard</Typography>
+          </Grid> */}
+              <Grid item xs={2}>
                 <IconButton color="inherit" onClick={handleClose} ref={inputEl}>
                   <Avatar className={classes.avatar} sizes="small">
                     {Avtarname}
@@ -121,13 +121,10 @@ function Header(props: HeaderProps) {
                   />
                 </IconButton>
               </Grid>
-              <Grid className="rwdLabel">
-              <Typography variant="h6">Commercial Web Application</Typography>
-              </Grid>
             </Grid>
           ) : (
             <Grid container className={classes.gridContainer}>
-              <Grid className="flexNav">
+              <Grid item xs={5}>
                 <IconButton
                   className={classes.menuButton}
                   onClick={props.toggledraw}
@@ -135,17 +132,17 @@ function Header(props: HeaderProps) {
                   <MenuIcon className={classes.menuIcon} />
                 </IconButton>
               </Grid>
-              <Grid className="navLogo">
+              <Grid item className={classes.logo}>
                 <div
                 //className={props.open ? classes.modwidth : classes.fullwidth}
                 >
                   <LogoMin />
                 </div>
               </Grid>
-              <Grid className="headeLeabel">
-                <Typography variant="h6">Commercial Web Application</Typography>
-              </Grid>
-              <Grid className="singInfo">
+              {/* <Grid item>
+            <Typography variant="h6">Morrisons Commercial Dashboard</Typography>
+          </Grid> */}
+              <Grid item>
                 <IconButton color="inherit" onClick={props.onLogout}>
                   <Typography variant="body1" className={classes.text}>
                     Sign Out

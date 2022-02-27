@@ -1508,66 +1508,66 @@ function PendingActionUpdate(props: any) {
   const handleUpdateUserforSubmit = () => {
     setDisabled(true)
     setIsProgressLoader(true)
-    const formData = {
-      requestorDetails: {
-        emailId: userDetail && userDetail.userdetails[0].user.emailId,
-        requestBy: userDetail && userDetail.userdetails[0].user.userId,
-        requestDate: new Date().toISOString().split('T')[0],
-        requestType: 'Approve',
-      },
-      requestorRoles:
-        userDetail &&
-        userDetail.userdetails[0].roles.map((role: any) => {
-          return {
-            roleId: role.roleId,
-          }
-        }),
-    }
     // const formData = {
-    //   routing: 'moreinfo',
-    //   camunda: {
-    //     requestorDetails: {
-    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
-    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
-    //       requestDate: new Date().toISOString().split('T')[0],
-    //       requestType: requestType,
-    //       comments: comments,
-    //     },
-    //     requestorRoles:
-    //       userDetail &&
-    //       userDetail.userdetails[0].roles.map((role: any) => {
-    //         return {
-    //           roleId: role.roleId,
-    //         }
-    //       }),
+    //   requestorDetails: {
+    //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //     requestDate: new Date().toISOString().split('T')[0],
+    //     requestType: 'Approve',
     //   },
-    //   user: {
-    //     employeeId: employeeID,
-    //     firstName: firstName,
-    //     middleName: middleName,
-    //     lastName: lastName,
-    //     emailId: email,
-    //     additionalInfo: '',
-    //     // colleagueData !== '' ? colleaguestring : additionalInfo,
-    //     designation: designation.toUpperCase(),
-    //     status: status,
-    //   },
-    //   roles: roleNames
-    //     ? roleNames.map((role: any) => {
-    //         return {
-    //           roleId: role.value,
-    //         }
-    //       })
-    //     : [],
-    //   usergroups: groups
-    //     ? groups.map((group: any) => {
-    //         return {
-    //           groupId: group.value,
-    //           status: group.status,
-    //         }
-    //       })
-    //     : [],
+    //   requestorRoles:
+    //     userDetail &&
+    //     userDetail.userdetails[0].roles.map((role: any) => {
+    //       return {
+    //         roleId: role.roleId,
+    //       }
+    //     }),
     // }
+     const formData = {
+      routing: 'moreinfo',
+      camunda: {
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+          comments: comments,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
+      user: {
+        employeeId: employeeID,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: '',
+        // colleagueData !== '' ? colleaguestring : additionalInfo,
+        designation: designation.toUpperCase(),
+        status: status,
+      },
+      roles: roleNames
+        ? roleNames.map((role: any) => {
+            return {
+              roleId: role.value,
+            }
+          })
+        : [],
+      usergroups: groups
+        ? groups.map((group: any) => {
+            return {
+              groupId: group.value,
+              status: group.status,
+            }
+          })
+        : [],
+    }
     setReturnText('')
     pendingActionDetails &&
       putCompleteTaskAPI &&
@@ -1646,65 +1646,65 @@ function PendingActionUpdate(props: any) {
   const handleApprove = () => {
     setDisabled(true)
     setIsProgressLoader(true)
-    const formData = {
-      requestorDetails: {
-        emailId: userDetail && userDetail.userdetails[0].user.emailId,
-        requestBy: userDetail && userDetail.userdetails[0].user.userId,
-        requestDate: new Date().toISOString().split('T')[0],
-        requestType: 'Approve',
-      },
-      requestorRoles:
-        userDetail &&
-        userDetail.userdetails[0].roles.map((role: any) => {
-          return {
-            roleId: role.roleId,
-          }
-        }),
-    }
     // const formData = {
-    //   routing: 'Approved',
-    //   camunda: {
-    //     requestorDetails: {
-    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
-    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
-    //       requestDate: new Date().toISOString().split('T')[0],
-    //       requestType: requestType,
-    //       comments: comments,
-    //     },
-    //     requestorRoles:
-    //       userDetail &&
-    //       userDetail.userdetails[0].roles.map((role: any) => {
-    //         return {
-    //           roleId: role.roleId,
-    //         }
-    //       }),
+    //   requestorDetails: {
+    //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //     requestDate: new Date().toISOString().split('T')[0],
+    //     requestType: 'Approve',
     //   },
-    //   user: {
-    //     employeeId: employeeID,
-    //     firstName: firstName,
-    //     middleName: middleName,
-    //     lastName: lastName,
-    //     emailId: email,
-    //     additionalInfo: '',
-    //     designation: designation.toUpperCase(),
-    //     status: status,
-    //   },
-    //   roles: roleNames
-    //     ? roleNames.map((role: any) => {
-    //         return {
-    //           roleId: role.value,
-    //         }
-    //       })
-    //     : [],
-    //   usergroups: groups
-    //     ? groups.map((group: any) => {
-    //         return {
-    //           groupId: group.value,
-    //           status: group.status,
-    //         }
-    //       })
-    //     : [],
+    //   requestorRoles:
+    //     userDetail &&
+    //     userDetail.userdetails[0].roles.map((role: any) => {
+    //       return {
+    //         roleId: role.roleId,
+    //       }
+    //     }),
     // }
+    const formData = {
+      routing: 'Approved',
+      camunda: {
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+          comments: comments,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
+      user: {
+        employeeId: employeeID,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: '',
+        designation: designation.toUpperCase(),
+        status: status,
+      },
+      roles: roleNames
+        ? roleNames.map((role: any) => {
+            return {
+              roleId: role.value,
+            }
+          })
+        : [],
+      usergroups: groups
+        ? groups.map((group: any) => {
+            return {
+              groupId: group.value,
+              status: group.status,
+            }
+          })
+        : [],
+    }
     setReturnText('')
     pendingActionDetails &&
       putCompleteTaskAPI &&
@@ -1815,25 +1815,54 @@ function PendingActionUpdate(props: any) {
           console.log(res)
           // setIsSuccessCall(false)
           setReturnText(res.data.comments)
-          const formData2 = {
-            requestorDetails: {
-              emailId: userDetail && userDetail.userdetails[0].user.emailId,
-              requestBy: userDetail && userDetail.userdetails[0].user.userId,
-              requestDate: new Date().toISOString().split('T')[0],
-              requestType: 'Approve',
-            },
-            requestorRoles:
-              userDetail &&
-              userDetail.userdetails[0].roles.map((role: any) => {
-                return {
-                  roleId: role.roleId,
-                }
-              }),
-          }
-          pendingActionDetails &&
-            putCompleteTaskAPI &&
-            putCompleteTaskAPI(formData2, pendingActionDetails[0].taskId)
-              .then((res: any) => {
+      //      const formData2 = {
+      //        routing: 'Approved',
+      // camunda: {
+      //   requestorDetails: {
+      //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
+      //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
+      //     requestDate: new Date().toISOString().split('T')[0],
+      //     requestType: requestType,
+      //     comments: comments,
+      //   },
+      //   requestorRoles:
+      //     userDetail &&
+      //     userDetail.userdetails[0].roles.map((role: any) => {
+      //       return {
+      //         roleId: role.roleId,
+      //       }
+      //     }),
+      // },
+      // user: {
+      //   employeeId: employeeID,
+      //   firstName: firstName,
+      //   middleName: middleName,
+      //   lastName: lastName,
+      //   emailId: email,
+      //   additionalInfo: '',
+      //   designation: designation.toUpperCase(),
+      //   status: status,
+      // },
+      // roles: roleNames
+      //   ? roleNames.map((role: any) => {
+      //       return {
+      //         roleId: role.value,
+      //       }
+      //     })
+      //   : [],
+      // usergroups: groups
+      //   ? groups.map((group: any) => {
+      //       return {
+      //         groupId: group.value,
+      //         status: group.status,
+      //       }
+      //     })
+      //   : [],
+      //      }
+          // pendingActionDetails &&
+          //   putCompleteTaskAPI &&
+          //   putCompleteTaskAPI(formData2, pendingActionDetails[0].taskId)
+          //     .then((res: any) => {
                 setIsSuccessCall(false)
                 // setReturnText(res.data.comments)
                 const rolelog =
@@ -1884,19 +1913,19 @@ function PendingActionUpdate(props: any) {
                   setCheckCount(1)
                   postTasklog(logData)
                 }
-              })
-              .catch((err: any) => {
-                setDisabled(false)
-                setIsProgressLoader(false)
-                setIsSuccessCall(false)
-                toast.current.show({
-                  severity: 'error',
-                  summary: 'Error!',
-                  detail: `${err.response.data.errorMessage} while Reassigning task`,
-                  life: life,
-                  className: 'login-toast',
-                })
-              })
+              // })
+              // .catch((err: any) => {
+              //   setDisabled(false)
+              //   setIsProgressLoader(false)
+              //   setIsSuccessCall(false)
+              //   toast.current.show({
+              //     severity: 'error',
+              //     summary: 'Error!',
+              //     detail: `${err.response.data.errorMessage} while Reassigning task`,
+              //     life: life,
+              //     className: 'login-toast',
+              //   })
+              // })
         })
         .catch((err) => {
           setDisabled(false)
@@ -1918,75 +1947,75 @@ function PendingActionUpdate(props: any) {
     // e.preventDefault()
     setDisabled(true)
     setIsProgressLoader(true)
-    const formData = {
-      // requestorDetails: {
-      requestorDetails: {
-        emailId: userDetail && userDetail.userdetails[0].user.emailId,
-        requestBy: userDetail && userDetail.userdetails[0].user.userId,
-        requestDate: new Date().toISOString().split('T')[0],
-        requestType: 'Reject',
-      },
-      requestorRoles:
-        userDetail &&
-        userDetail.userdetails[0].roles.map((role: any) => {
-          return {
-            roleId: role.roleId,
-          }
-        }),
-      // },
-      taskId: pendingActionDetails[0].taskId,
-    }
     // const formData = {
-    //   routing: 'Rejected',
-    //   camunda: {
-    //     requestorDetails: {
-    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
-    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
-    //       requestDate: new Date().toISOString().split('T')[0],
-    //       requestType: requestType,
-    //       comments: comments,
-    //     },
-    //     requestorRoles:
-    //       userDetail &&
-    //       userDetail.userdetails[0].roles.map((role: any) => {
-    //         return {
-    //           roleId: role.roleId,
-    //         }
-    //       }),
+    //   // requestorDetails: {
+    //   requestorDetails: {
+    //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //     requestDate: new Date().toISOString().split('T')[0],
+    //     requestType: 'Reject',
     //   },
-    //   user: {
-    //     employeeId: employeeID,
-    //     firstName: firstName,
-    //     middleName: middleName,
-    //     lastName: lastName,
-    //     emailId: email,
-    //     additionalInfo: '',
-    //     // colleagueData !== '' ? colleaguestring : additionalInfo,
-    //     designation: designation.toUpperCase(),
-    //     status: status,
-    //   },
-    //   roles: roleNames
-    //     ? roleNames.map((role: any) => {
-    //         return {
-    //           roleId: role.value,
-    //         }
-    //       })
-    //     : [],
-    //   usergroups: groups
-    //     ? groups.map((group: any) => {
-    //         return {
-    //           groupId: group.value,
-    //           status: group.status,
-    //         }
-    //       })
-    //     : [],
+    //   requestorRoles:
+    //     userDetail &&
+    //     userDetail.userdetails[0].roles.map((role: any) => {
+    //       return {
+    //         roleId: role.roleId,
+    //       }
+    //     }),
+    //   // },
+    //   taskId: pendingActionDetails[0].taskId,
     // }
+    const formData = {
+      routing: 'Rejected',
+      camunda: {
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+          comments: comments,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
+      user: {
+        employeeId: employeeID,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: '',
+        // colleagueData !== '' ? colleaguestring : additionalInfo,
+        designation: designation.toUpperCase(),
+        status: status,
+      },
+      roles: roleNames
+        ? roleNames.map((role: any) => {
+            return {
+              roleId: role.value,
+            }
+          })
+        : [],
+      usergroups: groups
+        ? groups.map((group: any) => {
+            return {
+              groupId: group.value,
+              status: group.status,
+            }
+          })
+        : [],
+    }
     setReturnText('')
     pendingActionDetails &&
-      putRejectTaskAPI &&
-      putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
-        // putCompleteTaskAPI &&
-        // putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
+      // putRejectTaskAPI &&
+      // putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
+      putCompleteTaskAPI &&
+        putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
         .then((res) => {
           console.log(res)
           setIsSuccessCall(false)

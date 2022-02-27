@@ -37,4 +37,3 @@ export const allMessages = {
     promptMessage: 'Unsaved changes will be lost. Do you want to continue ?',
   },
 }
-

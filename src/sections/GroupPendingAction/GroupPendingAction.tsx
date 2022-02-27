@@ -165,13 +165,11 @@ function GroupPendingAction(props: any) {
           history.push(`${DEFAULT}${DASHBOARD}`)
         }}
       />
-<div className='manageUser'>
-  <div className='manageRequest'>
       <div className={classes.root}>
         <div className={classes.value}>
           <Grid container className={classes.container}>
             <Grid item sm={12} xs={12}>
-              <Box className='colorSecondary'
+              <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -187,7 +185,7 @@ function GroupPendingAction(props: any) {
                     flexGrow: 1,
                   }}
                 >
-                  <Typography variant="h6">Group Task AAAA{'>'} Pending</Typography>
+                  <Typography variant="h6">Group Task {'>'} Pending</Typography>
                 </Box>
                 <Box
                   sx={{
@@ -210,13 +208,11 @@ function GroupPendingAction(props: any) {
                   }}
                 >
                   <button
-                    //className={classes.backButton}
-                    className="backButton"
+                    className={classes.backButton}
                     onClick={goBack}
                     type="button"
                   >
-                  <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> 
-                  Back
+                    Back
                   </button>
                 </Box>
               </Box>
@@ -363,8 +359,6 @@ function GroupPendingAction(props: any) {
           <LoadingComponent showLoader={isProgressLoader} />
         </div>
       </div>
-  </div>
-</div>
     </>
   )
 }

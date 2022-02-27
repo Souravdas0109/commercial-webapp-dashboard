@@ -2,22 +2,22 @@ export const userTableHeaders = [
   {
     field: 'userId',
     headerName: 'Employee ID',
-    width: 135,
+    width: 150,
   },
   {
     field: 'firstName',
     headerName: 'First Name',
-    width: 130,
+    width: 150,
   },
   {
     field: 'middleName',
     headerName: 'Middle Name',
-    width: 140,
+    width: 150,
   },
   {
     field: 'lastName',
     headerName: 'Last Name',
-    width: 130,
+    width: 150,
   },
   {
     field: 'emailId',
@@ -37,7 +37,7 @@ export const userTableHeaders = [
   {
     field: 'roles',
     headerName: 'Role',
-    width: 120,
+    width: 150,
   },
   {
     field: 'usergroups',

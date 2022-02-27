@@ -1804,7 +1804,6 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const createForm = (
     <Box
-      className="createRequest"
       sx={{
         flexDirection: 'column',
         display: 'flex',
@@ -1815,36 +1814,35 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         // width:"100%"
       }}
     >
-      <div className="createRequestContainer">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          // [theme.breakpoints.up("sm")]: {
+          //   flexDirection: "row",
+          // },
+          // [theme.breakpoints.down("sm")]: {
+          //   flexDirection: "column",
+          // },
+          paddingBottom: '20px',
+          paddingTop: '10px',
+        }}
+      >
+        <Box
+          sx={{
+            flexGrow: 1,
+          }}
+        >
+          <Typography variant="h6">Create Request</Typography>
+        </Box>
+
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
-            // [theme.breakpoints.up("sm")]: {
-            //   flexDirection: "row",
-            // },
-            // [theme.breakpoints.down("sm")]: {
-            //   flexDirection: "column",
-            // },
-            paddingBottom: '20px',
-            paddingTop: '10px',
+            flexDirection: !active ? 'row' : 'column',
           }}
         >
-          <Box
-            sx={{
-              flexGrow: 1,
-            }}
-          >
-            <Typography variant="h6">Create Request</Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: !active ? 'row' : 'column',
-            }}
-          >
-            {/* <Box
+          {/* <Box
             sx={{
               paddingLeft: 5,
             }}
@@ -1860,299 +1858,291 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           >
             |
           </Box> */}
-            <Box
-              sx={{
-                paddingLeft: 5,
-              }}
-            >
-              <button
-                className="backButton"
-                onClick={goBack}
-                // onClick={handleBackAfterDialog}
-                type="button"
-              >
-                <svg
-                  className="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 34 34"
-                  aria-hidden="true"
-                >
-                  <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
-                </svg>
-                Back
-              </button>
-            </Box>
-          </Box>
-        </Box>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: !active ? 'row' : 'column',
+              paddingLeft: 5,
+            }}
+          >
+            <button
+              className={classes.backButton}
+              onClick={goBack}
+              // onClick={handleBackAfterDialog}
+              type="button"
+            >
+              Back
+            </button>
+          </Box>
+        </Box>
+      </Box>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: !active ? 'row' : 'column',
+            // [theme.breakpoints.up("sm")]: {
+            //   flexDirection: "row",
+            // },
+            // [theme.breakpoints.down("sm")]: {
+            //   flexDirection: "column",
+            // },
+            // alignItems: "baseline",
+          }}
+          className={classes.eachRow}
+        >
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">
+              Request Type &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <select
+                name="requesttype"
+                ref={focusRequestType}
+                id="requesttype"
+                className={classes.selectField}
+                defaultValue=""
+                onChange={onrequestTypeChange}
+                required
+                // disabled
+              >
+                <option disabled value="">
+                  --- Select Request Type ---
+                </option>
+                {constants.requestTypes.map((type) => {
+                  return (
+                    <option value={type.name} key={type.name}>
+                      {type.text}
+                    </option>
+                  )
+                })}
+              </select>
+            </Typography>
+          </Box>
+        </Box>
+        {shoutOut !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {shoutOut}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        {errorRequestType !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorRequestType}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">
+              Employee ID &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              {/* {typeAheadSearch} */}
+              <OutlinedInput
+                value={empIdInput}
+                inputRef={focusEmpId}
+                onKeyPress={(e) => {}}
+                onChange={(e) => {
+                  // if (e.target.value === '') {
+                  setEmpAvailable(false)
+                  // }
+                  setIsPageModified(true)
+                  setEmpIdInput(e.target.value)
+                  setFirstName('')
+                  setMiddleName('')
+                  setLastName('')
+                  setEmail('')
+                  setDesignation('')
+                  setErrorEmployeeId('')
+                  setOpenAdditional(false)
+                }}
+                className={classes.inputFields}
+                style={{ backgroundColor: 'white' }}
+                placeholder="Search Employee ID"
+                required={true}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleSearchEmployee} edge="end">
+                      <SearchOutlined />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </Typography>
+          </Box>
+        </Box>
+        {errorEmployeeId !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorEmployeeId}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">First Name</Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <input
+                type="text"
+                name="firstname"
+                id="firstname"
+                placeholder="eg. Mike"
+                className={classes.inputFields}
+                onChange={(e) => {
+                  setFirstName(e.target.value)
+                }}
+                value={firstName}
+                disabled
+              />
+            </Typography>
+          </Box>
+        </Box>
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Middle Name</Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <input
+                type="text"
+                name="middlename"
+                id="middlename"
+                placeholder="eg. Dallas"
+                className={classes.inputFields}
+                onChange={(e) => {
+                  setMiddleName(e.target.value)
+                }}
+                value={middleName}
+                disabled
+              />
+            </Typography>
+          </Box>
+        </Box>
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Last Name</Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <input
+                type="text"
+                name="lastname"
+                id="lastname"
+                placeholder="eg. Black"
+                className={classes.inputFields}
+                onChange={(e) => {
+                  setLastName(e.target.value)
+                }}
+                value={lastName}
+                disabled
+              />
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Email ID</Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="eg. abc.xyz@morrisonsplc.co.uk"
+                className={classes.inputFields}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                }}
+                value={email}
+                disabled
+              />
+            </Typography>
+          </Box>
+        </Box>
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Designation</Typography>
+          </Box>
+
+          <Box
+            className={classes.inputFieldBox}
+            sx={{
               // [theme.breakpoints.up("sm")]: {
               //   flexDirection: "row",
+              //   width: 400,
               // },
               // [theme.breakpoints.down("sm")]: {
               //   flexDirection: "column",
+              //   width: fieldWidth,
               // },
-              // alignItems: "baseline",
+              flexDirection: !active ? 'row' : 'column',
+              display: 'flex',
+              justifyContent: 'space-between',
             }}
-            className={classes.eachRow}
           >
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">
-                Request Type &nbsp;
-                <span
-                  style={{
-                    color: '#ff0000',
-                  }}
-                >
-                  *
-                </span>
-              </Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <select
-                  name="requesttype"
-                  ref={focusRequestType}
-                  id="requesttype"
-                  className={classes.selectField}
-                  defaultValue=""
-                  onChange={onrequestTypeChange}
-                  required
-                  // disabled
-                >
-                  <option disabled value="">
-                    --- Select Request Type ---
-                  </option>
-                  {constants.requestTypes.map((type) => {
-                    return (
-                      <option value={type.name} key={type.name}>
-                        {type.text}
-                      </option>
-                    )
-                  })}
-                </select>
-              </Typography>
-            </Box>
-          </Box>
-          {shoutOut !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {shoutOut}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          {errorRequestType !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {errorRequestType}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">
-                Employee ID &nbsp;
-                <span
-                  style={{
-                    color: '#ff0000',
-                  }}
-                >
-                  *
-                </span>
-              </Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                {/* {typeAheadSearch} */}
-                <OutlinedInput
-                  value={empIdInput}
-                  inputRef={focusEmpId}
-                  onKeyPress={(e) => {}}
-                  onChange={(e) => {
-                    // if (e.target.value === '') {
-                    setEmpAvailable(false)
-                    // }
-                    setIsPageModified(true)
-                    setEmpIdInput(e.target.value)
-                    setFirstName('')
-                    setMiddleName('')
-                    setLastName('')
-                    setEmail('')
-                    setDesignation('')
-                    setErrorEmployeeId('')
-                    setOpenAdditional(false)
-                  }}
-                  className={classes.inputFields}
-                  style={{ backgroundColor: 'white' }}
-                  placeholder="Search Employee ID"
-                  required={true}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSearchEmployee} edge="end">
-                        <SearchOutlined />
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </Typography>
-            </Box>
-          </Box>
-          {errorEmployeeId !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {errorEmployeeId}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">First Name</Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <input
-                  type="text"
-                  name="firstname"
-                  id="firstname"
-                  placeholder="eg. Mike"
-                  className={classes.inputFields}
-                  onChange={(e) => {
-                    setFirstName(e.target.value)
-                  }}
-                  value={firstName}
-                  disabled
-                />
-              </Typography>
-            </Box>
-          </Box>
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Middle Name</Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <input
-                  type="text"
-                  name="middlename"
-                  id="middlename"
-                  placeholder="eg. Dallas"
-                  className={classes.inputFields}
-                  onChange={(e) => {
-                    setMiddleName(e.target.value)
-                  }}
-                  value={middleName}
-                  disabled
-                />
-              </Typography>
-            </Box>
-          </Box>
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Last Name</Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <input
-                  type="text"
-                  name="lastname"
-                  id="lastname"
-                  placeholder="eg. Black"
-                  className={classes.inputFields}
-                  onChange={(e) => {
-                    setLastName(e.target.value)
-                  }}
-                  value={lastName}
-                  disabled
-                />
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Email ID</Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="eg. abc.xyz@morrisonsplc.co.uk"
-                  className={classes.inputFields}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                  }}
-                  value={email}
-                  disabled
-                />
-              </Typography>
-            </Box>
-          </Box>
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Designation</Typography>
-            </Box>
-
             <Box
-              className={classes.inputFieldBox}
               sx={{
-                // [theme.breakpoints.up("sm")]: {
-                //   flexDirection: "row",
-                //   width: 400,
-                // },
-                // [theme.breakpoints.down("sm")]: {
-                //   flexDirection: "column",
-                //   width: fieldWidth,
-                // },
-                flexDirection: !active ? 'row' : 'column',
+                // flexGrow: 1,
                 display: 'flex',
-                justifyContent: 'space-between',
               }}
             >
-              <Box
-                sx={{
-                  // flexGrow: 1,
-                  display: 'flex',
-                }}
-              >
-                <Typography variant="subtitle2">
-                  <input
-                    type="text"
-                    placeholder="designation"
-                    disabled
-                    className={classes.designationField}
-                    onChange={(e) => {
-                      setDesignation(e.target.value)
-                    }}
-                    value={designation}
-                  />
-                </Typography>
-              </Box>
+              <Typography variant="subtitle2">
+                <input
+                  type="text"
+                  placeholder="designation"
+                  disabled
+                  className={classes.designationField}
+                  onChange={(e) => {
+                    setDesignation(e.target.value)
+                  }}
+                  value={designation}
+                />
+              </Typography>
+            </Box>
 
-              {/* <Box
+            {/* <Box
               sx={{
                 paddingLeft: 5,
                 paddingRight: 5,
@@ -2163,316 +2153,316 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               {width && <>|</>}
             </Box> */}
 
-              <Box
-                sx={{
-                  display: 'flex',
+            <Box
+              sx={{
+                display: 'flex',
+              }}
+            >
+              <button
+                type="button"
+                className={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? classes.hideit
+                    : classes.backButton
+                }
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? true
+                    : colleagueData || additionalInfo
+                    ? false
+                    : true
+                }
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpenAdditional((prevState) => !prevState)
                 }}
+                // size="small"
               >
-                <button
-                  type="button"
-                  className={
-                    UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      'addl_data'
-                    )
-                      ? classes.hideit
-                      : classes.backButton
-                  }
-                  disabled={
-                    UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      'addl_data'
-                    )
-                      ? true
-                      : colleagueData || additionalInfo
-                      ? false
-                      : true
-                  }
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setOpenAdditional((prevState) => !prevState)
-                  }}
-                  // size="small"
-                >
-                  <span className="addUserGroup">Additional Data</span>
-                </button>
-              </Box>
+                Additional Data
+              </button>
             </Box>
           </Box>
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">
-                Status &nbsp;
-                <span
-                  style={{
-                    color: '#ff0000',
-                  }}
-                >
-                  *
-                </span>
-              </Typography>
-            </Box>
+        </Box>
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">
+              Status &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
+          </Box>
 
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="subtitle2">
-                <select
-                  name="status"
-                  id="status"
-                  ref={focusStatus}
-                  className={classes.selectField}
-                  defaultValue=""
-                  onChange={onstatusChange}
-                  required
-                  // disabled={requestType === 'new' && status === 'W'}
-                  disabled={
-                    UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      'status'
-                    ) ||
-                    requestType === 'new' ||
-                    requestType === 'remove'
-                  }
-                >
-                  {/* <option disabled value="" className={classes.selectOptions}>
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="subtitle2">
+              <select
+                name="status"
+                id="status"
+                ref={focusStatus}
+                className={classes.selectField}
+                defaultValue=""
+                onChange={onstatusChange}
+                required
+                // disabled={requestType === 'new' && status === 'W'}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'status'
+                  ) ||
+                  requestType === 'new' ||
+                  requestType === 'remove'
+                }
+              >
+                {/* <option disabled value="" className={classes.selectOptions}>
                   None
                 </option> */}
-                  {requestType === 'new'
-                    ? constants.statuses
-                        .filter((type) => type.statusID.toLowerCase() === 'w')
-                        .map((type) => {
-                          return (
-                            <option
-                              value={type.statusID}
-                              key={type.statusID}
-                              // selected={type.statusID === status ? true : false}
-                            >
-                              {type.text}
-                            </option>
-                          )
-                        })
-                    : // : requestType === 'modify'
-                      // ? constants.statuses
-                      //     .filter((type) => type.statusID.toLowerCase() !== 'w')
-                      //     .map((type) => {
-                      //       return (
-                      //         <option
-                      //           value={type.statusID}
-                      //           key={type.statusID}
-                      //           selected={type.statusID === status ? true : false}
-                      //         >
-                      //           {type.text}
-                      //         </option>
-                      //       )
-                      //     })
-                      // : requestType === 'remove'
-                      // ? constants.statuses
-                      //     .filter(
-                      //       (type) => type.statusID.toLowerCase() !== 'w'
-                      //       // &&
-                      //       // type.statusID.toLowerCase() !== 'i'
-                      //     )
-                      //     .map((type) => {
-                      //       return (
-                      //         <option
-                      //           value={type.statusID}
-                      //           key={type.statusID}
-                      //           selected={type.statusID === status ? true : false}
-                      //         >
-                      //           {type.text}
-                      //         </option>
-                      //       )
-                      //     })
-                      constants.statuses.map((type) => {
+                {requestType === 'new'
+                  ? constants.statuses
+                      .filter((type) => type.statusID.toLowerCase() === 'w')
+                      .map((type) => {
                         return (
                           <option
                             value={type.statusID}
                             key={type.statusID}
-                            selected={type.statusID === status ? true : false}
+                            // selected={type.statusID === status ? true : false}
                           >
                             {type.text}
                           </option>
                         )
-                      })}
-                </select>
+                      })
+                  : // : requestType === 'modify'
+                    // ? constants.statuses
+                    //     .filter((type) => type.statusID.toLowerCase() !== 'w')
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    // : requestType === 'remove'
+                    // ? constants.statuses
+                    //     .filter(
+                    //       (type) => type.statusID.toLowerCase() !== 'w'
+                    //       // &&
+                    //       // type.statusID.toLowerCase() !== 'i'
+                    //     )
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    constants.statuses.map((type) => {
+                      return (
+                        <option
+                          value={type.statusID}
+                          key={type.statusID}
+                          selected={type.statusID === status ? true : false}
+                        >
+                          {type.text}
+                        </option>
+                      )
+                    })}
+              </select>
+            </Typography>
+          </Box>
+        </Box>
+        {errorStatus !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorStatus}
               </Typography>
             </Box>
           </Box>
-          {errorStatus !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {errorStatus}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">
-                Role &nbsp;
-                <span
-                  style={{
-                    color: '#ff0000',
-                  }}
-                >
-                  *
-                </span>
-              </Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>{roleSelect1}</Box>
+        )}
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">
+              Role &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
-          {roleNames.length === 0 && errorRoles !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {errorRoles}
-                </Typography>
-              </Box>
-            </Box>
-          )}
+
+          <Box className={classes.inputFieldBox}>{roleSelect1}</Box>
+        </Box>
+        {roleNames.length === 0 && errorRoles !== '' && (
           <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">
-                User Group &nbsp;
-                <span
-                  style={{
-                    color: '#ff0000',
-                  }}
-                >
-                  *
-                </span>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorRoles}
               </Typography>
             </Box>
+          </Box>
+        )}
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">
+              User Group &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
+          </Box>
 
-            <Box className={classes.inputFieldBox}>
-              {/* <Typography variant="subtitle1"> */}
-              {groups ? (
-                groups.length > 0 ? (
-                  <button
-                    type="button"
-                    className={classes.backButton}
-                    onClick={handleOpenGroups}
-                    ref={focusGroup}
-                  >
-                    Groups ( {groups.length} )
-                  </button>
-                ) : (
-                  <button
-                    // className={
-                    //   UtilityFunctions.isHidden(
-                    //     '8',
-                    //     appFuncList ? appFuncList : [],
-                    //     groupAccess
-                    //   )
-                    //     ? classes.hideit
-                    //     : classes.backButton
-                    // }
-                    type="button"
-                    className={classes.backButton}
-                    disabled={UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      groupAccess
-                    )}
-                    onClick={handleOpenGroups}
-                    ref={focusGroup}
-                  >
-                    <span className="addUserGroup">Add</span>
-                  </button>
-                )
-              ) : (
+          <Box className={classes.inputFieldBox}>
+            {/* <Typography variant="subtitle1"> */}
+            {groups ? (
+              groups.length > 0 ? (
                 <button
                   type="button"
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                   ref={focusGroup}
                 >
-                  <span className="addUserGroup">Add</span>
+                  Groups ( {groups.length} )
                 </button>
-              )}
-              {/* </Typography> */}
+              ) : (
+                <button
+                  // className={
+                  //   UtilityFunctions.isHidden(
+                  //     '8',
+                  //     appFuncList ? appFuncList : [],
+                  //     groupAccess
+                  //   )
+                  //     ? classes.hideit
+                  //     : classes.backButton
+                  // }
+                  type="button"
+                  className={classes.backButton}
+                  disabled={UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    groupAccess
+                  )}
+                  onClick={handleOpenGroups}
+                  ref={focusGroup}
+                >
+                  Add
+                </button>
+              )
+            ) : (
+              <button
+                type="button"
+                className={classes.backButton}
+                onClick={handleOpenGroups}
+                ref={focusGroup}
+              >
+                Add
+              </button>
+            )}
+            {/* </Typography> */}
+          </Box>
+        </Box>
+        {groups.length === 0 && errorGroups !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorGroups}
+              </Typography>
             </Box>
           </Box>
-          {groups.length === 0 && errorGroups !== '' && (
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox} justifyContent="center">
-                <Typography variant="subtitle2" color="error">
-                  {errorGroups}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-          <Box className={classes.eachRow}>
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Reference Document</Typography>
-            </Box>
+        )}
+        <Box className={classes.eachRow}>
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Reference Document</Typography>
+          </Box>
 
+          <Box
+            // className={classes.inputFieldBox}
+            sx={{
+              // [theme.breakpoints.up("sm")]: {
+              //   flexDirection: "row",
+              // },
+              // [theme.breakpoints.down("sm")]: {
+              //   flexDirection: "column",
+              // },
+              flexDirection: !active ? 'row' : 'column',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <Box
-              // className={classes.inputFieldBox}
               sx={{
-                // [theme.breakpoints.up("sm")]: {
-                //   flexDirection: "row",
-                // },
-                // [theme.breakpoints.down("sm")]: {
-                //   flexDirection: "column",
-                // },
-                flexDirection: !active ? 'row' : 'column',
+                // flexGrow: 1,
                 display: 'flex',
-                justifyContent: 'space-between',
               }}
             >
-              <Box
-                sx={{
-                  // flexGrow: 1,
-                  display: 'flex',
-                }}
-              >
-                <Typography variant="subtitle2" className="browseArea">
-                  {
-                    <input
-                      type="text"
-                      // value={referenceDoc ? referenceDoc.name : ''}
-                      onClick={() =>
-                        document.getElementById('selectedFile')!.click()
-                      }
-                      className={classes.uploadTextfield}
-                      placeholder="No file selected"
-                      readOnly
-                    />
-                  }
-                  <Input
-                    type="file"
-                    id="selectedFile"
-                    multiple
-                    onChange={handleFileUpload}
-                  />
-                  <button
-                    type="button"
+              <Typography variant="subtitle2">
+                {
+                  <input
+                    type="text"
+                    // value={referenceDoc ? referenceDoc.name : ''}
                     onClick={() =>
                       document.getElementById('selectedFile')!.click()
                     }
-                    className={classes.uploadButton}
-                  >
-                    Browse...
-                  </button>
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  fontSize: 'x-large',
-                  display: 'flex',
-                }}
-              >
-                {/* {width && <>|</>}
+                    className={classes.uploadTextfield}
+                    placeholder="No file selected"
+                    readOnly
+                  />
+                }
+                <Input
+                  type="file"
+                  id="selectedFile"
+                  multiple
+                  onChange={handleFileUpload}
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    document.getElementById('selectedFile')!.click()
+                  }
+                  className={classes.uploadButton}
+                >
+                  Browse...
+                </button>
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                fontSize: 'x-large',
+                display: 'flex',
+              }}
+            >
+              {/* {width && <>|</>}
             </Box>
             <Box
               sx={{
@@ -2480,30 +2470,30 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               }}
             >
               <button className={classes.backButton}>view(3)</button> */}
-              </Box>
             </Box>
           </Box>
-          {wrongExtn ? (
-            // && referenceDocData.length > 0
-            <Box className={classes.eachRow}>
-              <Box className={classes.inputLabel}></Box>
-              <Box className={classes.inputFieldBox}>
-                <Typography variant="subtitle2" color={'secondary'}>
-                  {allMessages.error.invalidExtension}
-                </Typography>
-              </Box>
+        </Box>
+        {wrongExtn ? (
+          // && referenceDocData.length > 0
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox}>
+              <Typography variant="subtitle2" color={'secondary'}>
+                {allMessages.error.invalidExtension}
+              </Typography>
             </Box>
-          ) : null}
-          {referenceDocData.length > 0 && (
-            <Box className={classes.eachRow}>
-              {/* <Box
+          </Box>
+        ) : null}
+        {referenceDocData.length > 0 && (
+          <Box className={classes.eachRow}>
+            {/* <Box
               sx={{
                 flexDirection: 'column',
                 display: 'flex',
               }}
               className={classes.inputFieldBox}
             > */}
-              {/* {referenceDocData.map((p: any) => (
+            {/* {referenceDocData.map((p: any) => (
                 <Box className={classes.inputFieldBox} sx={{}} key={p.name}>
                   <a href={p.link} target="popup">
                     {p.name}
@@ -2521,198 +2511,197 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   </Button>
                 </Box>             
               ))} */}
-              <Box className={classes.inputLabel}></Box>
-              <Box
-                // className={!active ? classes.filelist : classes.inputFieldBox}
-                className={classes.inputFieldBox}
-                sx={{ overflow: 'auto' }}
-              >
-                <table>
-                  <tbody>
-                    {referenceDocData.map((p: any, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault()
-                                const newone = referenceDocData.filter(
-                                  (dat) => dat.name !== p.name
-                                )
-                                setReferenceDocData([...newone])
-                                if (newone.length === 0) {
-                                  setWrongExtn(false)
-                                }
-                              }}
-                              color="primary"
-                              size="small"
-                              style={{
-                                justifyContent: 'flex-start',
-                                minWidth: '30px',
-                              }}
-                            >
-                              X
-                            </Button>
-                          </td>
-                          <td>
-                            <a href={p.link} target="popup">
-                              {p.name}
-                            </a>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </Box>
+            <Box className={classes.inputLabel}></Box>
+            <Box
+              // className={!active ? classes.filelist : classes.inputFieldBox}
+              className={classes.inputFieldBox}
+              sx={{ overflow: 'auto' }}
+            >
+              <table>
+                <tbody>
+                  {referenceDocData.map((p: any, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              const newone = referenceDocData.filter(
+                                (dat) => dat.name !== p.name
+                              )
+                              setReferenceDocData([...newone])
+                              if (newone.length === 0) {
+                                setWrongExtn(false)
+                              }
+                            }}
+                            color="primary"
+                            size="small"
+                            style={{
+                              justifyContent: 'flex-start',
+                              minWidth: '30px',
+                            }}
+                          >
+                            X
+                          </Button>
+                        </td>
+                        <td>
+                          <a href={p.link} target="popup">
+                            {p.name}
+                          </a>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </Box>
-            // </Box>
-          )}
+          </Box>
+          // </Box>
+        )}
+        <Box
+          sx={{
+            display: 'flex',
+            // [theme.breakpoints.up("sm")]: {
+            //   flexDirection: "row",
+            // },
+            // [theme.breakpoints.down("sm")]: {
+            //   flexDirection: "column",
+            // },
+            flexDirection: !active ? 'row' : 'column',
+            paddingTop: '20px',
+          }}
+        >
+          <Box className={classes.inputLabel}>
+            <Typography variant="subtitle2">Comments</Typography>
+          </Box>
+
+          <Box className={classes.inputFieldBox}>
+            <Typography variant="body2">
+              <textarea
+                cols={10}
+                rows={5}
+                className={classes.textArea}
+                placeholder="Please provide comments"
+                onChange={(e) => {
+                  setIsPageModified(true)
+                  setComments(e.target.value)
+                }}
+                value={comments}
+              />
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: !active ? 'row' : 'column',
+            alignItems: !active ? 'center' : 'center',
+            paddingTop: '30px',
+            justifyContent: !active ? 'space-between' : 'center',
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
-              // [theme.breakpoints.up("sm")]: {
-              //   flexDirection: "row",
-              // },
-              // [theme.breakpoints.down("sm")]: {
-              //   flexDirection: "column",
-              // },
-              flexDirection: !active ? 'row' : 'column',
-              paddingTop: '20px',
+              flexDirection: !forbutton ? 'row' : 'column',
+              alignItems: !forbutton ? 'center' : 'center',
+              justifyContent: !forbutton ? 'space-between' : 'center',
             }}
           >
-            <Box className={classes.inputLabel}>
-              <Typography variant="subtitle2">Comments</Typography>
-            </Box>
-
-            <Box className={classes.inputFieldBox}>
-              <Typography variant="body2">
-                <textarea
-                  cols={10}
-                  rows={5}
-                  className={classes.textArea}
-                  placeholder="Please provide comments"
-                  onChange={(e) => {
-                    setIsPageModified(true)
-                    setComments(e.target.value)
-                  }}
-                  value={comments}
-                />
-              </Typography>
-            </Box>
+            <Button
+              variant="contained"
+              color="primary"
+              // className={
+              //   UtilityFunctions.isHidden(
+              //     '8',
+              //     appFuncList ? appFuncList : [],
+              //     'reject'
+              //   )
+              //     ? classes.hideit
+              //     : classes.whiteButton
+              // }
+              className={classes.hideit}
+              size="small"
+            >
+              Reject
+            </Button>
           </Box>
-
           <Box
             sx={{
               display: 'flex',
-              flexDirection: !active ? 'row' : 'column',
-              alignItems: !active ? 'center' : 'center',
-              paddingTop: '30px',
-              justifyContent: !active ? 'space-between' : 'center',
+              flexDirection: !forbutton ? 'row' : 'column',
+              alignItems: !forbutton ? 'center' : 'center',
+              justifyContent: !forbutton ? 'space-between' : 'center',
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: !forbutton ? 'row' : 'column',
-                alignItems: !forbutton ? 'center' : 'center',
-                justifyContent: !forbutton ? 'space-between' : 'center',
-              }}
+            <Button
+              // type="submit"
+              variant="contained"
+              color="primary"
+              className={
+                UtilityFunctions.isHidden(
+                  '8',
+                  appFuncList ? appFuncList : [],
+                  'submit'
+                )
+                  ? classes.hideit
+                  : classes.submitButton
+              }
+              size="small"
+              // onClick={handleCreateRequestforSubmit}
+              onClick={handleSubmitAfterDialog}
+              disabled={disabled}
+              // onClick={() => {
+              //   setSubmitFn(handleCreateRequestforSubmit)
+              // }}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                // className={
-                //   UtilityFunctions.isHidden(
-                //     '8',
-                //     appFuncList ? appFuncList : [],
-                //     'reject'
-                //   )
-                //     ? classes.hideit
-                //     : classes.whiteButton
-                // }
-                className={classes.hideit}
-                size="small"
-              >
-                Reject
-              </Button>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: !forbutton ? 'row' : 'column',
-                alignItems: !forbutton ? 'center' : 'center',
-                justifyContent: !forbutton ? 'space-between' : 'center',
-              }}
+              Submit
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              // className={
+              //   UtilityFunctions.isHidden(
+              //     '8',
+              //     appFuncList ? appFuncList : [],
+              //     'reassign'
+              //   )
+              //     ? classes.hideit
+              //     : classes.buttons
+              // }
+              className={classes.hideit}
+              size="small"
             >
-              <Button
-                // type="submit"
-                variant="contained"
-                color="primary"
-                className={
-                  UtilityFunctions.isHidden(
-                    '8',
-                    appFuncList ? appFuncList : [],
-                    'submit'
-                  )
-                    ? classes.hideit
-                    : classes.submitButton
-                }
-                size="small"
-                // onClick={handleCreateRequestforSubmit}
-                onClick={handleSubmitAfterDialog}
-                disabled={disabled}
-                // onClick={() => {
-                //   setSubmitFn(handleCreateRequestforSubmit)
-                // }}
-              >
-                Submit
-              </Button>
+              Reassign
+            </Button>
 
-              <Button
-                variant="contained"
-                color="primary"
-                // className={
-                //   UtilityFunctions.isHidden(
-                //     '8',
-                //     appFuncList ? appFuncList : [],
-                //     'reassign'
-                //   )
-                //     ? classes.hideit
-                //     : classes.buttons
-                // }
-                className={classes.hideit}
-                size="small"
-              >
-                Reassign
-              </Button>
-
-              <Button
-                // type="submit"
-                variant="contained"
-                color="primary"
-                className={
-                  UtilityFunctions.isHidden(
-                    '8',
-                    appFuncList ? appFuncList : [],
-                    'approve'
-                  )
-                    ? classes.hideit
-                    : classes.buttons
-                }
-                size="small"
-                // onClick={() => setSubmitFn(handleCreateRequestforApprove)}
-                // onClick={handleCreateRequestforApprove}
-                onClick={handleApproveAfterDialog}
-                disabled={disabled}
-              >
-                Approve
-              </Button>
-            </Box>
+            <Button
+              // type="submit"
+              variant="contained"
+              color="primary"
+              className={
+                UtilityFunctions.isHidden(
+                  '8',
+                  appFuncList ? appFuncList : [],
+                  'approve'
+                )
+                  ? classes.hideit
+                  : classes.buttons
+              }
+              size="small"
+              // onClick={() => setSubmitFn(handleCreateRequestforApprove)}
+              // onClick={handleCreateRequestforApprove}
+              onClick={handleApproveAfterDialog}
+              disabled={disabled}
+            >
+              Approve
+            </Button>
           </Box>
-        </form>
-        <LoadingComponent showLoader={isProgressLoader} />
-      </div>
+        </Box>
+      </form>
+      <LoadingComponent showLoader={isProgressLoader} />
     </Box>
   )
   useEffect(() => {

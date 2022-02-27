@@ -270,7 +270,7 @@ function UserGroupCreate(props: any) {
       //   const start = new Date();
       while (nexturl !== '') {
         if (error !== '') {
-          //setIsProgressLoader(false)
+          // setIsProgressLoader(false)
           setLoaded(true)
           toast.current.show({
             severity: 'error',
@@ -314,7 +314,7 @@ function UserGroupCreate(props: any) {
       // const timediff = end - start;
       // console.log("Time taken for api calls: ", timediff);
     }
-    //setIsProgressLoader(true)
+    // setIsProgressLoader(true)
     setLoaded(false)
     handleClick()
   }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error])
@@ -1088,7 +1088,7 @@ function UserGroupCreate(props: any) {
               alignItems="center"
             >
               <Box
-                className="createRequest"
+                className={classes.createRequest}
                 sx={{
                   flexDirection: 'column',
                   display: 'flex',
@@ -1098,7 +1098,7 @@ function UserGroupCreate(props: any) {
                   textAlign: 'left',
                 }}
               >
-                <div className="createRequestContainer">
+                <div className={classes.createRequestContainer}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -1129,8 +1129,7 @@ function UserGroupCreate(props: any) {
                           type="button"
                           onClick={goBack}
                           //onClick={handleBackAfterDialog}
-                          //className={classes.backButton}
-                          className="backButton"
+                          className={classes.backButton}
                         >
                           <svg
                             className="MuiSvgIcon-root"
@@ -1334,8 +1333,7 @@ function UserGroupCreate(props: any) {
                             hierarchy.length > 0 ? (
                               <button
                                 type="button"
-                                //className={classes.underlineRemove}
-                                className="addHirerchy"
+                                className={classes.underlineRemove}
                                 onClick={handleOpenViewProduct}
                               >
                                 {/* Product Hierarchies({payload.length}) */}
@@ -1344,8 +1342,7 @@ function UserGroupCreate(props: any) {
                             ) : (
                               <button
                                 type="button"
-                                //className={classes.underlineRemove}
-                                className="addHirerchy"
+                                className={classes.underlineRemove}
                                 onClick={handleOpenViewProduct}
                               >
                                 Add
@@ -1444,8 +1441,7 @@ function UserGroupCreate(props: any) {
                         <Button
                           // type="reset"
                           variant="contained"
-                          //className={classes.whiteButton}
-                          className="reSet"
+                          className={classes.whiteButton}
                           // onClick={handleReset}
                           onClick={handleResetAfterDialog}
                           disabled={disabled1}

@@ -29,7 +29,7 @@ function UserManageGroupUpdate() {
         <Typography variant="h6" color="primary" align="center">
           Commercial Web Application - User Management
         </Typography>
-        {/*<Divider />*/}
+        <Divider />
       </div>
       <div className={classes.value}>
         <UserGroupUpdate />
