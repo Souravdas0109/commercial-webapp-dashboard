@@ -16,6 +16,24 @@ export const useStyles = makeStyles((theme) => {
       paddingTop: '20px',
       alignItems: 'baseline',
     },
+    //
+    createRequest: {
+      backgroundColor: '#F0F0F0',
+      padding: '20px !important',
+      // @media (min-width: 320px) and (max-width: 768px) {
+      //   padding: 20px !important;
+      // }
+    },
+    createRequestContainer: {
+      backgroundColor: 'white',
+      padding: '25px',
+      additionalData: {
+        fontSize: '16px',
+        color: 'green',
+        display: 'block',
+      },
+    },
+    //
     inputFields: {
       // [theme.breakpoints.up("sm")]: {
       //   width: 392,
@@ -167,15 +185,49 @@ export const useStyles = makeStyles((theme) => {
     },
 
     backButton: {
-      border: 0,
-      color: 'blue',
-      // backgroundColor: "white",
+      // border: 0,
+      // color: 'blue',
+      // // backgroundColor: "white",
+      // cursor: 'pointer',
+      // fontSize: '18px',
+      // '&:disabled': {
+      //   color: 'grey',
+      //   cursor: 'default',
+      // },
+      backgroundColor: '#E0E1E2',
+      padding: '2px',
       cursor: 'pointer',
-      fontSize: '18px',
-      '&:disabled': {
-        color: 'grey',
-        cursor: 'default',
+      fontSize: '16px !important',
+      boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%)',
+      // "0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
+      svg: {
+        position: 'relative',
+        top: '8px',
+        fontSize: '1.2rem',
+        right: '-5px',
       },
+      ' &:hover': {
+        fontSize: '16px !important',
+      },
+    },
+    addUserGroup: {
+      color: '#1b6420',
+      fontSize: '16px',
+      display: 'block',
+    },
+    browseArea: {
+      button: {
+        padding: '3px 8px 3px 8px',
+        height: 'auto',
+      },
+      // button:hover: {
+      //   font-size: 16px;
+      // }
+      // input: {
+      //   height: auto;
+      //   border: 1px solid $warm-grey-200;
+      //   padding: 2px;
+      // }
     },
     attachIcon: {
       border: 0,
