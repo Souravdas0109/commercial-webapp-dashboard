@@ -20,12 +20,12 @@ function DashboardMain() {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <div>
+      {/*<div>
         <Typography variant="h6" color="primary" align="center">
           Commercial Web Application - Task Dashboard
         </Typography>
         <Divider />
-      </div>
+      </div>*/}
       <div className={classes.value}>
         <Dashboard />
       </div>

@@ -254,9 +254,9 @@ function Dashboard(props: any) {
           newMap.map((dash, index) => (
             <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
               <Card className={classes.card}>
-                <CardHeader
+                <CardHeader className='dashbordHeading'
                   title={dash.title}
-                  className={classes.header}
+                  //className={classes.header}
                   titleTypographyProps={{ variant: 'body1' }}
                 />
                 <CardContent>
@@ -273,14 +273,14 @@ function Dashboard(props: any) {
                           <tr>
                             <th>
                               <Typography variant="body1" color="primary">
-                                My Task
+                                My Task <span className='rightArrow'>{'⭆'}</span>
                               </Typography>
                             </th>
                           </tr>
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                &#8226; Pending
+                                &#8226; Pending 
                               </Typography>
                             </td>
 
@@ -336,14 +336,14 @@ function Dashboard(props: any) {
                           </tr>
 
                           <tr>
-                            <td>
+                            <td colSpan={2}>
                               <Divider />
                             </td>
                           </tr>
                           <tr>
                             <th>
                               <Typography variant="body1" color="primary">
-                                Group Task
+                                Group Task <span className='rightArrow'>{'⭆'}</span>
                               </Typography>
                             </th>
                           </tr>

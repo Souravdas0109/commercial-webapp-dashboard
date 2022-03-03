@@ -1373,7 +1373,7 @@ function UserGroupUpdate(props: any) {
               justifyContent="center"
               alignItems="center"
             >
-              <Box
+              <Box  className='createRequest'
                 sx={{
                   flexDirection: 'column',
                   display: 'flex',
@@ -1383,6 +1383,7 @@ function UserGroupUpdate(props: any) {
                   textAlign: 'left',
                 }}
               >
+                 <div className='createRequestContainer'>
                 <Box
                   sx={{
                     display: 'flex',
@@ -1409,13 +1410,14 @@ function UserGroupUpdate(props: any) {
                         paddingLeft: 5,
                       }}
                     >
-                      <button
+                     <button
                         type="button"
                         onClick={goBack}
                         //onClick={handleBackAfterDialog}
-                        className={classes.backButton}
+                        //className={classes.backButton}
+                        className="backButton"
                       >
-                        Back
+                       <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> Back
                       </button>
                     </Box>
                   </Box>
@@ -1615,7 +1617,7 @@ function UserGroupUpdate(props: any) {
                               onClick={handleOpenViewProduct}
                             >
                               {/* Product Hierarchies({payload.length}) */}
-                              Product Hierarchies({hierarchy.length})
+                              <span className='addUserGroup'>Product Hierarchies({hierarchy.length})</span>
                             </button>
                           ) : (
                             <button
@@ -1623,7 +1625,7 @@ function UserGroupUpdate(props: any) {
                               className={classes.underlineRemove}
                               onClick={handleOpenViewProduct}
                             >
-                              Add
+                               <span className='addUserGroup'>Add</span>
                             </button>
                           )
                         ) : (
@@ -1632,7 +1634,7 @@ function UserGroupUpdate(props: any) {
                             className={classes.underlineRemove}
                             onClick={handleOpenViewProduct}
                           >
-                            Add
+                            <span className='addUserGroup'>Add</span>
                           </button>
                         )}
                       </Typography>
@@ -1715,7 +1717,8 @@ function UserGroupUpdate(props: any) {
                       <Button
                         // type="reset"
                         variant="contained"
-                        className={classes.whiteButton}
+                        //className={classes.whiteButton}
+                        className="reSet"
                         // onClick={handleReset}
                         onClick={handleResetAfterDialog}
                         disabled={disabled1}
@@ -1747,6 +1750,7 @@ function UserGroupUpdate(props: any) {
                   {/* </Box> */}
                 </form>
                 <LoadingComponent showLoader={isProgressLoader} />
+                </div>
               </Box>
             </Grid>
           </Grid>

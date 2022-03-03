@@ -63,6 +63,7 @@ const NavigationDrawer = (props: NavigationProps) => {
         onClose={handleDrawerToggle}
         onKeyDown={handleDrawerToggle}
       >
+        <div className='menuItemNav'>
         <div className={`${classes.height} ${classes.setup}`}>
           <Typography variant="subtitle2" align="center">
             Menu Items
@@ -70,6 +71,7 @@ const NavigationDrawer = (props: NavigationProps) => {
           <IconButton onClick={handleDrawerToggle} edge="end">
             <ChevronLeft color="secondary" />
           </IconButton>
+        </div>
         </div>
         <Divider />
         <List>

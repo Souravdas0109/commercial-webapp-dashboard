@@ -12,48 +12,6 @@ export const useStyles = makeStyles((theme) => ({
     height: '100%',
     // padding:"16px"
   },
-  manageUser: {
-    flex: '1',
-    color: 'white',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    // .p-datatable-scrollable-body {
-    //   overflow-y: hidden !important;
-    // }
-  },
-  manageRequest: {
-    backgroundColor: '#F0F0F0',
-  },
-  colorSecondary: {
-    padding: '16px 16px 0px 16px',
-  },
-  buttonCreateGroup: {
-    backgroundColor: '#E0E1E2',
-    padding: '6px 15px 10px 10px',
-    color: '#1b6420',
-    cursor: 'pointer',
-    fontSize: '14px',
-    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%)',
-    // 0px 2px 2px 0px rgb(0 0 0 / 14%),
-    //  0px 1px 5px 0px rgb(0 0 0 / 12%);
-  },
-  displayTable: {
-    display: ' table',
-    width: '100%',
-  },
-  gridSearch: {
-    flexDirection: 'column',
-    width: '70%',
-    float: 'left',
-  },
-  createGroup: {
-    flexDirection: 'column',
-    width: '28%',
-    marginTop: '7px',
-    float: 'left',
-    marginTop: '30px',
-  },
   exploreButton: {
     color: 'blue',
     cursor: 'pointer',

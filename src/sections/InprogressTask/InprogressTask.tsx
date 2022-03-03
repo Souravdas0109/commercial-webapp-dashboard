@@ -47,6 +47,8 @@ function InprogressTask(props: any) {
     }
   }, [myinprogressTasks])
   return (
+<div className="manageUser">
+  <div className="manageRequest">
     <div className={classes.root}>
       <div className={classes.value}>
         <Grid container className={classes.container}>
@@ -89,13 +91,15 @@ function InprogressTask(props: any) {
                   paddingLeft: 20,
                 }}
               >
-                <button
-                  className={classes.backButton}
+              <button
+                  //className={classes.backButton}
+                  className="backButton" 
                   onClick={goBack}
                   type="button"
                 >
-                  Back
-                </button>
+              <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> 
+              Back
+              </button>
               </Box>
             </Box>
             <Box
@@ -200,6 +204,8 @@ function InprogressTask(props: any) {
         </Grid>
       </div>
     </div>
+</div>
+</div>
   )
 }
 const mapStateToProps = (state: any) => {

@@ -145,11 +145,12 @@ function UserManage(props: any) {
   //   };
 
   return (
-    <div className={classes.root}>
+    <div className="manageUser" //className={classes.root}
+    >
       <div className={classes.value}>
         <Grid container className={classes.container}>
-          <Grid item sm={12} xs={12}>
-            <Box
+          <Grid item sm={12} xs={12} className="manageRequest"> 
+            <Box 
               sx={{
                 display: 'flex',
                 flexDirection: 'row',

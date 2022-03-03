@@ -48,6 +48,7 @@ function GroupPendingAction(props: any) {
   }
   useEffect(() => {
     return () => {
+      sessionStorage.removeItem('dt-state-demo-session-grouppendingaction')
       reset_mygrouppendingAction()
     }
   }, [])
@@ -165,6 +166,8 @@ function GroupPendingAction(props: any) {
           history.push(`${DEFAULT}${DASHBOARD}`)
         }}
       />
+<div className="manageUser">
+<div className="manageRequest">
       <div className={classes.root}>
         <div className={classes.value}>
           <Grid container className={classes.container}>
@@ -207,13 +210,15 @@ function GroupPendingAction(props: any) {
                     paddingLeft: 20,
                   }}
                 >
-                  <button
-                    className={classes.backButton}
-                    onClick={goBack}
-                    type="button"
-                  >
-                    Back
-                  </button>
+              <button
+                  //className={classes.backButton}
+                  className="backButton" 
+                  onClick={goBack}
+                  type="button"
+                >
+              <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> 
+              Back
+              </button>
                 </Box>
               </Box>
               <Box
@@ -359,6 +364,8 @@ function GroupPendingAction(props: any) {
           <LoadingComponent showLoader={isProgressLoader} />
         </div>
       </div>
+</div>
+</div>
     </>
   )
 }

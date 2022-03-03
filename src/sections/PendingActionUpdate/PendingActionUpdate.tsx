@@ -1313,16 +1313,36 @@ function PendingActionUpdate(props: any) {
       flag = 0
     }
     if (roleNames.length === 0) {
-      focusRole.current.focus()
-      setErrorRoles(allMessages.error.noRoles)
-      flag = 0
+      if (
+        btnName === 'reject'
+        // &&
+        // requestorRoles
+        //   .map((item: any) => item.roleId)
+        //   .toString()
+        //   .includes('JML')
+      ) {
+      } else {
+        focusRole.current.focus()
+        setErrorRoles(allMessages.error.noRoles)
+        flag = 0
+      }
     }
     if (groups.length === 0) {
-      focusGroup.current.focus()
-      setErrorGroups(allMessages.error.noGroups)
-      flag = 0
+      if (
+        btnName === 'reject'
+        // &&
+        // requestorRoles
+        //   .map((item: any) => item.roleId)
+        //   .toString()
+        //   .includes('JML')
+      ) {
+      } else {
+        focusGroup.current.focus()
+        setErrorGroups(allMessages.error.noGroups)
+        flag = 0
+      }
     }
-    if (btnName === 'reassign') {
+    if (btnName === 'reassign' && flag === 1) {
       setIsProgressLoader(true)
       setDisabled(true)
       requestorUserId &&
@@ -1523,7 +1543,7 @@ function PendingActionUpdate(props: any) {
     //       }
     //     }),
     // }
-     const formData = {
+    const formData = {
       routing: 'moreinfo',
       camunda: {
         requestorDetails: {
@@ -1815,54 +1835,69 @@ function PendingActionUpdate(props: any) {
           console.log(res)
           // setIsSuccessCall(false)
           setReturnText(res.data.comments)
-      //      const formData2 = {
-      //        routing: 'Approved',
-      // camunda: {
-      //   requestorDetails: {
-      //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
-      //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
-      //     requestDate: new Date().toISOString().split('T')[0],
-      //     requestType: requestType,
-      //     comments: comments,
-      //   },
-      //   requestorRoles:
-      //     userDetail &&
-      //     userDetail.userdetails[0].roles.map((role: any) => {
-      //       return {
-      //         roleId: role.roleId,
-      //       }
-      //     }),
-      // },
-      // user: {
-      //   employeeId: employeeID,
-      //   firstName: firstName,
-      //   middleName: middleName,
-      //   lastName: lastName,
-      //   emailId: email,
-      //   additionalInfo: '',
-      //   designation: designation.toUpperCase(),
-      //   status: status,
-      // },
-      // roles: roleNames
-      //   ? roleNames.map((role: any) => {
-      //       return {
-      //         roleId: role.value,
-      //       }
-      //     })
-      //   : [],
-      // usergroups: groups
-      //   ? groups.map((group: any) => {
-      //       return {
-      //         groupId: group.value,
-      //         status: group.status,
-      //       }
-      //     })
-      //   : [],
-      //      }
-          // pendingActionDetails &&
-          //   putCompleteTaskAPI &&
-          //   putCompleteTaskAPI(formData2, pendingActionDetails[0].taskId)
-          //     .then((res: any) => {
+          // const formData2 = {
+          //   requestorDetails: {
+          //     emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          //     requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          //     requestDate: new Date().toISOString().split('T')[0],
+          //     requestType: 'Approve',
+          //   },
+          //   requestorRoles:
+          //     userDetail &&
+          //     userDetail.userdetails[0].roles.map((role: any) => {
+          //       return {
+          //         roleId: role.roleId,
+          //       }
+          //     }),
+          // }
+          const formData2 = {
+            routing: 'Approved',
+            camunda: {
+              requestorDetails: {
+                emailId: userDetail && userDetail.userdetails[0].user.emailId,
+                requestBy: userDetail && userDetail.userdetails[0].user.userId,
+                requestDate: new Date().toISOString().split('T')[0],
+                requestType: requestType,
+                comments: comments,
+              },
+              requestorRoles:
+                userDetail &&
+                userDetail.userdetails[0].roles.map((role: any) => {
+                  return {
+                    roleId: role.roleId,
+                  }
+                }),
+            },
+            user: {
+              employeeId: employeeID,
+              firstName: firstName,
+              middleName: middleName,
+              lastName: lastName,
+              emailId: email,
+              additionalInfo: '',
+              designation: designation.toUpperCase(),
+              status: status,
+            },
+            roles: roleNames
+              ? roleNames.map((role: any) => {
+                  return {
+                    roleId: role.value,
+                  }
+                })
+              : [],
+            usergroups: groups
+              ? groups.map((group: any) => {
+                  return {
+                    groupId: group.value,
+                    status: group.status,
+                  }
+                })
+              : [],
+          }
+          pendingActionDetails &&
+            putCompleteTaskAPI &&
+            putCompleteTaskAPI(formData2, pendingActionDetails[0].taskId)
+              .then((res: any) => {
                 setIsSuccessCall(false)
                 // setReturnText(res.data.comments)
                 const rolelog =
@@ -1913,19 +1948,19 @@ function PendingActionUpdate(props: any) {
                   setCheckCount(1)
                   postTasklog(logData)
                 }
-              // })
-              // .catch((err: any) => {
-              //   setDisabled(false)
-              //   setIsProgressLoader(false)
-              //   setIsSuccessCall(false)
-              //   toast.current.show({
-              //     severity: 'error',
-              //     summary: 'Error!',
-              //     detail: `${err.response.data.errorMessage} while Reassigning task`,
-              //     life: life,
-              //     className: 'login-toast',
-              //   })
-              // })
+              })
+              .catch((err: any) => {
+                setDisabled(false)
+                setIsProgressLoader(false)
+                setIsSuccessCall(false)
+                toast.current.show({
+                  severity: 'error',
+                  summary: 'Error!',
+                  detail: `${err.response.data.errorMessage} while Reassigning task`,
+                  life: life,
+                  className: 'login-toast',
+                })
+              })
         })
         .catch((err) => {
           setDisabled(false)
@@ -2015,7 +2050,7 @@ function PendingActionUpdate(props: any) {
       // putRejectTaskAPI &&
       // putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
       putCompleteTaskAPI &&
-        putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
+      putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
         .then((res) => {
           console.log(res)
           setIsSuccessCall(false)
@@ -2140,7 +2175,7 @@ function PendingActionUpdate(props: any) {
   )
 
   const createForm = (
-    <Box
+    <Box className='createRequest'
       sx={{
         flexDirection: 'column',
         display: 'flex',
@@ -2159,6 +2194,7 @@ function PendingActionUpdate(props: any) {
         // width: width ? 700 : fieldWidth,
       }}
     >
+      <div className='createRequestContainer'>
       <Box
         sx={{
           display: 'flex',
@@ -2199,7 +2235,7 @@ function PendingActionUpdate(props: any) {
               onClick={handleOpenViewLog}
               disabled={viewLogRows.length > 0 ? false : true}
             >
-              View Log ({viewLogRows.length})
+             <span className='addUserGroup univPadding'> View Log ({viewLogRows.length})</span>
             </button>
           </Box>
           <Box
@@ -2214,13 +2250,15 @@ function PendingActionUpdate(props: any) {
               paddingLeft: 5,
             }}
           >
-            <button
-              className={classes.backButton}
+             <button
+              //className={classes.backButton}
+              className="backButton"
               onClick={goBack}
               // onClick={handleBackAfterDialog}
               type="button"
             >
-              Back
+             <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> 
+            Back
             </button>
           </Box>
         </Box>
@@ -2234,7 +2272,7 @@ function PendingActionUpdate(props: any) {
         }}
       >
         <Box className={classes.eachRow}>
-          <Box
+          <Box  className='manageUser'
             sx={{
               textAlign: 'center',
               display: 'flex',
@@ -2583,7 +2621,7 @@ function PendingActionUpdate(props: any) {
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Designation</Typography>
+            <Typography variant="subtitle2">Job Title</Typography>
           </Box>
 
           <Box
@@ -2634,35 +2672,7 @@ function PendingActionUpdate(props: any) {
                 display: 'flex',
               }}
             >
-              <button
-                type="button"
-                className={
-                  UtilityFunctions.isHidden(
-                    '8',
-                    appFuncList ? appFuncList : [],
-                    'addl_data'
-                  )
-                    ? classes.hideit
-                    : classes.backButton
-                }
-                disabled={
-                  UtilityFunctions.isHidden(
-                    '8',
-                    appFuncList ? appFuncList : [],
-                    'addl_data'
-                  )
-                    ? true
-                    : colleagueData || additionalInfo
-                    ? false
-                    : true
-                }
-                onClick={(e) => {
-                  e.preventDefault()
-                  setOpenAdditional((prevState) => !prevState)
-                }}
-              >
-                Additional Data
-              </button>
+              &nbsp;
             </Box>
           </Box>
         </Box>
@@ -2842,7 +2852,7 @@ function PendingActionUpdate(props: any) {
                   onClick={handleOpenGroups}
                   ref={focusGroup}
                 >
-                  Groups ( {groups.length} )
+                  <span className='addUserGroup'>Groups ( {groups.length} )</span>
                 </button>
               ) : (
                 <button
@@ -2933,7 +2943,7 @@ function PendingActionUpdate(props: any) {
                 display: 'flex',
               }}
             >
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" className="browseArea">
                 {
                   <input
                     type="text"
@@ -3100,7 +3110,45 @@ function PendingActionUpdate(props: any) {
             </Typography>
           </Box>
         </Box>
-        <Box
+        <Box sx={{ display: 'flex', flexDirection: !active ? 'row' : 'column', }} >
+        <Box className={classes.inputLabel}> &nbsp;</Box>  
+        <Box className={classes.inputFieldBox}> 
+        <button
+                type="button"
+                className={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? classes.hideit
+                    : classes.backButton
+                }
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? true
+                    : colleagueData || additionalInfo
+                    ? false
+                    : true
+                }
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpenAdditional((prevState) => !prevState)
+                }}
+              >
+                <span className='addUserGroup'>Additional Data</span>
+              </button>
+        </Box>
+        </Box>
+
+
+
+
+        <Box className='buttonContainer'
           sx={{
             display: 'flex',
             flexDirection: !active ? 'row' : 'column',
@@ -3109,6 +3157,16 @@ function PendingActionUpdate(props: any) {
             justifyContent: !active ? 'space-between' : 'center',
           }}
         >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: !forbutton ? 'row' : 'column',
+              alignItems: !forbutton ? 'center' : 'center',
+              justifyContent: !forbutton ? 'space-between' : 'center',
+            }}
+          >
+            
+          </Box>
           <Box
             sx={{
               display: 'flex',
@@ -3134,17 +3192,9 @@ function PendingActionUpdate(props: any) {
               onClick={handleRejectAfterDialog}
               disabled={disabled}
             >
-              Reject
+              <span className="reSet">Reject</span>
             </Button>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: !forbutton ? 'row' : 'column',
-              alignItems: !forbutton ? 'center' : 'center',
-              justifyContent: !forbutton ? 'space-between' : 'center',
-            }}
-          >
+            <div className="resetReassign">
             <Button
               // type="submit"
               variant="contained"
@@ -3165,7 +3215,8 @@ function PendingActionUpdate(props: any) {
             >
               Submit
             </Button>
-
+            </div>
+            <div className="resetReassign">
             <Button
               variant="contained"
               color="primary"
@@ -3181,11 +3232,19 @@ function PendingActionUpdate(props: any) {
               size="small"
               // onClick={handleReassign}
               onClick={handleReassignAfterDialog}
-              disabled={disabled}
+              disabled={
+                requestorRoles
+                  .map((item: any) => item.roleId)
+                  .toString()
+                  .includes('JML')
+                  ? true
+                  : disabled
+              }
             >
               Reassign
             </Button>
-
+            </div>
+            <div className="resetReassign">
             <Button
               // type="submit"
               variant="contained"
@@ -3205,12 +3264,14 @@ function PendingActionUpdate(props: any) {
               onClick={handleApproveAfterDialog}
               disabled={disabled}
             >
-              Approve
+              <span className="reSet">Approve</span>
             </Button>
+            </div>
           </Box>
         </Box>
       </form>
       <LoadingComponent showLoader={isProgressLoader} />
+      </div>
     </Box>
   )
 
