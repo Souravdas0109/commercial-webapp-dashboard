@@ -26,7 +26,7 @@ export const userTableHeaders = [
   },
   {
     field: 'designation',
-    headerName: 'Designation',
+    headerName: 'Job Title',
     width: 150,
   },
   {
