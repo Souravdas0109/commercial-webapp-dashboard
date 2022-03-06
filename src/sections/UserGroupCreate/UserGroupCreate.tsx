@@ -649,7 +649,8 @@ function UserGroupCreate(props: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          // className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -702,7 +703,8 @@ function UserGroupCreate(props: any) {
             }}
           >
             <Box
-              className={classes.inputFieldBox}
+              // className={classes.inputFieldBox}
+              className={classes.inputFieldBoxPop}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -778,7 +780,8 @@ function UserGroupCreate(props: any) {
             display: 'flex',
             justifyContent: 'end',
           }}
-          className={classes.inputFieldBox}
+          // className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
         >
           <Button
             // type="submit"
@@ -1088,7 +1091,8 @@ function UserGroupCreate(props: any) {
               justifyContent="center"
               alignItems="center"
             >
-              <Box className='createRequest'
+              <Box
+                className="createRequest"
                 sx={{
                   flexDirection: 'column',
                   display: 'flex',
@@ -1098,47 +1102,55 @@ function UserGroupCreate(props: any) {
                   textAlign: 'left',
                 }}
               >
-                <div className='createRequestContainer'>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    paddingBottom: '20px',
-                    paddingTop: '10px',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                    }}
-                  >
-                    <Typography variant="h6">Create Group</Typography>
-                  </Box>
+                <div className="createRequestContainer">
                   <Box
                     sx={{
                       display: 'flex',
-                      flexDirection: !active ? 'row' : 'column',
+                      flexDirection: 'row',
+                      paddingBottom: '20px',
+                      paddingTop: '10px',
                     }}
                   >
                     <Box
                       sx={{
-                        paddingLeft: 5,
+                        flexGrow: 1,
                       }}
                     >
-                    <button
-                        type="button"
-                        onClick={goBack}
-                        //onClick={handleBackAfterDialog}
-                        //className={classes.backButton}
-                        className="backButton"
+                      <Typography variant="h6">Create Group</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: !active ? 'row' : 'column',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          paddingLeft: 5,
+                        }}
                       >
-                       <svg className="MuiSvgIcon-root" focusable="false" viewBox="0 0 34 34" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg> Back
-                      </button>
+                        <button
+                          type="button"
+                          onClick={goBack}
+                          //onClick={handleBackAfterDialog}
+                          //className={classes.backButton}
+                          className="backButton"
+                        >
+                          <svg
+                            className="MuiSvgIcon-root"
+                            focusable="false"
+                            viewBox="0 0 34 34"
+                            aria-hidden="true"
+                          >
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                          </svg>{' '}
+                          Back
+                        </button>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-                <form onSubmit={handleCreateGroup}>
-                  {/* <Box
+                  <form onSubmit={handleCreateGroup}>
+                    {/* <Box
                     sx={{
                       display: 'flex',
                       flexDirection: !active ? 'row' : 'column',
@@ -1178,189 +1190,194 @@ function UserGroupCreate(props: any) {
                       </Typography>
                     </Box>
                   </Box> */}
-                  <Box className={classes.eachRow}>
-                    <Box
-                      className={classes.inputLabel}
-                      sx={{
-                        display: !active ? null : 'flex',
-                      }}
-                    >
-                      <Typography variant="subtitle2">
-                        Group Name &nbsp;
-                        <span
-                          style={{
-                            color: '#ff0000',
-                          }}
-                        >
-                          *
-                        </span>
-                      </Typography>
-                    </Box>
-                    <Box className={classes.inputFieldBox}>
-                      <Typography variant="subtitle2">
-                        <input
-                          type="text"
-                          name="groupname"
-                          ref={focusGroupName}
-                          id="groupname"
-                          placeholder="eg. group name 1"
-                          className={classes.inputFields}
-                          onChange={ongroupnameChange}
-                          value={groupname}
-                          required
-                        />
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {errorGroupName !== '' && (
                     <Box className={classes.eachRow}>
-                      <Box className={classes.inputLabel}></Box>
                       <Box
-                        className={classes.inputFieldBox}
-                        justifyContent="center"
+                        className={classes.inputLabel}
+                        sx={{
+                          display: !active ? null : 'flex',
+                        }}
                       >
-                        <Typography variant="subtitle2" color="error">
-                          {errorGroupName}
+                        <Typography variant="subtitle2">
+                          Group Name &nbsp;
+                          <span
+                            style={{
+                              color: '#ff0000',
+                            }}
+                          >
+                            *
+                          </span>
+                        </Typography>
+                      </Box>
+                      <Box className={classes.inputFieldBox}>
+                        <Typography variant="subtitle2">
+                          <input
+                            type="text"
+                            name="groupname"
+                            ref={focusGroupName}
+                            id="groupname"
+                            placeholder="eg. group name 1"
+                            className={classes.inputFields}
+                            onChange={ongroupnameChange}
+                            value={groupname}
+                            required
+                          />
                         </Typography>
                       </Box>
                     </Box>
-                  )}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: !active ? 'row' : 'column',
-                      paddingTop: '20px',
-                    }}
-                  >
+                    {errorGroupName !== '' && (
+                      <Box className={classes.eachRow}>
+                        <Box className={classes.inputLabel}></Box>
+                        <Box
+                          className={classes.inputFieldBox}
+                          justifyContent="center"
+                        >
+                          <Typography variant="subtitle2" color="error">
+                            {errorGroupName}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
                     <Box
-                      className={classes.inputLabel}
                       sx={{
-                        display: !active ? null : 'flex',
+                        display: 'flex',
+                        flexDirection: !active ? 'row' : 'column',
+                        paddingTop: '20px',
                       }}
                     >
-                      <Typography variant="subtitle2">Description</Typography>
+                      <Box
+                        className={classes.inputLabel}
+                        sx={{
+                          display: !active ? null : 'flex',
+                        }}
+                      >
+                        <Typography variant="subtitle2">Description</Typography>
+                      </Box>
+                      <Box className={classes.inputFieldBox}>
+                        <Typography variant="subtitle2">
+                          <TextareaAutosize
+                            name="description"
+                            id="description"
+                            className={classes.textArea}
+                            onChange={ondescriptionChange}
+                            value={description}
+                            minRows="5"
+                          />
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box className={classes.inputFieldBox}>
-                      <Typography variant="subtitle2">
-                        <TextareaAutosize
-                          name="description"
-                          id="description"
-                          className={classes.textArea}
-                          onChange={ondescriptionChange}
-                          value={description}
-                          minRows="5"
-                        />
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box className={classes.eachRow}>
-                    <Box className={classes.inputLabel}>
-                      <Typography variant="subtitle2">
-                        Status &nbsp;
-                        <span
-                          style={{
-                            color: '#ff0000',
-                          }}
-                        >
-                          *
-                        </span>
-                      </Typography>
-                    </Box>
-                    <Box className={classes.inputFieldBox}>
-                      <Typography variant="subtitle2">
-                        <select
-                          name="status"
-                          id="status"
-                          className={classes.selectField}
-                          defaultValue=""
-                          onChange={onstatusChange}
-                          required
-                          disabled
-                        >
-                          {/* <option
+                    <Box className={classes.eachRow}>
+                      <Box className={classes.inputLabel}>
+                        <Typography variant="subtitle2">
+                          Status &nbsp;
+                          <span
+                            style={{
+                              color: '#ff0000',
+                            }}
+                          >
+                            *
+                          </span>
+                        </Typography>
+                      </Box>
+                      <Box className={classes.inputFieldBox}>
+                        <Typography variant="subtitle2">
+                          <select
+                            name="status"
+                            id="status"
+                            className={classes.selectField}
+                            defaultValue=""
+                            onChange={onstatusChange}
+                            required
+                            disabled
+                          >
+                            {/* <option
                             disabled
                             value=""
                             className={classes.selectOptions}
                           >
                             None
                           </option> */}
-                          {constants.groupstatuses.map((type) => {
-                            return (
-                              <option value={type.statusID} key={type.statusID}>
-                                {type.text}
-                              </option>
-                            )
-                          })}
-                        </select>
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {errorStatus !== '' && (
-                    <Box className={classes.eachRow}>
-                      <Box className={classes.inputLabel}></Box>
-                      <Box
-                        className={classes.inputFieldBox}
-                        justifyContent="center"
-                      >
-                        <Typography variant="subtitle2" color="error">
-                          {errorStatus}
+                            {constants.groupstatuses.map((type) => {
+                              return (
+                                <option
+                                  value={type.statusID}
+                                  key={type.statusID}
+                                >
+                                  {type.text}
+                                </option>
+                              )
+                            })}
+                          </select>
                         </Typography>
                       </Box>
                     </Box>
-                  )}
-                  <Box className={classes.eachRow}>
-                    <Box className={classes.inputLabel}>
-                      <Typography variant="subtitle2">
-                        Product Hierarchies
-                      </Typography>
-                    </Box>
+                    {errorStatus !== '' && (
+                      <Box className={classes.eachRow}>
+                        <Box className={classes.inputLabel}></Box>
+                        <Box
+                          className={classes.inputFieldBox}
+                          justifyContent="center"
+                        >
+                          <Typography variant="subtitle2" color="error">
+                            {errorStatus}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    <Box className={classes.eachRow}>
+                      <Box className={classes.inputLabel}>
+                        <Typography variant="subtitle2">
+                          Product Hierarchies
+                        </Typography>
+                      </Box>
 
-                    <Box className={classes.inputFieldBox}>
-                      <Typography variant="subtitle1">
-                        {/* {payload ? (
+                      <Box className={classes.inputFieldBox}>
+                        <Typography variant="subtitle1">
+                          {/* {payload ? (
                           payload.length > 0 ? ( */}
-                        {hierarchy ? (
-                          hierarchy.length > 0 ? (
-                            <button
-                              type="button"
-                              className={classes.underlineRemove}
-                              onClick={handleOpenViewProduct}
-                            >
-                              {/* Product Hierarchies({payload.length}) */}
-                              <span className='addUserGroup'>Product Hierarchies({hierarchy.length})</span>
-                            </button>
+                          {hierarchy ? (
+                            hierarchy.length > 0 ? (
+                              <button
+                                type="button"
+                                className={classes.underlineRemove}
+                                onClick={handleOpenViewProduct}
+                              >
+                                {/* Product Hierarchies({payload.length}) */}
+                                <span className="addUserGroup">
+                                  Product Hierarchies({hierarchy.length})
+                                </span>
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                className={classes.underlineRemove}
+                                onClick={handleOpenViewProduct}
+                              >
+                                <span className="addUserGroup">Add</span>
+                              </button>
+                            )
                           ) : (
                             <button
                               type="button"
                               className={classes.underlineRemove}
                               onClick={handleOpenViewProduct}
                             >
-                              <span className='addUserGroup'>Add</span>
+                              <span className="addUserGroup">Add</span>
                             </button>
-                          )
-                        ) : (
-                          <button
-                            type="button"
-                            className={classes.underlineRemove}
-                            onClick={handleOpenViewProduct}
-                          >
-                            <span className='addUserGroup'>Add</span>
-                          </button>
-                        )}
-                      </Typography>
-                      {viewProduct}
+                          )}
+                        </Typography>
+                        {viewProduct}
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box className={classes.eachRow}>
-                    <Box className={classes.inputLabel}>
-                      <Typography variant="subtitle2">
-                        Location Hierarchies
-                      </Typography>
-                    </Box>
-                    <Box className={classes.inputFieldBox}>
-                      {locationSelect}
-                    </Box>
-                    {/* <Box className={classes.inputFieldBox}>
+                    <Box className={classes.eachRow}>
+                      <Box className={classes.inputLabel}>
+                        <Typography variant="subtitle2">
+                          Location Hierarchies
+                        </Typography>
+                      </Box>
+                      <Box className={classes.inputFieldBox}>
+                        {locationSelect}
+                      </Box>
+                      {/* <Box className={classes.inputFieldBox}>
                       <Typography variant="subtitle1">
                         {locationNames ? (
                           locationNames.length > 0 ? (
@@ -1392,74 +1409,78 @@ function UserGroupCreate(props: any) {
                       </Typography>
                       {viewLocation}
                     </Box> */}
-                  </Box>
-                  {/* <Box className={classes.eachRow}> */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: !active ? 'row' : 'column',
-                      justifyContent: !active ? 'space-between' : 'center',
-                      paddingTop: '30px',
-                      alignItems: !active ? 'center' : 'center',
-                    }}
-                  >
+                    </Box>
+                    {/* <Box className={classes.eachRow}> */}
                     <Box
                       sx={{
                         display: 'flex',
-                        flexDirection: !forbutton ? 'row' : 'column',
-                        alignItems: !forbutton ? 'center' : 'center',
-                        justifyContent: !forbutton ? 'space-between' : 'center',
-                      }}
-                    ></Box>
-                    {/* <Box
-                      sx={{
-                        display: 'flex',
-                      }}
-                    > */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: !forbutton ? 'row' : 'column',
-                        alignItems: !forbutton ? 'center' : 'center',
-                        justifyContent: !forbutton ? 'space-between' : 'center',
+                        flexDirection: !active ? 'row' : 'column',
+                        justifyContent: !active ? 'space-between' : 'center',
+                        paddingTop: '30px',
+                        alignItems: !active ? 'center' : 'center',
                       }}
                     >
-                      <Button
-                        // type="reset"
-                        variant="contained"
-                        //className={classes.whiteButton}
-                        className="reSet"
-                        // onClick={handleReset}
-                        onClick={handleResetAfterDialog}
-                        disabled={disabled1}
-                        size="small"
-                      >
-                        Reset
-                      </Button>
-                      {/* </Box> */}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: !forbutton ? 'row' : 'column',
+                          alignItems: !forbutton ? 'center' : 'center',
+                          justifyContent: !forbutton
+                            ? 'space-between'
+                            : 'center',
+                        }}
+                      ></Box>
                       {/* <Box
                       sx={{
                         display: 'flex',
                       }}
                     > */}
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        // type="submit"
-                        className={classes.buttons}
-                        // onClick={handleCreateGroup}
-                        onClick={handleCreateGroupAfterDialog}
-                        disabled={disabled1}
-                        size="small"
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: !forbutton ? 'row' : 'column',
+                          alignItems: !forbutton ? 'center' : 'center',
+                          justifyContent: !forbutton
+                            ? 'space-between'
+                            : 'center',
+                        }}
                       >
-                        Submit
-                      </Button>
+                        <Button
+                          // type="reset"
+                          variant="contained"
+                          //className={classes.whiteButton}
+                          className="reSet"
+                          // onClick={handleReset}
+                          onClick={handleResetAfterDialog}
+                          disabled={disabled1}
+                          size="small"
+                        >
+                          Reset
+                        </Button>
+                        {/* </Box> */}
+                        {/* <Box
+                      sx={{
+                        display: 'flex',
+                      }}
+                    > */}
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          // type="submit"
+                          className={classes.buttons}
+                          // onClick={handleCreateGroup}
+                          onClick={handleCreateGroupAfterDialog}
+                          disabled={disabled1}
+                          size="small"
+                        >
+                          Submit
+                        </Button>
+                      </Box>
+                      {/* </Box> */}
                     </Box>
                     {/* </Box> */}
-                  </Box>
-                  {/* </Box> */}
-                </form>
-                <LoadingComponent showLoader={isProgressLoader} />
+                  </form>
+                  <LoadingComponent showLoader={isProgressLoader} />
                 </div>
               </Box>
             </Grid>

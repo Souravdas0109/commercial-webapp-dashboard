@@ -162,6 +162,7 @@
   }
   .createRequest .buttonContainer button {
     margin-right: 10px !important;
+    margin-bottom: 10px !important;
   }
   .createRequest textarea {
     width: 100% !important;
