@@ -576,6 +576,7 @@ function UserGroupUpdate(props: any) {
       borderColor: teal[900],
       backgroundColor: state.isSelected ? teal[900] : 'white',
       color: state.isSelected ? 'white' : teal[900],
+      // maxHeight: '50px',
     }),
   }
   const locationCustomStyles: StylesConfig<LocationhierarchyTypes, true> = {
@@ -808,7 +809,7 @@ function UserGroupUpdate(props: any) {
     >
       <Box
         sx={{
-          height: 450,
+          height: 600,
           // width: dialogwidth,
           width: 'auto',
           p: 2,
@@ -938,6 +939,7 @@ function UserGroupUpdate(props: any) {
               sx={{
                 justifyContent: 'center',
                 // paddingRight: '10px',
+                // maxHeight: '80%',
               }}
             >
               {productSelect}
@@ -1725,7 +1727,7 @@ function UserGroupUpdate(props: any) {
                       <Box
                         sx={{
                           display: 'flex',
-                          flexDirection: !forbutton ? 'row' : 'column',
+                          flexDirection: !forbutton ? 'row' : 'row',
                           alignItems: !forbutton ? 'center' : 'center',
                           justifyContent: !forbutton
                             ? 'space-between'

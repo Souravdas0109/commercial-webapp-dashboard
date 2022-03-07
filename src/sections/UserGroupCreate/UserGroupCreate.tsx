@@ -639,7 +639,7 @@ function UserGroupCreate(props: any) {
     >
       <Box
         sx={{
-          height: 450,
+          height: 600,
           // width: dialogwidth,
           width: 'auto',
           p: 2,
@@ -1438,7 +1438,7 @@ function UserGroupCreate(props: any) {
                       <Box
                         sx={{
                           display: 'flex',
-                          flexDirection: !forbutton ? 'row' : 'column',
+                          flexDirection: !forbutton ? 'row' : 'row',
                           alignItems: !forbutton ? 'center' : 'center',
                           justifyContent: !forbutton
                             ? 'space-between'

@@ -2027,7 +2027,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               </Typography>
             </Box>
           </Box>
-          {shoutOut !== '' && (
+          {/* {shoutOut !== '' && (
             <Box className={classes.eachRow}>
               <Box className={classes.inputLabel}></Box>
               <Box className={classes.inputFieldBox} justifyContent="center">
@@ -2036,7 +2036,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 </Typography>
               </Box>
             </Box>
-          )}
+          )} */}
           {errorRequestType !== '' && (
             <Box className={classes.eachRow}>
               <Box className={classes.inputLabel}></Box>
@@ -2103,6 +2103,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               <Box className={classes.inputFieldBox} justifyContent="center">
                 <Typography variant="subtitle2" color="error">
                   {errorEmployeeId}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+          {shoutOut !== '' && (
+            <Box className={classes.eachRow}>
+              <Box className={classes.inputLabel}></Box>
+              <Box className={classes.inputFieldBox} justifyContent="center">
+                <Typography variant="subtitle2" color="error">
+                  {shoutOut}
                 </Typography>
               </Box>
             </Box>
