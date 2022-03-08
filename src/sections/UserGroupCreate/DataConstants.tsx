@@ -64,7 +64,7 @@ export const constants = {
     { value: 'group', label: 'Trading Group' },
     { value: 'category', label: 'Category' },
     { value: 'department', label: 'Product Group' },
-    { value: 'class', label: 'Class' },
-    { value: 'subclass', label: 'Sub Class' },
+    // { value: 'class', label: 'Class' },
+    // { value: 'subclass', label: 'Sub Class' },
   ],
 }

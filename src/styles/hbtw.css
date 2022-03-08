@@ -220,6 +220,11 @@
   font-size: 16px;
   display: block;
 }
+.createRequest button:disabled {
+  color: inherit;
+  /* font-size: 16px;
+  display: block; */
+}
 .createRequest .univPadding {
   padding: 5px;
 }
@@ -262,6 +267,10 @@
 }
 .p-datatable-tbody button {
   color: #299630;
+  font-size: 13px;
+}
+.p-datatable-tbody button:disabled {
+  color: inherit;
   font-size: 13px;
 }
 .p-datatable-tbody td {
