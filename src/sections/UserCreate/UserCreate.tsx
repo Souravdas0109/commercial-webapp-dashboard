@@ -140,7 +140,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   //integration changes start
 
   useEffect(() => {
-    focusRequestType.current.focus()
+    //focusRequestType.current.focus()
     // getUserGroupAPI &&
     //   getUserGroupAPI()
     getUserGroupActiveAPI &&
@@ -911,6 +911,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     fontSize: '12px',
                     width: column.width,
                     overflowX: 'auto',
+                    height: '100px',
                   }}
                   headerStyle={{
                     fontSize: '12px',
