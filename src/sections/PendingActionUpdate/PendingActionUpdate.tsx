@@ -414,9 +414,9 @@ function PendingActionUpdate(props: any) {
   const customStyles = {
     option: (provided: any, state: any) => ({
       ...provided,
-      borderColor: '#004d40',
-      backgroundColor: state.isSelected ? '#004d40' : 'white',
-      color: state.isSelected ? 'white' : '#004d40',
+      borderColor: teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
     }),
   }
 
@@ -430,12 +430,15 @@ function PendingActionUpdate(props: any) {
   }
   const onstatusChange = (e: any) => {
     setIsPageModified(true)
-    setStatus(e.target.value)
-    if (e.target.value !== '') {
+    // setStatus(e.target.value)
+    setStatus(e.value)
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorStatus('')
       setErrorRequestType('')
     }
-    if (e.target.value === 'D') {
+    // if (e.target.value === 'D') {
+    if (e.value === 'D') {
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
     } else {
@@ -444,11 +447,13 @@ function PendingActionUpdate(props: any) {
     }
   }
   const onrequestTypeChange = (e: any) => {
-    if (e.target.value !== '') {
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorRequestType('')
       setErrorStatus('')
     }
-    setRequestType(e.target.value)
+    // setRequestType(e.target.value)
+    setRequestType(e.value)
   }
   useEffect(() => {
     console.log(requestType)
@@ -2574,7 +2579,7 @@ function PendingActionUpdate(props: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                <select
+                {/* <select
                   name="requesttype"
                   ref={focusRequestType}
                   id="requesttype"
@@ -2584,9 +2589,6 @@ function PendingActionUpdate(props: any) {
                   required
                   disabled
                 >
-                  {/* <option disabled value="">
-                  --- Select Request Type ---
-                </option> */}
                   {constants.requestTypes.map((type) => {
                     return (
                       type.name.toLowerCase() === requestType && (
@@ -2596,7 +2598,27 @@ function PendingActionUpdate(props: any) {
                       )
                     )
                   })}
-                </select>
+                </select> */}
+                <Select
+                  value={constants.requestTypes.filter(
+                    (item) => item.value === requestType
+                  )}
+                  isDisabled={true}
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  placeholder={'Select..'}
+                  ref={focusRequestType}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.requestTypes}
+                  onChange={onrequestTypeChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>
@@ -2813,24 +2835,7 @@ function PendingActionUpdate(props: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                {/* <input
-                type="text"
-                name="status"
-                id="status"
-                placeholder="eg. Active"
-                className={classes.inputFields}
-                // onChange={e => {
-                //   setStatus(e.target.value);
-                // }}
-                value={statusWithValue}
-                onChange={() => {}}
-                disabled={UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  'status'
-                )}
-              /> */}
-                <select
+                {/* <select
                   name="status"
                   id="status"
                   ref={focusStatus}
@@ -2849,9 +2854,6 @@ function PendingActionUpdate(props: any) {
                     requestType === 'remove'
                   }
                 >
-                  {/* <option disabled value="" className={classes.selectOptions}>
-                  None
-                </option> */}
                   {requestType === 'new'
                     ? constants.statuses
                         .filter((type) => type.statusID.toLowerCase() === 'w')
@@ -2909,7 +2911,36 @@ function PendingActionUpdate(props: any) {
                           </option>
                         )
                       })}
-                </select>
+                </select> */}
+                <Select
+                  value={
+                    requestType === 'new'
+                      ? constants.statuses.filter((i) => i.value === 'W')
+                      : constants.statuses.filter((i) => i.value === status)
+                  }
+                  isDisabled={
+                    UtilityFunctions.isHidden(
+                      '8',
+                      appFuncList ? appFuncList : [],
+                      'status'
+                    ) ||
+                    requestType === 'new' ||
+                    requestType === 'remove'
+                  }
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  ref={focusStatus}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.statuses}
+                  onChange={onstatusChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>

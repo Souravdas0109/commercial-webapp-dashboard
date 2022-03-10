@@ -441,12 +441,15 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }
   const onstatusChange = (e: any) => {
     setIsPageModified(true)
-    setStatus(e.target.value)
-    if (e.target.value !== '') {
+    // setStatus(e.target.value)
+    setStatus(e.value)
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorStatus('')
       setErrorRequestType('')
     }
-    if (e.target.value === 'D') {
+    // if (e.target.value === 'D') {
+    if (e.value === 'D') {
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
     } else {
@@ -456,16 +459,19 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }
   const onrequestTypeChange = (e: any) => {
     setIsPageModified(true)
-    if (e.target.value !== '') {
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorRequestType('')
       setErrorStatus('')
     }
-    if (e.target.value.toLowerCase() === 'new') {
+    // if (e.target.value.toLowerCase() === 'new') {
+    if (e.value.toLowerCase() === 'new') {
       // setStatus('W')
       setRoleAccess('new_role')
       setGroupAccess('new_group')
     }
-    if (e.target.value.toLowerCase() === 'modify') {
+    // if (e.target.value.toLowerCase() === 'modify') {
+    if (e.value.toLowerCase() === 'modify') {
       // setStatus('W')
       if (status === 'D') {
         setRoleAccess('rem_role')
@@ -477,14 +483,17 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
       // setStatus('A')
     }
-    if (e.target.value.toLowerCase() === 'remove') {
+    // if (e.target.value.toLowerCase() === 'remove') {
+    if (e.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
       // setStatus('A')
     }
-    setRequestType(e.target.value)
-    checkIt(e.target.value, emplAvailable)
+    // setRequestType(e.target.value)
+    setRequestType(e.value)
+    // checkIt(e.target.value, emplAvailable)
+    checkIt(e.value, emplAvailable)
   }
   useEffect(() => {
     console.log(status)
@@ -2003,7 +2012,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                <select
+                {/* <select
                   name="requesttype"
                   ref={focusRequestType}
                   id="requesttype"
@@ -2023,7 +2032,27 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                       </option>
                     )
                   })}
-                </select>
+                </select> */}
+                <Select
+                  value={constants.requestTypes.filter(
+                    (item) => item.value === requestType
+                  )}
+                  // isDisabled={data !== [] ? false : true}
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  placeholder={'Select..'}
+                  ref={focusRequestType}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.requestTypes}
+                  onChange={onrequestTypeChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>
@@ -2283,7 +2312,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                <select
+                {/* <select
                   name="status"
                   id="status"
                   ref={focusStatus}
@@ -2302,9 +2331,6 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     requestType === 'remove'
                   }
                 >
-                  {/* <option disabled value="" className={classes.selectOptions}>
-                  None
-                </option> */}
                   {requestType === 'new'
                     ? constants.statuses
                         .filter((type) => type.statusID.toLowerCase() === 'w')
@@ -2362,7 +2388,36 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                           </option>
                         )
                       })}
-                </select>
+                </select> */}
+                <Select
+                  value={
+                    requestType === 'new'
+                      ? constants.statuses.filter((i) => i.value === 'W')
+                      : constants.statuses.filter((i) => i.value === status)
+                  }
+                  isDisabled={
+                    UtilityFunctions.isHidden(
+                      '8',
+                      appFuncList ? appFuncList : [],
+                      'status'
+                    ) ||
+                    requestType === 'new' ||
+                    requestType === 'remove'
+                  }
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  ref={focusStatus}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.statuses}
+                  onChange={onstatusChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>

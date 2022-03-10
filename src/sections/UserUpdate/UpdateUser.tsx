@@ -398,9 +398,9 @@ function UpdateUser(props: any) {
   const customStyles = {
     option: (provided: any, state: any) => ({
       ...provided,
-      borderColor: '#004d40',
-      backgroundColor: state.isSelected ? '#004d40' : 'white',
-      color: state.isSelected ? 'white' : '#004d40',
+      borderColor: teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
     }),
   }
 
@@ -460,12 +460,15 @@ function UpdateUser(props: any) {
   // };
   const onstatusChange = (e: any) => {
     setIsPageModified(true)
-    setStatus(e.target.value)
-    if (e.target.value !== '') {
+    // setStatus(e.target.value)
+    setStatus(e.value)
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorStatus('')
       setErrorRequestType('')
     }
-    if (e.target.value === 'D') {
+    // if (e.target.value === 'D') {
+    if (e.value === 'D') {
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
     } else {
@@ -475,16 +478,19 @@ function UpdateUser(props: any) {
   }
   const onrequestTypeChange = (e: any) => {
     setIsPageModified(true)
-    if (e.target.value !== '') {
+    // if (e.target.value !== '') {
+    if (e.value !== '') {
       setErrorRequestType('')
       setErrorStatus('')
     }
-    if (e.target.value.toLowerCase() === 'new') {
+    // if (e.target.value.toLowerCase() === 'new') {
+    if (e.value.toLowerCase() === 'new') {
       // setStatus('W')
       setRoleAccess('new_role')
       setGroupAccess('new_group')
     }
-    if (e.target.value.toLowerCase() === 'modify') {
+    // if (e.target.value.toLowerCase() === 'modify') {
+    if (e.value.toLowerCase() === 'modify') {
       // setStatus('W')
       if (status === 'D') {
         setRoleAccess('rem_role')
@@ -496,13 +502,15 @@ function UpdateUser(props: any) {
 
       // setStatus('A')
     }
-    if (e.target.value.toLowerCase() === 'remove') {
+    // if (e.target.value.toLowerCase() === 'remove') {
+    if (e.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
       // setStatus('A')
     }
-    setRequestType(e.target.value)
+    // setRequestType(e.target.value)
+    setRequestType(e.value)
   }
   useEffect(() => {
     console.log(requestType)
@@ -607,8 +615,10 @@ function UpdateUser(props: any) {
       // }
       setStatus(
         constants.statuses
-          .filter((stat: any) => stat.text === selectEmployeeID.status)
-          .map((stat: any) => stat.statusID)
+          // .filter((stat: any) => stat.text === selectEmployeeID.status)
+          .filter((stat: any) => stat.label === selectEmployeeID.status)
+          //.map((stat: any) => stat.statusID)
+          .map((stat: any) => stat.value)
           .toString()
       )
       // if (selectEmployeeID.status === 'A') {
@@ -2001,7 +2011,7 @@ function UpdateUser(props: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                <select
+                {/* <select
                   name="requesttype"
                   ref={focusRequestType}
                   id="requesttype"
@@ -2022,7 +2032,29 @@ function UpdateUser(props: any) {
                       )
                     )
                   })}
-                </select>
+                </select> */}
+                <Select
+                  value={constants.requestTypes.filter(
+                    (item) => item.value === requestType
+                  )}
+                  // isDisabled={data !== [] ? false : true}
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  placeholder={'Select..'}
+                  ref={focusRequestType}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.requestTypes.filter(
+                    (i) => i.value !== 'new'
+                  )}
+                  onChange={onrequestTypeChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>
@@ -2239,24 +2271,7 @@ function UpdateUser(props: any) {
 
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2">
-                {/* <input
-                type="text"
-                name="status"
-                id="status"
-                placeholder="eg. Active"
-                className={classes.inputFields}
-                // onChange={e => {
-                //   setStatus(e.target.value);
-                // }}
-                value={statusWithValue}
-                onChange={() => {}}
-                disabled={UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  'status'
-                )}
-              /> */}
-                <select
+                {/* <select
                   name="status"
                   id="status"
                   ref={focusStatus}
@@ -2275,9 +2290,6 @@ function UpdateUser(props: any) {
                     requestType === 'remove'
                   }
                 >
-                  {/* <option disabled value="" className={classes.selectOptions}>
-                  None
-                </option> */}
                   {requestType === 'new'
                     ? constants.statuses
                         .filter((type) => type.statusID.toLowerCase() === 'w')
@@ -2335,7 +2347,36 @@ function UpdateUser(props: any) {
                           </option>
                         )
                       })}
-                </select>
+                </select> */}
+                <Select
+                  value={
+                    requestType === 'new'
+                      ? constants.statuses.filter((i) => i.value === 'W')
+                      : constants.statuses.filter((i) => i.value === status)
+                  }
+                  isDisabled={
+                    UtilityFunctions.isHidden(
+                      '8',
+                      appFuncList ? appFuncList : [],
+                      'status'
+                    ) ||
+                    requestType === 'new' ||
+                    requestType === 'remove'
+                  }
+                  isLoading={false}
+                  // components={{
+                  //   Option,
+                  // }}
+                  ref={focusStatus}
+                  isRtl={false}
+                  isSearchable={true}
+                  name="color"
+                  options={constants.statuses}
+                  onChange={onstatusChange}
+                  className={classes.multiSelect}
+                  styles={customStyles}
+                  //value={hierLevel}
+                />
               </Typography>
             </Box>
           </Box>

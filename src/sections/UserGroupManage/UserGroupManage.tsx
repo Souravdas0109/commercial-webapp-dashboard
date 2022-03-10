@@ -60,8 +60,10 @@ function UserGroupManage(props: any) {
               groupDesc: group.groupDesc,
               // status: group.status,
               status: constants.groupstatuses
-                .filter((stat: any) => stat.statusID === group.status)
-                .map((stat: any) => stat.text)
+                // .filter((stat: any) => stat.statusID === group.status)
+                .filter((stat: any) => stat.value === group.status)
+                // .map((stat: any) => stat.text)
+                .map((stat: any) => stat.label)
                 .toString(),
               productHierarchy: group.productHierarchy,
               locationHierarchy: group.locationHierarchy,

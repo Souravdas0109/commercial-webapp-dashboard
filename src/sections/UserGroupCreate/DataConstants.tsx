@@ -43,18 +43,32 @@ export const locationTypes: LocationhierarchyTypes[] = [
 ]
 
 export const constants = {
+  // groupstatuses: [
+  //   {
+  //     statusID: 'A',
+  //     text: 'Active',
+  //   },
+  //   {
+  //     statusID: 'I',
+  //     text: 'Inactive',
+  //   },
+  //   {
+  //     statusID: 'D',
+  //     text: 'Deleted',
+  //   },
+  // ],
   groupstatuses: [
     {
-      statusID: 'A',
-      text: 'Active',
+      value: 'A',
+      label: 'Active',
     },
     {
-      statusID: 'I',
-      text: 'Inactive',
+      value: 'I',
+      label: 'Inactive',
     },
     {
-      statusID: 'D',
-      text: 'Deleted',
+      value: 'D',
+      label: 'Deleted',
     },
   ],
 

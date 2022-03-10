@@ -209,8 +209,10 @@ function UserGroupUpdate(props: any) {
       // setStatus(selectGroupID.status)
       setStatus(
         constants.groupstatuses
-          .filter((stat: any) => stat.text === selectGroupID.status)
-          .map((stat: any) => stat.statusID)
+          //.filter((stat: any) => stat.text === selectGroupID.status)
+          .filter((stat: any) => stat.label === selectGroupID.status)
+          // .map((stat: any) => stat.statusID)
+          .map((stat: any) => stat.value)
           .toString()
       )
       setPayload(
@@ -657,6 +659,14 @@ function UserGroupUpdate(props: any) {
       color: state.isSelected ? 'white' : teal[900],
     }),
   }
+  const customStyles = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      borderColor: teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
+    }),
+  }
 
   // const viewProductOpen = Boolean(viewProductEl)
   // const viewLocationOpen = Boolean(viewLocationEl)
@@ -769,7 +779,8 @@ function UserGroupUpdate(props: any) {
   const onstatusChange = (e: any) => {
     setIsPageModified(true)
     setErrorStatus('')
-    setStatus(e.target.value)
+    // setStatus(e.target.value)
+    setStatus(e.value)
   }
   // const handleOpenViewProduct = (e: any) => {
   //   setViewProductEl(e.currentTarget)
@@ -1637,7 +1648,7 @@ function UserGroupUpdate(props: any) {
                       </Box>
                       <Box className={classes.inputFieldBox}>
                         <Typography variant="subtitle2">
-                          <select
+                          {/* <select
                             name="status"
                             id="status"
                             className={classes.selectField}
@@ -1645,13 +1656,6 @@ function UserGroupUpdate(props: any) {
                             onChange={onstatusChange}
                             required
                           >
-                            {/* <option
-                            disabled
-                            value=""
-                            className={classes.selectOptions}
-                          >
-                            None
-                          </option> */}
                             {constants.groupstatuses.map((type) => {
                               return (
                                 <option
@@ -1665,7 +1669,26 @@ function UserGroupUpdate(props: any) {
                                 </option>
                               )
                             })}
-                          </select>
+                          </select> */}
+                          <Select
+                            value={constants.groupstatuses.filter(
+                              (i) => i.value === status
+                            )}
+                            isDisabled={false}
+                            isLoading={false}
+                            // components={{
+                            //   Option,
+                            // }}
+                            // ref={focusStatus}
+                            isRtl={false}
+                            isSearchable={true}
+                            name="color"
+                            options={constants.groupstatuses}
+                            onChange={onstatusChange}
+                            className={classes.multiSelect}
+                            styles={customStyles}
+                            //value={hierLevel}
+                          />
                         </Typography>
                       </Box>
                     </Box>
