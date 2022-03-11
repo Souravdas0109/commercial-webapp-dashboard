@@ -29,6 +29,7 @@ function UserGroupManage(props: any) {
   const history = useHistory()
   const { DEFAULT, USERCONFIG_GROUPUPDATE, USERCONFIG_GROUPCREATE } = routes
   const active = useMediaQuery(theme.breakpoints.down(700))
+  const active1 = useMediaQuery(theme.breakpoints.between(400, 700))
   const width = useMediaQuery(theme.breakpoints.up('md'))
   const dialogwidth = width ? 600 : fieldWidth
   const [globalFilter, setGlobalFilter] = React.useState('')
@@ -477,35 +478,49 @@ function UserGroupManage(props: any) {
                     <Box
                       sx={{
                         display: 'flex',
+                        flexDirection: active1 ? 'row' : 'column',
+                        alignItems: 'start',
                       }}
                     >
-                      <input
-                        type="text"
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        placeholder={' Search Group details '}
-                        style={{
-                          width: '200px',
+                      <Box
+                        sx={{
+                          display: 'flex',
                         }}
-                      />
+                      >
+                        <input
+                          type="text"
+                          value={globalFilter}
+                          onChange={(e) => setGlobalFilter(e.target.value)}
+                          placeholder={' Search Group details '}
+                          style={{
+                            width: '200px',
+                          }}
+                        />
+                      </Box>
+
+                      <Box
+                        // className="createGroup"
+                        sx={{
+                          display: 'flex',
+                          width: '100%',
+                          justifyContent: active1 ? 'end' : 'start',
+                          paddingTop: !active1 && '10px',
+                        }}
+                      >
+                        <button
+                          type="button"
+                          className={classes.exploreButton}
+                          onClick={() =>
+                            history.push(`${DEFAULT}${USERCONFIG_GROUPCREATE}`)
+                          }
+                        >
+                          <span className="buttonCreateGroup">
+                            {' '}
+                            Create Group
+                          </span>
+                        </button>
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box
-                    className="createGroup"
-                    sx={{
-                      display: 'flex',
-                      justifySelf: 'end',
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className={classes.exploreButton}
-                      onClick={() =>
-                        history.push(`${DEFAULT}${USERCONFIG_GROUPCREATE}`)
-                      }
-                    >
-                      <span className="buttonCreateGroup"> Create Group</span>
-                    </button>
                   </Box>
                 </Box>
               )}

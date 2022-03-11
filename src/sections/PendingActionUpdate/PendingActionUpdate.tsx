@@ -2319,8 +2319,8 @@ function PendingActionUpdate(props: any) {
             // [theme.breakpoints.down("sm")]: {
             //   flexDirection: "column",
             // },
-            paddingBottom: '20px',
-            paddingTop: '10px',
+            // paddingBottom: '20px',
+            // paddingTop: '10px',
             // width: fieldWidth
           }}
         >
@@ -2329,7 +2329,7 @@ function PendingActionUpdate(props: any) {
               flexGrow: 1,
             }}
           >
-            <Typography variant="h6">My Task {'>'} Pending - </Typography>
+            <Typography variant="h6">My Task {'>'} Pending-</Typography>
           </Box>
 
           <Box
