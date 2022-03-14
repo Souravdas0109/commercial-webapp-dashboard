@@ -41,7 +41,7 @@ function GroupPendingAction(props: any) {
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   //
   const active = useMediaQuery(theme.breakpoints.down(700))
-  const active1 = useMediaQuery(theme.breakpoints.between(400, 700))
+  const active1 = useMediaQuery(theme.breakpoints.between(370, 700))
 
   const goBack = () => {
     reset_mygrouppendingAction()
@@ -220,6 +220,9 @@ function GroupPendingAction(props: any) {
                         />
                       </Box>
                       <Box
+                        // sx={{
+                        //   paddingLeft: 20,
+                        // }}
                         sx={{
                           paddingLeft: !active ? 20 : 0,
                           paddingTop: active && !active1 && '10px',

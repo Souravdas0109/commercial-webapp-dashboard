@@ -29,7 +29,7 @@ function UserGroupManage(props: any) {
   const history = useHistory()
   const { DEFAULT, USERCONFIG_GROUPUPDATE, USERCONFIG_GROUPCREATE } = routes
   const active = useMediaQuery(theme.breakpoints.down(700))
-  const active1 = useMediaQuery(theme.breakpoints.between(400, 700))
+  const active1 = useMediaQuery(theme.breakpoints.between(370, 700))
   const width = useMediaQuery(theme.breakpoints.up('md'))
   const dialogwidth = width ? 600 : fieldWidth
   const [globalFilter, setGlobalFilter] = React.useState('')
@@ -500,6 +500,9 @@ function UserGroupManage(props: any) {
 
                       <Box
                         // className="createGroup"
+                        // sx={{
+                        //   paddingLeft: 20,
+                        // }}
                         sx={{
                           display: 'flex',
                           width: '100%',

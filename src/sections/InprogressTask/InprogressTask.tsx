@@ -28,7 +28,7 @@ function InprogressTask(props: any) {
   const [globalFilter, setGlobalFilter] = useState('')
   const [inProgressTasksDetails, setInprogressTasksDetails] = useState([])
   const active = useMediaQuery(theme.breakpoints.down(700))
-  const active1 = useMediaQuery(theme.breakpoints.between(400, 700))
+  const active1 = useMediaQuery(theme.breakpoints.between(370, 700))
 
   const goBack = () => {
     reset_myinprogressAction()
@@ -101,6 +101,9 @@ function InprogressTask(props: any) {
                       />
                     </Box>
                     <Box
+                      // sx={{
+                      //   paddingLeft: 20,
+                      // }}
                       sx={{
                         paddingLeft: !active ? 20 : 0,
                         paddingTop: active && !active1 && '10px',

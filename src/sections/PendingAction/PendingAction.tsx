@@ -27,7 +27,7 @@ function PendingAction(props: any) {
   const [pendingActionDetails, setPendingActionDetails] = useState([])
   const [pendingActionLoading, setPendingActionLoading] = useState(false)
   const active = useMediaQuery(theme.breakpoints.down(700))
-  const active1 = useMediaQuery(theme.breakpoints.between(400, 700))
+  const active1 = useMediaQuery(theme.breakpoints.between(370, 700))
   const handleNameClick = (e: any) => {
     console.log(e.target.value)
     const selectedRow = pendingActionDetails.filter(
@@ -121,6 +121,9 @@ function PendingAction(props: any) {
                     </Box>
                     <Box
                       // className="createGroup"
+                      // sx={{
+                      //   paddingLeft: 20,
+                      // }}
                       sx={{
                         paddingLeft: !active ? 20 : 0,
                         paddingTop: active && !active1 && '10px',
