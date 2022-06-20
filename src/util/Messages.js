@@ -26,6 +26,8 @@ export const allMessages = {
       'Cannot Inactive/Delete groups which are already assigned to existing users',
     errorReassign:
       'Cannot reassign in case the status of requestor is Inactive/Deleted',
+    effectiveDateError:
+      'Date range will be between system date and 2 weeks in the future',
   },
   success: {
     successPost: 'Log posted successfully',

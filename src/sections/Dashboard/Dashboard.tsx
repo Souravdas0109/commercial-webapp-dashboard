@@ -27,7 +27,7 @@ import {
   set_mypendingAction,
   reset_all,
 } from '../../redux/Actions/PendingAction/Action'
-import { getStatusCamundaAPI } from '../../api/Fetch'
+import { getStatusCamundaAPI, getStatusNewCamundaAPI } from '../../api/Fetch'
 import { ServiceResponse } from '../../pages/Login/Messages'
 
 const useStyles = makeStyles((theme) => ({
@@ -114,8 +114,13 @@ function Dashboard(props: any) {
     let mygroupPendingTasks: Array<any> = []
     let mygroupUnassignTasks: Array<any> = []
     setNewMap([...userTaskDashboard])
-    getStatusCamundaAPI &&
-      getStatusCamundaAPI()
+    getStatusNewCamundaAPI &&
+      getStatusNewCamundaAPI(
+        userDetail &&
+          userDetail.userdetails &&
+          userDetail.userdetails[0].user.userId,
+        'summary'
+      )
         .then((res) => {
           const pendingStatusDetails = res.data
 
@@ -197,26 +202,42 @@ function Dashboard(props: any) {
         userDetail &&
         userTaskDashboard.map((item) => {
           if (item.value.toLowerCase() === 'usermanagement') {
+            // item.my.pendingActions =
+            //   mypendingAction.length > 0 && mypendingAction[0].tasks.length > 0
+            //     ? mypendingAction[0].tasks.length
+            //     : 0
             item.my.pendingActions =
-              mypendingAction.length > 0 && mypendingAction[0].tasks.length > 0
-                ? mypendingAction[0].tasks.length
+              mypendingAction.length > 0
+                ? parseInt(mypendingAction[0].count)
                 : 0
+            // item.my.inProgressTask =
+            //   myinprogressTasks.length > 0 &&
+            //   myinprogressTasks[0].tasks.length > 0
+            //     ? myinprogressTasks[0].tasks.length
+            //     : 0
             item.my.inProgressTask =
-              myinprogressTasks.length > 0 &&
-              myinprogressTasks[0].tasks.length > 0
-                ? myinprogressTasks[0].tasks.length
+              myinprogressTasks.length > 0
+                ? parseInt(myinprogressTasks[0].count)
                 : 0
+            // item.myGroup.pendingActions =
+            //   adminqn &&
+            //   mygroupPendingAction.length > 0 &&
+            //   mygroupPendingAction[0].tasks.length > 0
+            //     ? mygroupPendingAction[0].tasks.length
+            //     : 0
             item.myGroup.pendingActions =
-              adminqn &&
-              mygroupPendingAction.length > 0 &&
-              mygroupPendingAction[0].tasks.length > 0
-                ? mygroupPendingAction[0].tasks.length
+              adminqn && mygroupPendingAction.length > 0
+                ? parseInt(mygroupPendingAction[0].count)
                 : 0
+            // item.myGroup.inProgressTask =
+            //   adminqn &&
+            //   mygroupUnassignTasks.length > 0 &&
+            //   mygroupUnassignTasks[0].tasks.length > 0
+            //     ? mygroupUnassignTasks[0].tasks.length
+            //     : 0
             item.myGroup.inProgressTask =
-              adminqn &&
-              mygroupUnassignTasks.length > 0 &&
-              mygroupUnassignTasks[0].tasks.length > 0
-                ? mygroupUnassignTasks[0].tasks.length
+              adminqn && mygroupUnassignTasks.length > 0
+                ? parseInt(mygroupUnassignTasks[0].count)
                 : 0
           }
 
@@ -235,7 +256,7 @@ function Dashboard(props: any) {
 
   return (
     <div style={{ padding: '20px' }}>
-      <LoadingComponent showLoader={isProgressLoader} />
+      {/* <LoadingComponent showLoader={isProgressLoader} /> */}
       <Typography variant="h6" color="primary" className={classes.tabHead}>
         Task Dashboard{' '}
         <Tooltip
@@ -254,7 +275,8 @@ function Dashboard(props: any) {
           newMap.map((dash, index) => (
             <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
               <Card className={classes.card}>
-                <CardHeader className='dashbordHeading'
+                <CardHeader
+                  className="dashbordHeading"
                   title={dash.title}
                   //className={classes.header}
                   titleTypographyProps={{ variant: 'body1' }}
@@ -273,14 +295,15 @@ function Dashboard(props: any) {
                           <tr>
                             <th>
                               <Typography variant="body1" color="primary">
-                                My Task <span className='rightArrow'>{'⭆'}</span>
+                                My Task{' '}
+                                <span className="rightArrow">{'⭆'}</span>
                               </Typography>
                             </th>
                           </tr>
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                &#8226; Pending 
+                                &#8226; Pending
                               </Typography>
                             </td>
 
@@ -343,7 +366,8 @@ function Dashboard(props: any) {
                           <tr>
                             <th>
                               <Typography variant="body1" color="primary">
-                                Group Task <span className='rightArrow'>{'⭆'}</span>
+                                Group Task{' '}
+                                <span className="rightArrow">{'⭆'}</span>
                               </Typography>
                             </th>
                           </tr>

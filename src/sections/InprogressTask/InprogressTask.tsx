@@ -18,9 +18,12 @@ import {
 } from './tableHeader'
 import { reset_myinprogressAction } from '../../redux/Actions/PendingAction/Action'
 import { routes } from '../../util/Constants'
-
+import {
+  getStatusCamundaAPI,
+  getStatusWithLimitNewCamundaAPI,
+} from '../../api/Fetch'
 function InprogressTask(props: any) {
-  const { myinprogressTasks, reset_myinprogressAction } = props
+  const { myinprogressTasks, reset_myinprogressAction, userDetail } = props
   const { DEFAULT, DASHBOARD } = routes
   const history = useHistory()
   const theme = useTheme()
@@ -44,7 +47,21 @@ function InprogressTask(props: any) {
   }, [myinprogressTasks, history, DEFAULT, DASHBOARD])
   useEffect(() => {
     if (myinprogressTasks) {
-      setInprogressTasksDetails(myinprogressTasks[0].tasks)
+      //setInprogressTasksDetails(myinprogressTasks[0].tasks)
+      getStatusWithLimitNewCamundaAPI &&
+        getStatusWithLimitNewCamundaAPI(
+          userDetail &&
+            userDetail.userdetails &&
+            userDetail.userdetails[0].user.userId,
+          myinprogressTasks[0].details
+        ).then((res) => {
+          if (res.data && res.data.status) {
+            const pendingStatusDetails = res.data.status.filter(
+              (item: any) => item.details.toLowerCase() === 'myrequestedtasks'
+            )
+            setInprogressTasksDetails(pendingStatusDetails[0].tasks)
+          }
+        })
     }
   }, [myinprogressTasks])
   return (
@@ -152,7 +169,7 @@ function InprogressTask(props: any) {
                     scrollable
                     scrollHeight="flex"
                     globalFilter={globalFilter}
-                    emptyMessage="No users found."
+                    emptyMessage="No tasks found"
                     showGridlines
                     //loading={manageUserLoading}
                   >
@@ -240,6 +257,7 @@ const mapStateToProps = (state: any) => {
   return {
     //mypendingAction: state.pendingActionReducer.mypendingAction,
     myinprogressTasks: state.pendingActionReducer.myinprogressTasks,
+    userDetail: state.loginReducer.userDetail,
     // mygroupPendingAction: state.pendingActionReducer.mygroupPendingAction,
     // mygroupUnassignTasks: state.pendingActionReducer.mygroupUnassignTasks,
   }

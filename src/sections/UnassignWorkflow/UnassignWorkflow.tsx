@@ -23,7 +23,10 @@ import { routes, life } from '../../util/Constants'
 import { putClaimTaskAPI } from '../../api/Fetch'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 import { allMessages } from '../../util/Messages'
-
+import {
+  getStatusCamundaAPI,
+  getStatusWithLimitNewCamundaAPI,
+} from '../../api/Fetch'
 function UnassignWorkflow(props: any) {
   const { reset_mygroupunassignAction, mygroupUnassignTasks, userDetail } =
     props
@@ -58,7 +61,22 @@ function UnassignWorkflow(props: any) {
   }, [mygroupUnassignTasks, history, DEFAULT, DASHBOARD])
   useEffect(() => {
     if (mygroupUnassignTasks) {
-      setMyGroupUnassignedTasks(mygroupUnassignTasks[0].tasks)
+      //setMyGroupUnassignedTasks(mygroupUnassignTasks[0].tasks)
+      getStatusWithLimitNewCamundaAPI &&
+        getStatusWithLimitNewCamundaAPI(
+          userDetail &&
+            userDetail.userdetails &&
+            userDetail.userdetails[0].user.userId,
+          mygroupUnassignTasks[0].details
+        ).then((res) => {
+          if (res.data && res.data.status) {
+            const pendingStatusDetails = res.data.status.filter(
+              (item: any) =>
+                item.details.toLowerCase() === 'mygroupunnassignedtasks'
+            )
+            setMyGroupUnassignedTasks(pendingStatusDetails[0].tasks)
+          }
+        })
     }
   }, [mygroupUnassignTasks])
 
@@ -274,7 +292,7 @@ function UnassignWorkflow(props: any) {
                       scrollable
                       scrollHeight="flex"
                       globalFilter={globalFilter}
-                      emptyMessage="No users found."
+                      emptyMessage="No tasks found"
                       showGridlines
                       //loading={manageUserLoading}
                     >

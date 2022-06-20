@@ -23,7 +23,12 @@ import { routes, life } from '../../util/Constants'
 import { putClaimTaskAPI } from '../../api/Fetch'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 import { allMessages } from '../../util/Messages'
-
+import ErrorIcon from '@material-ui/icons/Error'
+import LightTooltip from '../../components/LightToolTip/LightTooltip'
+import {
+  getStatusCamundaAPI,
+  getStatusWithLimitNewCamundaAPI,
+} from '../../api/Fetch'
 function GroupPendingAction(props: any) {
   const { reset_mygrouppendingAction, mygroupPendingAction, userDetail } = props
   const { DEFAULT, DASHBOARD } = routes
@@ -31,7 +36,7 @@ function GroupPendingAction(props: any) {
   const classes = useStyles()
   const history = useHistory()
   const [globalFilter, setGlobalFilter] = useState('')
-  const [unassignUser, setUnassignUser] = useState([])
+  const [unassignUser, setUnassignUser] = useState<any>([])
   const [checkCount, setCheckCount] = React.useState(1)
   const [failureCount, setFailureCount] = React.useState(0)
   const toast = useRef<any>(null)
@@ -42,6 +47,7 @@ function GroupPendingAction(props: any) {
   //
   const active = useMediaQuery(theme.breakpoints.down(700))
   const active1 = useMediaQuery(theme.breakpoints.between(370, 700))
+  const [isDisabled, setIsDisabled] = React.useState(false)
 
   const goBack = () => {
     reset_mygrouppendingAction()
@@ -58,12 +64,45 @@ function GroupPendingAction(props: any) {
   }, [mygroupPendingAction, history, DEFAULT, DASHBOARD])
   useEffect(() => {
     if (mygroupPendingAction) {
-      setMyGroupPendingActionDetails(mygroupPendingAction[0].tasks)
+      //setMyGroupPendingActionDetails(mygroupPendingAction[0].tasks)
+      getStatusWithLimitNewCamundaAPI &&
+        getStatusWithLimitNewCamundaAPI(
+          userDetail &&
+            userDetail.userdetails &&
+            userDetail.userdetails[0].user.userId,
+          mygroupPendingAction[0].details
+        ).then((res) => {
+          if (res.data && res.data.status) {
+            const pendingStatusDetails = res.data.status.filter(
+              (item: any) =>
+                item.details.toLowerCase() === 'mygrouppendingtasks'
+            )
+            setMyGroupPendingActionDetails(pendingStatusDetails[0].tasks)
+          }
+        })
     }
   }, [mygroupPendingAction])
 
   useEffect(() => {
     console.log(unassignUser)
+  }, [unassignUser])
+
+  useEffect(() => {
+    console.log('starting')
+    if (unassignUser.length > 0) {
+      console.log('length greater than zero')
+      for (let i = 0; i < unassignUser.length; i++) {
+        if (unassignUser && unassignUser[i].approved === true) {
+          setIsDisabled(true)
+          break
+        } else {
+          setIsDisabled(false)
+        }
+      }
+    } else {
+      console.log('length less than one')
+      setIsDisabled(false)
+    }
   }, [unassignUser])
 
   useEffect(() => {
@@ -94,68 +133,136 @@ function GroupPendingAction(props: any) {
   }, [checkCount, DASHBOARD, DEFAULT, history, failureCount])
 
   const handleAssign = () => {
-    setIsProgressLoader(true)
     if (unassignUser.length > 0) {
+      setIsProgressLoader(true)
       setFailureCount(unassignUser.length)
       setCheckCount(unassignUser.length)
-      const assignPayload = {
-        requestorDetails: {
-          emailId: userDetail && userDetail.userdetails[0].user.emailId,
-          requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestType: 'complete',
-          requestDate: new Date().toISOString().split('T')[0],
-        },
-        requestorRoles:
-          userDetail &&
-          userDetail.userdetails[0].roles.map((role: any) => {
-            return {
-              roleId: role.roleId,
-            }
-          }),
-        // submitFlag: 'Assign',
-      }
-      const taskIds =
-        unassignUser && unassignUser.map((item: any) => item.taskId)
+      unassignUser.map((item: any) => {
+        if (item.approved === false) {
+          const assignPayload = {
+            requestorDetails: {
+              emailId: userDetail && userDetail.userdetails[0].user.emailId,
+              requestBy: userDetail && userDetail.userdetails[0].user.userId,
+              requestorName:
+                userDetail &&
+                userDetail.userdetails[0].user.middleName &&
+                userDetail.userdetails[0].user.middleName !== ''
+                  ? `${userDetail.userdetails[0].user.firstName} ${userDetail.userdetails[0].user.middleName} ${userDetail.userdetails[0].user.lastName}`
+                  : `${userDetail.userdetails[0].user.firstName} ${userDetail.userdetails[0].user.lastName}`,
+              requestType: 'complete',
+              requestDate: new Date().toISOString().split('T')[0],
+            },
+            requestorRoles:
+              userDetail &&
+              userDetail.userdetails[0].roles.map((role: any) => {
+                return {
+                  roleId: role.roleId,
+                }
+              }), // submitFlag: 'Assign',
+          }
+          putClaimTaskAPI &&
+            putClaimTaskAPI(assignPayload, item.taskId)
+              .then((res) => {
+                console.log(res.data)
+                setFailureCount((prevState) => prevState - 1)
+                setCheckCount((prevState) => prevState - 1)
+              })
+              .catch((err) => {
+                setCheckCount((prevState) => prevState - 1)
+              })
+        } else {
+          setCheckCount((prevState) => prevState - 1)
+        }
+      })
+    }
+  }
 
-      for (let i = 0; i < taskIds.length; i++) {
-        putClaimTaskAPI &&
-          putClaimTaskAPI(assignPayload, taskIds[i])
-            .then((res) => {
-              console.log(res.data)
-              setFailureCount((prevState) => prevState - 1)
-              setCheckCount((prevState) => prevState - 1)
-              // if (res.data.status.toLowerCase() !== 'failed') {
-              // setIsProgressLoader(false)
-              // toast.current.show({
-              //   severity: 'success',
-              //   summary: taskIds[i],
-              //   detail: res.data.comments,
-              //   life: life,
-              //   className: 'login-toast',
-              // })
-              // } else {
-              //   toast.current.show({
-              //     severity: 'error',
-              //     summary: 'Error!',
-              //     detail: res.data.comments,
-              //     life: 6000,
-              //     className: 'login-toast',
-              //   })
-              // }
-            })
-            .catch((err) => {
-              setCheckCount((prevState) => prevState - 1)
-              // setIsProgressLoader(false)
-              // toast.current.show({
-              //   severity: 'error',
-              //   summary: 'Error!',
-              //   // detail: `${err.response.status} from tasklistapi`,
-              //   detail: err.response.data.errorMessage,
-              //   life: life,
-              //   className: 'login-toast',
-              // })
-            })
-      }
+  // const handleAssign = () => {
+  //   setIsProgressLoader(true)
+  //   if (unassignUser.length > 0) {
+  //     setFailureCount(unassignUser.length)
+  //     setCheckCount(unassignUser.length)
+  //     const assignPayload = {
+  //       requestorDetails: {
+  //         emailId: userDetail && userDetail.userdetails[0].user.emailId,
+  //         requestBy: userDetail && userDetail.userdetails[0].user.userId,
+  //         requestorName:
+  //           userDetail &&
+  //           userDetail.userdetails[0].user.middleName &&
+  //           userDetail.userdetails[0].user.middleName !== ''
+  //             ? `${userDetail.userdetails[0].user.firstName} ${userDetail.userdetails[0].user.middleName} ${userDetail.userdetails[0].user.lastName}`
+  //             : `${userDetail.userdetails[0].user.firstName} ${userDetail.userdetails[0].user.lastName}`,
+  //         requestType: 'complete',
+  //         requestDate: new Date().toISOString().split('T')[0],
+  //       },
+  //       requestorRoles:
+  //         userDetail &&
+  //         userDetail.userdetails[0].roles.map((role: any) => {
+  //           return {
+  //             roleId: role.roleId,
+  //           }
+  //         }),
+  //       // submitFlag: 'Assign',
+  //     }
+  //     const taskIds =
+  //       unassignUser && unassignUser.map((item: any) => item.taskId)
+
+  //     for (let i = 0; i < taskIds.length; i++) {
+  //       putClaimTaskAPI &&
+  //         putClaimTaskAPI(assignPayload, taskIds[i])
+  //           .then((res) => {
+  //             console.log(res.data)
+  //             setFailureCount((prevState) => prevState - 1)
+  //             setCheckCount((prevState) => prevState - 1)
+  //             // if (res.data.status.toLowerCase() !== 'failed') {
+  //             // setIsProgressLoader(false)
+  //             // toast.current.show({
+  //             //   severity: 'success',
+  //             //   summary: taskIds[i],
+  //             //   detail: res.data.comments,
+  //             //   life: life,
+  //             //   className: 'login-toast',
+  //             // })
+  //             // } else {
+  //             //   toast.current.show({
+  //             //     severity: 'error',
+  //             //     summary: 'Error!',
+  //             //     detail: res.data.comments,
+  //             //     life: 6000,
+  //             //     className: 'login-toast',
+  //             //   })
+  //             // }
+  //           })
+  //           .catch((err) => {
+  //             setCheckCount((prevState) => prevState - 1)
+  //             // setIsProgressLoader(false)
+  //             // toast.current.show({
+  //             //   severity: 'error',
+  //             //   summary: 'Error!',
+  //             //   // detail: `${err.response.status} from tasklistapi`,
+  //             //   detail: err.response.data.errorMessage,
+  //             //   life: life,
+  //             //   className: 'login-toast',
+  //             // })
+  //           })
+  //     }
+  //   }
+  // }
+
+  const requestIdTemplate = (rowData: any) => {
+    if (rowData.approved === false) {
+      return <div className={classes.validRequestId}>{rowData.requestId}</div>
+    } else {
+      return (
+        <div>
+          {rowData.requestId}
+          <LightTooltip
+            title="This request id already approved and waiting for effective date.Please do not assign it again"
+            position={'right'}
+            icon={<ErrorIcon color="error" fontSize="small" />}
+          />
+        </div>
+      )
     }
   }
   return (
@@ -273,7 +380,7 @@ function GroupPendingAction(props: any) {
                       scrollable
                       scrollHeight="flex"
                       globalFilter={globalFilter}
-                      emptyMessage="No users found."
+                      emptyMessage="No tasks found"
                       showGridlines
                       //loading={manageUserLoading}
                     >
@@ -302,9 +409,9 @@ function GroupPendingAction(props: any) {
                               backgroundColor: teal[900],
                               color: 'white',
                             }}
-                            // body={
-                            //   column.field === 'requestedId' && requestIdTemplate
-                            // }
+                            body={
+                              column.field === 'requestId' && requestIdTemplate
+                            }
                             sortable
                           />
                         )
@@ -383,6 +490,7 @@ function GroupPendingAction(props: any) {
                       // type="submit"
                       size="small"
                       onClick={handleAssign}
+                      disabled={isDisabled}
                     >
                       Assign to Me
                     </Button>
